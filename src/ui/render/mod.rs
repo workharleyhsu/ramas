@@ -2,6 +2,7 @@
 
 pub mod detail;
 pub mod dialogs;
+pub mod filters;
 pub mod progress;
 pub mod status;
 pub mod tree;
@@ -42,6 +43,8 @@ pub fn draw(f: &mut Frame, app: &mut App) {
         Overlay::Confirm { focus } => dialogs::confirm(f, app, *focus),
         Overlay::TypeConfirm { input } => dialogs::type_confirm(f, app, input),
         Overlay::Summary(sum) => dialogs::summary(f, app, sum),
+        Overlay::Search { .. } => {}
+        Overlay::Filters(form) => filters::draw(f, app, form),
     }
     if let Some(job) = &app.job {
         let settings_title = app.s.rescanning;
@@ -58,8 +61,45 @@ pub fn panel_visible(app: &App, width: u16) -> bool {
 }
 
 fn draw_hint(f: &mut Frame, area: Rect, app: &App) {
-    let text = app.message.as_deref().unwrap_or(app.s.hint_browse);
-    let line = Line::from(Span::styled(format!(" {text}"), app.theme.dimmed()));
+    let t = &app.theme;
+    let line = match &app.overlay {
+        Overlay::Search { input, .. } => {
+            let count = match &app.search {
+                Some(s) if !s.hits.is_empty() => crate::i18n::fill(
+                    app.s.search_count,
+                    &[
+                        ("i", &(s.idx + 1).to_string()),
+                        ("n", &s.hits.len().to_string()),
+                    ],
+                ),
+                _ if input.is_empty() => String::new(),
+                _ => app.s.search_none.to_owned(),
+            };
+            Line::from(vec![
+                Span::styled(format!(" {}", app.s.search_prompt), t.fg(t.accent)),
+                Span::styled(input.clone(), t.text()),
+                Span::styled("█", t.fg(t.accent)),
+                Span::styled(format!("  {count}  "), t.fg(t.matched)),
+                Span::styled(app.s.hint_search, t.dimmed()),
+            ])
+        }
+        overlay => {
+            let text = match overlay {
+                _ if app.message.is_some() => app.message.as_deref().unwrap_or_default(),
+                Overlay::Confirm { .. } => app.s.hint_confirm,
+                Overlay::Filters(_) => app.s.filters_hint,
+                Overlay::Summary(_) => app.s.summary_close,
+                Overlay::Help => app.s.help_close,
+                _ => app.s.hint_browse,
+            };
+            let style = if app.message.is_some() {
+                t.fg(t.warn)
+            } else {
+                t.dimmed()
+            };
+            Line::from(Span::styled(format!(" {text}"), style))
+        }
+    };
     f.render_widget(Paragraph::new(line), area);
 }
 

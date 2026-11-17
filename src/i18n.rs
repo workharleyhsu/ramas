@@ -51,6 +51,8 @@ pub struct Strings {
     pub imported: &'static str,
     // Hints
     pub hint_browse: &'static str,
+    pub hint_confirm: &'static str,
+    pub hint_search: &'static str,
     pub help_title: &'static str,
     pub help_close: &'static str,
     pub help_lines: &'static [(&'static str, &'static str)],
@@ -148,6 +150,8 @@ pub static EN: Strings = Strings {
     read_only: "READ-ONLY",
     imported: "IMPORTED",
     hint_browse: "↑↓ move  ←→ fold  space mark  d delete  / search  f filter  t types  ? help  q quit",
+    hint_confirm: "←→/Tab choose  Enter confirm  Esc cancel",
+    hint_search: "Enter keep  Esc cancel  n/N next/previous",
     help_title: "Keys",
     help_close: "any key: close",
     help_lines: &[
@@ -268,6 +272,8 @@ pub static ES: Strings = Strings {
     read_only: "SOLO LECTURA",
     imported: "IMPORTADO",
     hint_browse: "↑↓ mover  ←→ plegar  espacio marcar  d borrar  / buscar  f filtrar  t tipos  ? ayuda  q salir",
+    hint_confirm: "←→/Tab elegir  Enter confirmar  Esc cancelar",
+    hint_search: "Enter mantener  Esc cancelar  n/N siguiente/anterior",
     help_title: "Teclas",
     help_close: "cualquier tecla: cerrar",
     help_lines: &[

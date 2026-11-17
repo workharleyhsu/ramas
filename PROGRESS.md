@@ -38,9 +38,9 @@ test) → commit → actualizar este archivo.
 - Criterio: tests de papelera, permanente, dedup y rutas prohibidas. ✔ (fase 4 cerrada; smoke pty de borrado permanente en copia del fixture OK)
 
 ## Fase 5 — Búsqueda y filtros
-- [ ] 5.1 `/` búsqueda difusa, `n/N`, expansión automática
-- [ ] 5.2 `f` panel de filtros (tamaño, extensión, antigüedad), atenuar/ocultar
-- Criterio: tests de coincidencia y expansión automática.
+- [x] 5.1 `/` búsqueda difusa, `n/N`, expansión automática
+- [x] 5.2 `f` panel de filtros (tamaño, extensión, antigüedad), atenuar/ocultar
+- Criterio: tests de coincidencia y expansión automática. ✔ (fase 5 cerrada)
 
 ## Fase 6 — Análisis por tipo
 - [ ] 6.1 Clasificador configurable
@@ -90,8 +90,11 @@ test) → commit → actualizar este archivo.
 - Se rechaza también cualquier ancestro de `$HOME` (lo contiene). Rutas con `..` rechazadas.
 - Reescanear la raíz quita el modo importado.
 
+- Búsqueda: `nucleo-matcher`, smart case, solo nombres (no la ruta). Resultados por puntaje; al teclear se salta al mejor y se expanden sus ancestros; con Enter se expanden las ramas de los 100 mejores. `Esc` vuelve al nodo de origen.
+- Filtros: un archivo coincide si cumple todo; un directorio si contiene un archivo que coincide (o, con solo tamaño mínimo, si su total alcanza). Modo atenuar/ocultar. Los tamaños del filtro siguen la métrica activa (`a`).
+
 ## Bloqueos
 (ninguno)
 
 ## Próxima tarea
-5.1
+6.1

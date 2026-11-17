@@ -216,7 +216,9 @@ impl App {
     /// Re-sorts, refreshes caches and rows after a structural change.
     fn tree_changed(&mut self, keep: NodeId) {
         self.generation += 1;
+        self.search = None;
         self.tree.sort(self.sort, self.apparent);
+        self.refilter();
         self.refresh_free();
         self.rebuild_rows(keep);
     }

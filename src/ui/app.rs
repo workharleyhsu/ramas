@@ -11,6 +11,7 @@ use super::theme::Theme;
 use crate::actions::marks::Marks;
 use crate::analysis::{self, Stats};
 use crate::classify::Classifier;
+use crate::filter::Filter;
 use crate::i18n::Strings;
 use crate::scan::ScanOptions;
 use crate::tree::{NodeId, SortKey, Tree};
@@ -42,6 +43,23 @@ pub enum Overlay {
     TypeConfirm { input: String },
     /// Result of a delete run.
     Summary(DeleteSummary),
+    /// Incremental search input; `origin` is restored on Esc.
+    Search { input: String, origin: NodeId },
+    /// Filter form.
+    Filters(FilterForm),
+}
+
+/// Editable state of the filter panel.
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct FilterForm {
+    /// Min size, extensions, age in days.
+    pub fields: [String; 3],
+    /// Hide instead of dim.
+    pub hide: bool,
+    /// Focused row: 0..=2 text fields, 3 the mode toggle.
+    pub focus: usize,
+    /// Validation error of the last apply.
+    pub error: bool,
 }
 
 /// Buttons of the delete dialog, left to right.
@@ -99,6 +117,19 @@ pub struct App {
     pub marks: Marks,
     pub job: Option<ScanJob>,
     pub delete_job: Option<DeleteJob>,
+    pub search: Option<SearchState>,
+    pub filter: Filter,
+    /// Match flag per node for `filter`; `None` when no filter is active.
+    pub filter_match: Option<Vec<bool>>,
+}
+
+/// Committed or in-progress search.
+#[derive(Debug, Clone, Default)]
+pub struct SearchState {
+    pub query: String,
+    pub hits: Vec<NodeId>,
+    pub hit_set: std::collections::HashSet<NodeId>,
+    pub idx: usize,
 }
 
 /// Number of files listed in the detail panel.
@@ -136,6 +167,9 @@ impl App {
             marks: Marks::default(),
             job: None,
             delete_job: None,
+            search: None,
+            filter: Filter::default(),
+            filter_match: None,
         };
         app.refresh_free();
         app.rebuild_rows(NodeId::ROOT);
@@ -176,14 +210,16 @@ impl App {
         self.rows.get(self.cursor).map_or(NodeId::ROOT, |r| r.id)
     }
 
-    /// Whether a node passes the active filters (always, for now).
-    pub fn matches_filter(&self, _id: NodeId) -> bool {
-        true
+    /// Whether a node passes the active filter.
+    pub fn matches_filter(&self, id: NodeId) -> bool {
+        self.filter_match
+            .as_ref()
+            .is_none_or(|m| m.get(id.index()).copied().unwrap_or(true))
     }
 
-    /// Whether a node gets a row (filtered nodes may be hidden).
-    pub fn is_shown(&self, _id: NodeId) -> bool {
-        true
+    /// Whether a node gets a row (non-matching nodes may be hidden).
+    pub fn is_shown(&self, id: NodeId) -> bool {
+        !self.filter.hide || id == NodeId::ROOT || self.matches_filter(id)
     }
 
     /// Whether a background job (rescan, delete) is running.
@@ -247,6 +283,8 @@ impl App {
             Overlay::Help => self.overlay = Overlay::None,
             Overlay::Confirm { .. } => self.confirm_key(key),
             Overlay::TypeConfirm { .. } => self.type_confirm_key(key),
+            Overlay::Search { .. } => self.search_key(key),
+            Overlay::Filters(_) => self.filter_key(key),
             Overlay::Summary(_) => {
                 if matches!(key.code, KeyCode::Enter | KeyCode::Esc | KeyCode::Char('q')) {
                     self.overlay = Overlay::None;
@@ -274,6 +312,11 @@ impl App {
             KeyCode::Char('u') => self.marks.clear(),
             KeyCode::Char('d') => self.open_delete(),
             KeyCode::Char('r') => self.rescan_selected(),
+            KeyCode::Char('/') => self.open_search(),
+            KeyCode::Char('n') => self.next_hit(1),
+            KeyCode::Char('N') => self.next_hit(-1),
+            KeyCode::Char('f') => self.open_filters(),
+            KeyCode::Esc => self.search = None,
             KeyCode::Char('q') => self.quit = true,
             _ => {}
         }
@@ -385,8 +428,11 @@ impl App {
 
     fn toggle_apparent(&mut self) {
         self.apparent = !self.apparent;
+        self.refilter();
         if self.sort == SortKey::Size {
             self.resort();
+        } else {
+            self.rebuild_rows(self.selected());
         }
     }
 

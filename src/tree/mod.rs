@@ -257,6 +257,19 @@ impl Tree {
         Descendants {
             tree: self,
             stack: self.children(id).collect(),
+            ordered: false,
+        }
+    }
+
+    /// Descendants of `id` in display order (children in their current
+    /// order, each followed by its own subtree).
+    pub fn descendants_preorder(&self, id: NodeId) -> Descendants<'_> {
+        let mut stack: Vec<NodeId> = self.children(id).collect();
+        stack.reverse();
+        Descendants {
+            tree: self,
+            stack,
+            ordered: true,
         }
     }
 
@@ -448,6 +461,7 @@ impl Iterator for Children<'_> {
 pub struct Descendants<'a> {
     tree: &'a Tree,
     stack: Vec<NodeId>,
+    ordered: bool,
 }
 
 impl Iterator for Descendants<'_> {
@@ -455,7 +469,11 @@ impl Iterator for Descendants<'_> {
 
     fn next(&mut self) -> Option<NodeId> {
         let cur = self.stack.pop()?;
+        let start = self.stack.len();
         self.stack.extend(self.tree.children(cur));
+        if self.ordered {
+            self.stack[start..].reverse();
+        }
         Some(cur)
     }
 }

@@ -105,7 +105,11 @@ fn row_line(app: &App, row: Row, width: usize, selected: bool) -> Line<'static> 
         Kind::Symlink => t.fg(t.accent),
         _ => t.text(),
     };
-    spans.push(Span::styled(name, name_style));
+    if app.is_hit(id) {
+        spans.extend(highlight(app, id, &name, name_style));
+    } else {
+        spans.push(Span::styled(name, name_style));
+    }
     spans.push(Span::raw(" ".repeat(name_pad + 1)));
 
     spans.push(Span::styled(
@@ -132,6 +136,31 @@ fn row_line(app: &App, row: Row, width: usize, selected: bool) -> Line<'static> 
         pad_to(&mut line, width, t.selected());
     }
     line
+}
+
+/// Name spans with the fuzzy-matched characters emphasized.
+fn highlight(app: &App, id: NodeId, shown: &str, base: Style) -> Vec<Span<'static>> {
+    let Some(search) = &app.search else {
+        return vec![Span::styled(shown.to_owned(), base)];
+    };
+    let raw = app.tree.name(id).to_string_lossy();
+    let idx = crate::search::Finder::new(&search.query).indices(&raw);
+    let hl = base
+        .patch(app.theme.fg(app.theme.matched))
+        .add_modifier(Modifier::UNDERLINED | Modifier::BOLD);
+    let mut out: Vec<Span<'static>> = Vec::new();
+    for (i, c) in shown.chars().enumerate() {
+        let style = if idx.binary_search(&(i as u32)).is_ok() {
+            hl
+        } else {
+            base
+        };
+        match out.last_mut() {
+            Some(last) if last.style == style => last.content.to_mut().push(c),
+            _ => out.push(Span::styled(c.to_string(), style)),
+        }
+    }
+    out
 }
 
 /// Name shown for a node: the root shows its full path.

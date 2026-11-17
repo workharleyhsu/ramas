@@ -1,6 +1,7 @@
 //! Terminal user interface: state, input handling and rendering.
 
 pub mod app;
+pub mod find;
 pub mod format;
 pub mod icons;
 pub mod job;

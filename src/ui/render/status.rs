@@ -46,6 +46,9 @@ pub fn draw(f: &mut Frame, area: Rect, app: &App) {
     if app.imported {
         badges.push(s.imported);
     }
+    if app.filter_match.is_some() {
+        badges.push(s.filters_active);
+    }
     let right = badges
         .iter()
         .map(|b| format!("[{b}]"))
