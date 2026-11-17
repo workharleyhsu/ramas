@@ -203,6 +203,7 @@ pub fn read(input: impl std::io::Read) -> Result<Imported> {
         ids.push(id);
     }
     tree.aggregate();
+    tree.shrink();
     Ok(Imported {
         tree,
         scanned_at: doc.scanned_at,

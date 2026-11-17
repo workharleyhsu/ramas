@@ -36,5 +36,9 @@ fn main() -> anyhow::Result<()> {
             tree.root().errors,
         );
     }
+    let status = std::fs::read_to_string("/proc/self/status").unwrap_or_default();
+    if let Some(l) = status.lines().find(|l| l.starts_with("VmHWM:")) {
+        println!("peak RSS: {}", l.trim_start_matches("VmHWM:").trim());
+    }
     Ok(())
 }

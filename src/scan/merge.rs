@@ -24,5 +24,6 @@ pub(super) fn build(root: PathBuf, meta: Meta, children: Vec<Entry>) -> Tree {
         }
     }
     tree.aggregate();
+    tree.shrink();
     tree
 }

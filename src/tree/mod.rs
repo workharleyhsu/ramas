@@ -192,6 +192,13 @@ impl Tree {
         self.nodes.is_empty()
     }
 
+    /// Releases spare capacity once the tree is complete.
+    pub fn shrink(&mut self) {
+        self.nodes.shrink_to_fit();
+        self.names.shrink_to_fit();
+        self.devs.shrink_to_fit();
+    }
+
     /// Approximate heap footprint of the arena in bytes.
     pub fn mem_bytes(&self) -> usize {
         self.nodes.capacity() * std::mem::size_of::<Node>()

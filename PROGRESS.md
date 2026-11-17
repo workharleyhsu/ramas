@@ -60,8 +60,20 @@ test) → commit → actualizar este archivo.
 - Criterio: round-trip JSON idéntico; diff detecta cambios. ✔ (fase 8 cerrada; `--export` → `--import` + `e` da un archivo byte-idéntico, verificado con `cmp`)
 
 ## Fase 9 — Rendimiento y pulido
-- [ ] 9.1 Árbol sintético 1M, perfilado y resultados
-- Criterio: UI fluida y memoria razonable, anotado aquí.
+- [x] 9.1 Árbol sintético 1M, perfilado y resultados
+  - 2026-11-17, release, 12 hilos, tmpfs. **Escaneo en disco** (1000 dirs × 1000 archivos vacíos, 1 001 001 entradas,
+    `examples/bench_scan.rs`): 0.28–0.36 s (~3M entradas/s); `du -s` 0.85 s. Orden por tamaño 0.05 s.
+    Arena 85 MiB tras `shrink_to_fit` (antes 100 MiB por capacidad sobrante). Pico RSS del bench 245 MiB
+    (árbol temporal del walker + arena durante la fusión).
+  - **TUI real** sobre ese árbol (pty, 12 teclas: navegar, buscar, ordenar, vista de tipos, salir):
+    RSS máximo 216 MiB, sin retrasos perceptibles, terminal restaurada.
+  - **Operaciones de UI** (`examples/bench_ui.rs`, árbol sintético en memoria 1M): `App::new` 58 ms; primer
+    frame con estadísticas de la raíz 62 ms; frames siguientes 0.7–0.8 ms (solo se renderiza la ventana
+    visible); expandir dir de 1k hijos <0.1 ms; orden por nombre 237 ms; búsqueda difusa por tecla 67 ms;
+    filtro ext+tamaño 22 ms; export JSON 216 ms (119 MiB); import 618 ms.
+  - Conclusión: fluido; el costo O(n) por tecla (búsqueda, orden por nombre) queda <250 ms con 1M.
+    Mejora posible no hecha: walker que fusione por directorio para bajar el pico transitorio (~130 MiB).
+- Criterio: UI fluida y memoria razonable, anotado aquí. ✔ (fase 9 cerrada)
 
 ## Fase 10 — Distribución
 - [ ] 10.1 Binario musl estático + `ldd` + contenedores Alpine/Debian
@@ -108,4 +120,4 @@ test) → commit → actualizar este archivo.
 (ninguno)
 
 ## Próxima tarea
-9.1
+10.1
