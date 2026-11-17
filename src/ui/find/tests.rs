@@ -78,10 +78,7 @@ fn enter_expands_all_branches_with_hits() {
     app.on_key(key(KeyCode::Enter));
     assert!(open(&app, "photos"));
     assert!(open(&app, "photos/2023"));
-    assert!(
-        open(&app, "work/deep"),
-        "report.pdf contains an 'a'? no: p-o-r-t"
-    );
+    assert!(!open(&app, "work"), "no hit below work");
 }
 
 #[test]
