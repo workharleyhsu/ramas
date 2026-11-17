@@ -12,7 +12,7 @@ test) → commit → actualizar este archivo.
 - [x] 1.1 Árbol en arena (nodos, nombres en blob, agregados, orden, rutas)
 - [x] 1.2 Walker paralelo: tamaños disco/aparente, no seguir symlinks, errores por nodo
 - [x] 1.3 Hard links una vez, `-x`, salto de pseudo-FS
-- [ ] 1.4 Progreso (atómicos) y cancelación
+- [x] 1.4 Progreso (atómicos) y cancelación
 - [ ] 1.5 Benchmark simple (`examples/bench_scan.rs`)
 - Criterio: tests contra árboles temporales con tamaños conocidos; benchmark anotado.
 
@@ -77,4 +77,4 @@ test) → commit → actualizar este archivo.
 (ninguno)
 
 ## Próxima tarea
-1.4
+1.5

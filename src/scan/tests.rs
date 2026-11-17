@@ -161,3 +161,59 @@ fn missing_root_is_an_error() {
     );
     assert!(matches!(err, Err(ScanError::Root { .. })));
 }
+
+#[test]
+fn progress_counts_every_entry() {
+    let tmp = tempfile::tempdir().unwrap();
+    let r = tmp.path();
+    fs::create_dir(r.join("d")).unwrap();
+    for i in 0..10 {
+        write(&r.join(format!("d/f{i}")), 100);
+    }
+    let progress = Progress::default();
+    let t = scan(
+        r,
+        &ScanOptions::default(),
+        &progress,
+        &AtomicBool::new(false),
+    )
+    .unwrap();
+    let snap = progress.snapshot();
+    assert_eq!(snap.entries, 12, "root + d + 10 files");
+    assert_eq!(snap.bytes, t.root().disk);
+    assert_eq!(snap.errors, 0);
+    assert!(snap.current.starts_with(t.root_path()));
+}
+
+#[test]
+fn cancelled_scan_stops_early() {
+    let tmp = tempfile::tempdir().unwrap();
+    let r = tmp.path();
+    for d in 0..20 {
+        fs::create_dir(r.join(format!("d{d}"))).unwrap();
+        for f in 0..20 {
+            write(&r.join(format!("d{d}/f{f}")), 1);
+        }
+    }
+    let progress = Progress::default();
+    let cancel = AtomicBool::new(true);
+    let res = scan(r, &ScanOptions::default(), &progress, &cancel);
+    assert!(matches!(res, Err(ScanError::Cancelled)));
+    assert!(progress.snapshot().entries < 400);
+}
+
+#[test]
+fn cancel_from_another_thread() {
+    let tmp = tempfile::tempdir().unwrap();
+    let r = tmp.path().to_path_buf();
+    fs::create_dir(r.join("d")).unwrap();
+    let progress = std::sync::Arc::new(Progress::default());
+    let cancel = std::sync::Arc::new(AtomicBool::new(false));
+    let (p, c) = (progress.clone(), cancel.clone());
+    let handle = std::thread::spawn(move || scan(&r, &ScanOptions::default(), &p, &c));
+    cancel.store(true, std::sync::atomic::Ordering::Relaxed);
+    // Either the scan finished before the flag or it reports cancellation;
+    // it must never hang or panic.
+    let res = handle.join().unwrap();
+    assert!(res.is_ok() || matches!(res, Err(ScanError::Cancelled)));
+}
