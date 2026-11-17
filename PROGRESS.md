@@ -5,8 +5,8 @@ test) → commit → actualizar este archivo.
 
 ## Fase 0 — Base
 - [x] 0.1 Crate, licencias, lints, `scripts/ci.sh`, SPEC/PROGRESS
-- [ ] 0.2 Esqueleto de módulos (`scan`, `tree`, `ui`, `actions`, `config`, `export`) y CLI mínima
-- Criterio: compila y los tests corren.
+- [x] 0.2 Esqueleto de módulos (`scan`, `tree`, `ui`, `actions`, `config`, `export`) y CLI mínima
+- Criterio: compila y los tests corren. ✔ (fase 0 cerrada)
 
 ## Fase 1 — Motor de escaneo
 - [ ] 1.1 Árbol en arena (nodos, nombres en blob, agregados, orden, rutas)
@@ -73,4 +73,4 @@ test) → commit → actualizar este archivo.
 (ninguno)
 
 ## Próxima tarea
-0.2
+1.1
