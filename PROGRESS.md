@@ -10,8 +10,8 @@ test) → commit → actualizar este archivo.
 
 ## Fase 1 — Motor de escaneo
 - [x] 1.1 Árbol en arena (nodos, nombres en blob, agregados, orden, rutas)
-- [ ] 1.2 Walker paralelo: tamaños disco/aparente, no seguir symlinks, errores por nodo
-- [ ] 1.3 Hard links una vez, `-x`, salto de pseudo-FS
+- [x] 1.2 Walker paralelo: tamaños disco/aparente, no seguir symlinks, errores por nodo
+- [x] 1.3 Hard links una vez, `-x`, salto de pseudo-FS
 - [ ] 1.4 Progreso (atómicos) y cancelación
 - [ ] 1.5 Benchmark simple (`examples/bench_scan.rs`)
 - Criterio: tests contra árboles temporales con tamaños conocidos; benchmark anotado.
@@ -68,9 +68,13 @@ test) → commit → actualizar este archivo.
 ## Decisiones
 - UI en inglés por defecto, español con `--lang es` (decisión del usuario).
 - Escaneo con rayon + std::fs (ver SPEC).
+- 1.2 y 1.3 en un solo commit: hard links, `-x` y pseudo-FS viven en el mismo walker.
+- Pseudo-FS: rutas fijas `/proc`, `/sys`, `/dev` + `statfs.f_type` (proc, sysfs, cgroup, debugfs...) solo en puntos de montaje. Se muestran con tamaño 0 y flag SKIP_PSEUDO.
+- Hard link duplicado: tamaño 0 en el árbol, flag HARDLINK; el primero en orden DFS se lleva el tamaño.
+- `-x`: no se testea con un montaje real (requiere root); test unitario de `skip_flag`.
 
 ## Bloqueos
 (ninguno)
 
 ## Próxima tarea
-1.2
+1.4
