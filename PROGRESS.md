@@ -9,7 +9,7 @@ test) → commit → actualizar este archivo.
 - Criterio: compila y los tests corren. ✔ (fase 0 cerrada)
 
 ## Fase 1 — Motor de escaneo
-- [ ] 1.1 Árbol en arena (nodos, nombres en blob, agregados, orden, rutas)
+- [x] 1.1 Árbol en arena (nodos, nombres en blob, agregados, orden, rutas)
 - [ ] 1.2 Walker paralelo: tamaños disco/aparente, no seguir symlinks, errores por nodo
 - [ ] 1.3 Hard links una vez, `-x`, salto de pseudo-FS
 - [ ] 1.4 Progreso (atómicos) y cancelación
@@ -73,4 +73,4 @@ test) → commit → actualizar este archivo.
 (ninguno)
 
 ## Próxima tarea
-1.1
+1.2
