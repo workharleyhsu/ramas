@@ -76,7 +76,11 @@ test) → commit → actualizar este archivo.
 - Criterio: UI fluida y memoria razonable, anotado aquí. ✔ (fase 9 cerrada)
 
 ## Fase 10 — Distribución
-- [ ] 10.1 Binario musl estático + `ldd` + contenedores Alpine/Debian
+- [x] 10.1 Binario musl estático + `ldd` + contenedores Alpine/Debian
+  - `scripts/build-static.sh [--containers]`: `static-pie linked`, `ldd` → "statically linked", 2.8 MiB.
+  - Alpine 3.24 y Debian 13 (trixie) vía docker (imágenes locales): `--version`, `--export`, `--diff`
+    y la TUI sobre `/etc` funcionan. Con podman el pull de debian falló por credenciales guardadas
+    de docker.io; se usó docker, que la tenía local.
 - [ ] 10.2 README (EN/ES), `install.sh`, `--help`, página man
 - Criterio: `ldd` estático y arranque en Alpine y Debian.
 
@@ -120,4 +124,4 @@ test) → commit → actualizar este archivo.
 (ninguno)
 
 ## Próxima tarea
-10.1
+10.2
