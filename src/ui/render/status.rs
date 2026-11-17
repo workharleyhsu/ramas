@@ -6,7 +6,6 @@ use ratatui::style::Modifier;
 use ratatui::text::{Line, Span};
 use ratatui::widgets::Paragraph;
 
-use crate::i18n::fill;
 use crate::ui::app::App;
 use crate::ui::format;
 
@@ -15,16 +14,13 @@ pub fn draw(f: &mut Frame, area: Rect, app: &App) {
     let t = &app.theme;
     let s = app.s;
     let root = app.tree.root();
-    let (n, bytes) = app.marked_summary();
+    let (n, _) = app.marked_summary();
     let mut left = format!(" {} {}", s.total, format::size(root.size(app.apparent)));
     if let Some(free) = app.free {
         left.push_str(&format!(" · {} {}", s.free, format::size(free)));
     }
     left.push_str(" · ");
-    let marked = fill(
-        s.marked,
-        &[("n", &n.to_string()), ("size", &format::size(bytes))],
-    );
+    let marked = app.marked_text();
     let mut spans = vec![Span::raw(left)];
     let mark_style = if n > 0 {
         t.status().fg(t.marked).add_modifier(Modifier::BOLD)

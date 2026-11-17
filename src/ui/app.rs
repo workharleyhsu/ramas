@@ -4,8 +4,11 @@ use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use ratatui::layout::Rect;
 
 use super::icons::Icons;
+use super::job::ScanJob;
+use super::ops::DeleteJob;
 use super::rows::{self, Row};
 use super::theme::Theme;
+use crate::actions::marks::Marks;
 use crate::analysis::{self, Stats};
 use crate::classify::Classifier;
 use crate::i18n::Strings;
@@ -33,6 +36,31 @@ pub enum Overlay {
     None,
     /// Key help.
     Help,
+    /// Delete confirmation with three buttons.
+    Confirm { focus: Button },
+    /// Second confirmation for permanent delete: the word must be typed.
+    TypeConfirm { input: String },
+    /// Result of a delete run.
+    Summary(DeleteSummary),
+}
+
+/// Buttons of the delete dialog, left to right.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Button {
+    Trash,
+    Permanent,
+    Cancel,
+}
+
+/// What a delete run achieved.
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct DeleteSummary {
+    /// Bytes freed by successful removals.
+    pub freed: u64,
+    /// Number of items removed.
+    pub removed: usize,
+    /// Paths that failed, with the reason.
+    pub failed: Vec<(std::path::PathBuf, String)>,
 }
 
 /// Screen areas from the last render, used for mouse hit testing.
@@ -68,6 +96,9 @@ pub struct App {
     /// Free bytes on the scanned filesystem, when known.
     pub free: Option<u64>,
     stats_cache: Option<((NodeId, bool, u64), Stats)>,
+    pub marks: Marks,
+    pub job: Option<ScanJob>,
+    pub delete_job: Option<DeleteJob>,
 }
 
 /// Number of files listed in the detail panel.
@@ -102,6 +133,9 @@ impl App {
             generation: 0,
             free: None,
             stats_cache: None,
+            marks: Marks::default(),
+            job: None,
+            delete_job: None,
         };
         app.refresh_free();
         app.rebuild_rows(NodeId::ROOT);
@@ -131,7 +165,10 @@ impl App {
 
     /// Number of marked items and the bytes they free.
     pub fn marked_summary(&self) -> (usize, u64) {
-        (0, 0)
+        (
+            self.marks.len(),
+            self.marks.total(&self.tree, self.apparent),
+        )
     }
 
     /// Node under the cursor.
@@ -151,11 +188,14 @@ impl App {
 
     /// Whether a background job (rescan, delete) is running.
     pub fn busy(&self) -> bool {
-        false
+        self.job.is_some() || self.delete_job.is_some()
     }
 
-    /// Periodic work between events.
-    pub fn tick(&mut self) {}
+    /// Periodic work between events: collects finished jobs.
+    pub fn tick(&mut self) {
+        self.poll_rescan();
+        self.poll_delete();
+    }
 
     /// Handles a mouse event.
     pub fn on_mouse(&mut self, _ev: crossterm::event::MouseEvent) {}
@@ -193,9 +233,25 @@ impl App {
             self.quit = true;
             return;
         }
-        match self.overlay {
+        if self.job.is_some() {
+            if matches!(key.code, KeyCode::Esc | KeyCode::Char('q')) {
+                self.cancel_rescan();
+            }
+            return;
+        }
+        if self.delete_job.is_some() {
+            return;
+        }
+        match &self.overlay {
             Overlay::None => self.browse_key(key),
             Overlay::Help => self.overlay = Overlay::None,
+            Overlay::Confirm { .. } => self.confirm_key(key),
+            Overlay::TypeConfirm { .. } => self.type_confirm_key(key),
+            Overlay::Summary(_) => {
+                if matches!(key.code, KeyCode::Enter | KeyCode::Esc | KeyCode::Char('q')) {
+                    self.overlay = Overlay::None;
+                }
+            }
         }
     }
 
@@ -214,7 +270,11 @@ impl App {
             KeyCode::Char('a') => self.toggle_apparent(),
             KeyCode::Char('p') => self.show_panel = !self.show_panel,
             KeyCode::Char('?') => self.overlay = Overlay::Help,
-            KeyCode::Char('q') | KeyCode::Esc => self.quit = true,
+            KeyCode::Char(' ') => self.toggle_mark(),
+            KeyCode::Char('u') => self.marks.clear(),
+            KeyCode::Char('d') => self.open_delete(),
+            KeyCode::Char('r') => self.rescan_selected(),
+            KeyCode::Char('q') => self.quit = true,
             _ => {}
         }
     }

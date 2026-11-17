@@ -4,6 +4,7 @@ pub mod app;
 pub mod format;
 pub mod icons;
 pub mod job;
+pub mod ops;
 pub mod render;
 pub mod rows;
 pub mod terminal;

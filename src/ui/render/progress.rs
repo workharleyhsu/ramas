@@ -6,16 +6,21 @@ use ratatui::text::{Line, Span};
 use ratatui::widgets::Paragraph;
 
 use super::widgets::{centered, popup};
+use crate::i18n::Strings;
 use crate::ui::app::Settings;
 use crate::ui::format;
 use crate::ui::job::ScanJob;
+use crate::ui::theme::Theme;
 
 const SPINNER: [&str; 8] = ["⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷"];
 
 /// Draws the progress box centered in `area`.
 pub fn draw(f: &mut Frame, area: Rect, job: &ScanJob, title: &str, settings: &Settings) {
-    let s = settings.strings;
-    let t = &settings.theme;
+    draw_job(f, area, job, title, settings.strings, &settings.theme);
+}
+
+/// Same as [`draw`] with explicit strings and theme.
+pub fn draw_job(f: &mut Frame, area: Rect, job: &ScanJob, title: &str, s: &Strings, t: &Theme) {
     let snap = job.snapshot();
     let elapsed = job.elapsed();
     let w = area.width.saturating_sub(4).clamp(30, 76);

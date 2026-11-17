@@ -75,10 +75,17 @@ fn row_line(app: &App, row: Row, width: usize, selected: bool) -> Line<'static> 
     let prefix_w = prefix.width();
     spans.push(Span::styled(prefix, t.fg(t.connector)));
 
-    let icon = app
-        .icons
-        .node(node.kind, app.is_open(id), node.has(flags::ERROR));
-    let icon_style = if node.has(flags::ERROR) {
+    let marked = app.marks.is_marked(id);
+    let covered = marked || app.marks.covers(&app.tree, id);
+    let icon = if marked {
+        app.icons.mark()
+    } else {
+        app.icons
+            .node(node.kind, app.is_open(id), node.has(flags::ERROR))
+    };
+    let icon_style = if covered {
+        t.fg(t.marked).add_modifier(Modifier::BOLD)
+    } else if node.has(flags::ERROR) {
         t.fg(t.error)
     } else if node.kind == Kind::Dir {
         t.fg(t.dir)
@@ -93,6 +100,7 @@ fn row_line(app: &App, row: Row, width: usize, selected: bool) -> Line<'static> 
     let name = fit(&display_name(app, id), name_w);
     let name_pad = name_w.saturating_sub(name.width());
     let name_style = match node.kind {
+        _ if covered => t.fg(t.marked).add_modifier(Modifier::BOLD),
         Kind::Dir => t.fg(t.dir).add_modifier(Modifier::BOLD),
         Kind::Symlink => t.fg(t.accent),
         _ => t.text(),

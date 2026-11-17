@@ -1,6 +1,7 @@
 //! Drawing of the whole screen from an [`App`].
 
 pub mod detail;
+pub mod dialogs;
 pub mod progress;
 pub mod status;
 pub mod tree;
@@ -35,9 +36,19 @@ pub fn draw(f: &mut Frame, app: &mut App) {
     }
     status::draw(f, status_area, app);
     draw_hint(f, hint, app);
-    match app.overlay {
+    match &app.overlay {
         Overlay::None => {}
         Overlay::Help => widgets::help(f, app),
+        Overlay::Confirm { focus } => dialogs::confirm(f, app, *focus),
+        Overlay::TypeConfirm { input } => dialogs::type_confirm(f, app, input),
+        Overlay::Summary(sum) => dialogs::summary(f, app, sum),
+    }
+    if let Some(job) = &app.job {
+        let settings_title = app.s.rescanning;
+        progress::draw_job(f, f.area(), job, settings_title, app.s, &app.theme);
+    }
+    if app.delete_job.is_some() {
+        dialogs::deleting(f, app);
     }
 }
 

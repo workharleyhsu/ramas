@@ -33,9 +33,9 @@ test) → commit → actualizar este archivo.
 ## Fase 4 — Marcado y borrado en lote
 - [x] 4.1 Conjunto de marcas con deduplicación padre/hijo
 - [x] 4.2 Validación de seguridad y borrado (papelera/permanente) con resultados por ruta
-- [ ] 4.3 Diálogos (confirmación, texto `delete`/`borrar`, resumen), actualización del árbol, `--read-only`
-- [ ] 4.4 `r` reescanear nodo
-- Criterio: tests de papelera, permanente, dedup y rutas prohibidas.
+- [x] 4.3 Diálogos (confirmación, texto `delete`/`borrar`, resumen), actualización del árbol, `--read-only`
+- [x] 4.4 `r` reescanear nodo
+- Criterio: tests de papelera, permanente, dedup y rutas prohibidas. ✔ (fase 4 cerrada; smoke pty de borrado permanente en copia del fixture OK)
 
 ## Fase 5 — Búsqueda y filtros
 - [ ] 5.1 `/` búsqueda difusa, `n/N`, expansión automática
@@ -85,8 +85,13 @@ test) → commit → actualizar este archivo.
 - Fechas en zona local vía `jiff` (ya era dependencia transitiva de `trash`); sin tzdata cae a UTC.
 - Estadísticas del panel (top 10 + desglose) cacheadas por (nodo, métrica, generación del árbol).
 
+- Borrado en hilo aparte (popup "Borrando…"); el árbol se actualiza con `remove_subtree` sin reescanear. "Liberado" usa tamaño en disco.
+- `Espacio` marca y baja una fila (marcado en lote rápido). `u` limpia marcas. `Esc` ya no sale (solo `q`), evita salidas accidentales.
+- Se rechaza también cualquier ancestro de `$HOME` (lo contiene). Rutas con `..` rechazadas.
+- Reescanear la raíz quita el modo importado.
+
 ## Bloqueos
 (ninguno)
 
 ## Próxima tarea
-4.3
+5.1
