@@ -8,30 +8,7 @@ exportación/diff en JSON.
 
 [Read in English](README.md)
 
-```text
-╭ /home/ana ─────────────────────── orden: tamaño · uso en disco ╮╭ Detalle ─────────────────────────────────╮
-│▾ /home/ana                            5.8 GiB 100.0% ██████████││Ruta       /home/ana/.cache/cargo-build   │
-│├── ▾ Videos/                          4.1 GiB  70.7% ███████▏  ││Tipo       directorio                     │
-││   ├── · trip-2025.mkv                3.3 GiB  80.6% ████████  ││En disco   900 MiB                        │
-││   └── · talk.mp4                     820 MiB  19.4% ██        ││Aparente   900 MiB                        │
-│├── ▾ .cache/                          1.1 GiB  19.1% █▉        ││Archivos   1                              │
-││   ├── ▸ cargo-build/                 900 MiB  78.9% ███████▉  ││Subdirs    0                              │
-││   └── · thumbnails.cache             240 MiB  21.1% ██▏       ││Modificado 2025-10-09 05:53               │
-│├── ▸ Music/                           410 MiB   6.9% ▋         ││Permisos   drwxr-xr-x (0755)              │
-│├── ▸ code/                            150 MiB   2.5% ▎         ││                                          │
-│├── ▸ Pictures/                       45.0 MiB   0.8% ▏         ││Archivos más pesados                      │
-│└── · notes.md                        20.5 KiB   0.0%           ││  900 MiB deps.tmp                        │
-│                                                                ││                                          │
-│                                                                ││Por tipo                                  │
-│                                                                ││caché/temp  ████████████   900 MiB      1 │
-│                                                                ││                                          │
-│                                                                ││                                          │
-│                                                                ││                                          │
-│                                                                ││                                          │
-╰────────────────────────────────────────────────────────────────╯╰──────────────────────────────────────────╯
- Total 5.8 GiB · 0 elementos marcados — 0 B a liberar
- ↑↓ mover  ←→ plegar  espacio marcar  d borrar  / buscar  f filtrar  t tipos  ? ayuda  q salir
-```
+![ramas mostrando el uso de disco de / con el panel de detalle](docs/screenshot.png)
 
 ## Funciones
 

@@ -7,30 +7,7 @@ fuzzy search, filters, per-type analysis, themes and JSON export/diff.
 
 [Leer en español](README.es.md)
 
-```text
-╭ /home/ana ──────────────────────────── sort: size · disk usage ╮╭ Details ─────────────────────────────────╮
-│▾ /home/ana                            5.8 GiB 100.0% ██████████││Path     /home/ana/.cache/cargo-build     │
-│├── ▾ Videos/                          4.1 GiB  70.7% ███████▏  ││Type     directory                        │
-││   ├── · trip-2025.mkv                3.3 GiB  80.6% ████████  ││On disk  900 MiB                          │
-││   └── · talk.mp4                     820 MiB  19.4% ██        ││Apparent 900 MiB                          │
-│├── ▾ .cache/                          1.1 GiB  19.1% █▉        ││Files    1                                │
-││   ├── ▸ cargo-build/                 900 MiB  78.9% ███████▉  ││Subdirs  0                                │
-││   └── · thumbnails.cache             240 MiB  21.1% ██▏       ││Modified 2025-10-09 05:53                 │
-│├── ▸ Music/                           410 MiB   6.9% ▋         ││Mode     drwxr-xr-x (0755)                │
-│├── ▸ code/                            150 MiB   2.5% ▎         ││                                          │
-│├── ▸ Pictures/                       45.0 MiB   0.8% ▏         ││Largest files                             │
-│└── · notes.md                        20.5 KiB   0.0%           ││  900 MiB deps.tmp                        │
-│                                                                ││                                          │
-│                                                                ││By type                                   │
-│                                                                ││cache/temp  ████████████   900 MiB      1 │
-│                                                                ││                                          │
-│                                                                ││                                          │
-│                                                                ││                                          │
-│                                                                ││                                          │
-╰────────────────────────────────────────────────────────────────╯╰──────────────────────────────────────────╯
- Total 5.8 GiB · 0 marked — 0 B to free
- ↑↓ move  ←→ fold  space mark  d delete  / search  f filter  t types  ? help  q quit
-```
+![ramas showing disk usage of / with the details panel](docs/screenshot.png)
 
 ## Features
 
