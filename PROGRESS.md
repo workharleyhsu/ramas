@@ -129,5 +129,14 @@ test) → commit → actualizar este archivo.
 ## Bloqueos
 (ninguno)
 
-## Próxima tarea
-10.2
+## Estado final
+Todas las fases (0-10) completas y verificadas: 144 tests, `cargo fmt --check` y
+`cargo clippy --all-targets -- -D warnings` limpios, binario musl estático probado en
+Alpine 3.24 y Debian 13.
+
+Pendientes conocidos (no bloquean ningún criterio):
+- `-x` solo tiene test unitario (un montaje real requiere root).
+- Pico de memoria transitorio del escaneo (~130 MiB extra por millón de entradas).
+- Sin repositorio remoto ni releases publicados.
+
+LOOP_COMPLETE
