@@ -3,6 +3,7 @@ use std::path::PathBuf;
 use anyhow::{Context, Result};
 use clap::{CommandFactory, Parser};
 use ramas::cli::{Cli, IconMode, Lang};
+use ramas::config::Config;
 use ramas::scan::ScanOptions;
 use ramas::ui::{self, app::Settings, icons::Icons, theme::Theme};
 
@@ -16,11 +17,12 @@ fn main() -> Result<()> {
     let root = cli.path.clone().unwrap_or_else(|| PathBuf::from("."));
     let root =
         std::fs::canonicalize(&root).with_context(|| format!("cannot open {}", root.display()))?;
-    let settings = settings(&cli);
+    let config = Config::load(cli.config.as_deref())?;
+    let settings = settings(&cli, &config);
     ui::run(&root, settings)
 }
 
-fn settings(cli: &Cli) -> Settings {
+fn settings(cli: &Cli, config: &Config) -> Settings {
     let icons = if cli.no_icons {
         IconMode::Ascii
     } else {
@@ -40,6 +42,6 @@ fn settings(cli: &Cli) -> Settings {
         scan_opts: ScanOptions {
             one_file_system: cli.one_file_system,
         },
-        classifier: ramas::classify::Classifier::default(),
+        classifier: config.classifier(),
     }
 }

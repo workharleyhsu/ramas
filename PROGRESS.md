@@ -43,7 +43,7 @@ test) → commit → actualizar este archivo.
 - Criterio: tests de coincidencia y expansión automática. ✔ (fase 5 cerrada)
 
 ## Fase 6 — Análisis por tipo
-- [ ] 6.1 Clasificador configurable
+- [x] 6.1 Clasificador configurable
 - [ ] 6.2 Vista `t` y lista por categoría marcable
 - Criterio: categorías correctas sobre árbol de prueba.
 
@@ -97,4 +97,4 @@ test) → commit → actualizar este archivo.
 (ninguno)
 
 ## Próxima tarea
-6.1
+6.2
