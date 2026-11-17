@@ -138,4 +138,11 @@ Pendientes conocidos (no bloquean ningún criterio):
 - `-x` solo tiene test unitario (un montaje real requiere root).
 - Pico de memoria transitorio del escaneo (~130 MiB extra por millón de entradas).
 
+## Publicación (2026-11-17)
+- Repo público <https://github.com/workharleyhsu/ramas> (rama `main`, temas rust/tui/terminal/linux/disk-usage/ncdu). CI de GitHub Actions en verde.
+- Release v0.1.0: tarball versionado y de nombre fijo (+ `.sha256`), `.deb`, `.rpm`, `SHA256SUMS`, armados con `scripts/package.sh`.
+- `install.sh` de una línea (baja de `releases/latest/download`, verifica SHA-256, instala binario y man en `~/.local`). Probado desde GitHub en Debian 13 y Alpine 3.24; `.deb` en Debian y `.rpm` (con `dnf`) en Fedora.
+- Push por HTTPS con el credential helper de `gh` configurado solo en este repo (la clave SSH de esta PC no está en GitHub).
+- Nueva versión: subir `version` en `Cargo.toml` y los nombres de archivo en los dos README, `scripts/package.sh`, commit + push, esperar CI, `git tag -a vX.Y.Z`, push del tag, `gh release create vX.Y.Z dist/*`.
+
 LOOP_COMPLETE
