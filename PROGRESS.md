@@ -49,7 +49,7 @@ test) → commit → actualizar este archivo.
 
 ## Fase 7 — Mouse, temas, iconos, idioma
 - [x] 7.1 Mouse (clic, doble clic, scroll)
-- [ ] 7.2 Temas (4 + custom), `T`, `NO_COLOR`
+- [x] 7.2 Temas (4 + custom), `T`, `NO_COLOR`
 - [ ] 7.3 Iconos Nerd Font / Unicode / ASCII (`--no-icons`)
 - [ ] 7.4 i18n EN/ES (`--lang`, `language`)
 - Criterio: todos los temas renderizan; fallback sin Nerd Font.
@@ -100,4 +100,4 @@ test) → commit → actualizar este archivo.
 (ninguno)
 
 ## Próxima tarea
-7.2
+7.3

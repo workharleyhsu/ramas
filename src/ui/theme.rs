@@ -63,6 +63,153 @@ impl Theme {
         }
     }
 
+    /// Light theme with an explicit light background.
+    pub fn light() -> Self {
+        Theme {
+            name: "light".into(),
+            color: true,
+            fg: Color::Rgb(0x2e, 0x34, 0x40),
+            bg: Color::Rgb(0xfa, 0xfa, 0xf7),
+            dim: Color::Rgb(0x8a, 0x8f, 0x98),
+            accent: Color::Rgb(0x1f, 0x6f, 0xb2),
+            border: Color::Rgb(0xb8, 0xbe, 0xc8),
+            connector: Color::Rgb(0xa0, 0xa6, 0xb0),
+            dir: Color::Rgb(0x23, 0x5a, 0x97),
+            selected_fg: Color::Rgb(0x10, 0x10, 0x10),
+            selected_bg: Color::Rgb(0xd6, 0xe4, 0xf5),
+            size: Color::Rgb(0x9a, 0x5b, 0x00),
+            marked: Color::Rgb(0x8e, 0x3c, 0xa8),
+            error: Color::Rgb(0xc0, 0x29, 0x2b),
+            warn: Color::Rgb(0xb3, 0x5c, 0x00),
+            bar_low: Color::Rgb(0x4c, 0x9a, 0x2a),
+            bar_mid: Color::Rgb(0xd4, 0x9b, 0x00),
+            bar_high: Color::Rgb(0xd0, 0x3a, 0x2f),
+            status_fg: Color::Rgb(0xfa, 0xfa, 0xf7),
+            status_bg: Color::Rgb(0x3b, 0x4a, 0x5e),
+            grew: Color::Rgb(0xc0, 0x29, 0x2b),
+            shrank: Color::Rgb(0x2f, 0x85, 0x2f),
+            new: Color::Rgb(0x1f, 0x6f, 0xb2),
+            matched: Color::Rgb(0xc2, 0x4f, 0x00),
+        }
+    }
+
+    /// Maximum contrast using the 16 basic terminal colors.
+    pub fn high_contrast() -> Self {
+        Theme {
+            name: "high-contrast".into(),
+            color: true,
+            fg: Color::White,
+            bg: Color::Black,
+            dim: Color::Gray,
+            accent: Color::LightCyan,
+            border: Color::White,
+            connector: Color::Gray,
+            dir: Color::LightCyan,
+            selected_fg: Color::Black,
+            selected_bg: Color::LightYellow,
+            size: Color::LightYellow,
+            marked: Color::LightMagenta,
+            error: Color::LightRed,
+            warn: Color::LightYellow,
+            bar_low: Color::LightGreen,
+            bar_mid: Color::LightYellow,
+            bar_high: Color::LightRed,
+            status_fg: Color::Black,
+            status_bg: Color::White,
+            grew: Color::LightRed,
+            shrank: Color::LightGreen,
+            new: Color::LightCyan,
+            matched: Color::LightYellow,
+        }
+    }
+
+    /// Warm retro palette.
+    pub fn gruvbox() -> Self {
+        Theme {
+            name: "gruvbox".into(),
+            color: true,
+            fg: Color::Rgb(0xeb, 0xdb, 0xb2),
+            bg: Color::Rgb(0x28, 0x28, 0x28),
+            dim: Color::Rgb(0x92, 0x83, 0x74),
+            accent: Color::Rgb(0xfa, 0xbd, 0x2f),
+            border: Color::Rgb(0x50, 0x49, 0x45),
+            connector: Color::Rgb(0x66, 0x5c, 0x54),
+            dir: Color::Rgb(0x83, 0xa5, 0x98),
+            selected_fg: Color::Rgb(0xfb, 0xf1, 0xc7),
+            selected_bg: Color::Rgb(0x50, 0x49, 0x45),
+            size: Color::Rgb(0xfe, 0x80, 0x19),
+            marked: Color::Rgb(0xd3, 0x86, 0x9b),
+            error: Color::Rgb(0xfb, 0x49, 0x34),
+            warn: Color::Rgb(0xfe, 0x80, 0x19),
+            bar_low: Color::Rgb(0xb8, 0xbb, 0x26),
+            bar_mid: Color::Rgb(0xfa, 0xbd, 0x2f),
+            bar_high: Color::Rgb(0xfb, 0x49, 0x34),
+            status_fg: Color::Rgb(0x28, 0x28, 0x28),
+            status_bg: Color::Rgb(0xa8, 0x99, 0x84),
+            grew: Color::Rgb(0xfb, 0x49, 0x34),
+            shrank: Color::Rgb(0xb8, 0xbb, 0x26),
+            new: Color::Rgb(0x83, 0xa5, 0x98),
+            matched: Color::Rgb(0xfa, 0xbd, 0x2f),
+        }
+    }
+
+    /// Names of the built-in themes, in `T` cycle order.
+    pub const BUILTIN: [&'static str; 4] = ["dark", "light", "high-contrast", "gruvbox"];
+
+    /// Built-in theme by name.
+    pub fn builtin(name: &str) -> Option<Self> {
+        match name {
+            "dark" => Some(Self::dark()),
+            "light" => Some(Self::light()),
+            "high-contrast" => Some(Self::high_contrast()),
+            "gruvbox" => Some(Self::gruvbox()),
+            _ => None,
+        }
+    }
+
+    /// Custom theme: `base` key picks the starting theme (default dark), every
+    /// other key overrides one color (`#rrggbb`, a color name or an index).
+    pub fn custom(spec: &std::collections::BTreeMap<String, String>) -> Result<Self, String> {
+        let base = spec.get("base").map_or("dark", String::as_str);
+        let mut t = Self::builtin(base).ok_or_else(|| format!("unknown base theme {base:?}"))?;
+        t.name = "custom".into();
+        for (key, value) in spec {
+            if key == "base" {
+                continue;
+            }
+            let color: Color = value
+                .parse()
+                .map_err(|_| format!("invalid color {value:?} for {key:?}"))?;
+            let slot = match key.as_str() {
+                "fg" => &mut t.fg,
+                "bg" => &mut t.bg,
+                "dim" => &mut t.dim,
+                "accent" => &mut t.accent,
+                "border" => &mut t.border,
+                "connector" => &mut t.connector,
+                "dir" => &mut t.dir,
+                "selected_fg" => &mut t.selected_fg,
+                "selected_bg" => &mut t.selected_bg,
+                "size" => &mut t.size,
+                "marked" => &mut t.marked,
+                "error" => &mut t.error,
+                "warn" => &mut t.warn,
+                "bar_low" => &mut t.bar_low,
+                "bar_mid" => &mut t.bar_mid,
+                "bar_high" => &mut t.bar_high,
+                "status_fg" => &mut t.status_fg,
+                "status_bg" => &mut t.status_bg,
+                "grew" => &mut t.grew,
+                "shrank" => &mut t.shrank,
+                "new" => &mut t.new,
+                "matched" => &mut t.matched,
+                other => return Err(format!("unknown theme key {other:?}")),
+            };
+            *slot = color;
+        }
+        Ok(t)
+    }
+
     /// Strips colors (for `NO_COLOR`), keeping the name.
     pub fn without_color(mut self) -> Self {
         self.color = false;
@@ -151,6 +298,46 @@ mod tests {
         assert_eq!(t.gradient(0.0), t.bar_low);
         assert_eq!(t.gradient(0.5), t.bar_mid);
         assert_eq!(t.gradient(1.0), t.bar_high);
+    }
+
+    #[test]
+    fn builtins_exist_and_differ() {
+        let themes: Vec<Theme> = Theme::BUILTIN
+            .iter()
+            .map(|n| Theme::builtin(n).unwrap())
+            .collect();
+        for (i, a) in themes.iter().enumerate() {
+            assert_eq!(a.name, Theme::BUILTIN[i]);
+            for b in &themes[i + 1..] {
+                assert_ne!(a, b);
+            }
+        }
+        assert!(Theme::builtin("nope").is_none());
+    }
+
+    #[test]
+    fn custom_theme_overrides_colors() {
+        let mut spec = std::collections::BTreeMap::new();
+        spec.insert("base".to_string(), "light".to_string());
+        spec.insert("fg".to_string(), "#112233".to_string());
+        spec.insert("selected_bg".to_string(), "blue".to_string());
+        let t = Theme::custom(&spec).unwrap();
+        assert_eq!(t.name, "custom");
+        assert_eq!(t.fg, Color::Rgb(0x11, 0x22, 0x33));
+        assert_eq!(t.selected_bg, Color::Blue);
+        assert_eq!(t.bg, Theme::light().bg);
+        spec.insert("fg".to_string(), "notacolor".to_string());
+        assert!(Theme::custom(&spec).is_err());
+        let mut bad = std::collections::BTreeMap::new();
+        bad.insert("background".to_string(), "#000000".to_string());
+        assert!(Theme::custom(&bad).is_err());
+    }
+
+    #[test]
+    fn named_colors_gradient_steps() {
+        let t = Theme::high_contrast();
+        assert_eq!(t.gradient(0.1), t.bar_low);
+        assert_eq!(t.gradient(0.9), t.bar_high);
     }
 
     #[test]

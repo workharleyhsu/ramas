@@ -21,6 +21,10 @@ pub const PANEL_MIN_WIDTH: u16 = 70;
 
 /// Draws everything.
 pub fn draw(f: &mut Frame, app: &mut App) {
+    f.render_widget(
+        ratatui::widgets::Block::new().style(app.theme.text()),
+        f.area(),
+    );
     let [main, status_area, hint] = Layout::vertical([
         Constraint::Min(3),
         Constraint::Length(1),
@@ -129,5 +133,65 @@ pub(crate) mod test_util {
                     .collect::<String>()
             })
             .collect()
+    }
+}
+
+#[cfg(test)]
+mod theme_tests {
+    use super::test_util::render;
+    use crate::ui::app::test_util::*;
+    use crate::ui::theme::Theme;
+    use ratatui::Terminal;
+    use ratatui::backend::TestBackend;
+
+    #[test]
+    fn every_theme_renders_every_screen() {
+        for name in Theme::BUILTIN {
+            let theme = Theme::builtin(name).unwrap();
+            for keys in ["", "?", "d", "t", "f", "/a"] {
+                let mut a = app();
+                a.theme = theme.clone();
+                press(&mut a, "jl ");
+                press(&mut a, keys);
+                let body = render(&mut a, 100, 30).join("\n");
+                assert!(body.contains("Total"), "{name} {keys}: {body}");
+            }
+            // The background color of the theme reaches the cells.
+            let mut app = app();
+            app.theme = theme;
+            let mut term = Terminal::new(TestBackend::new(80, 20)).unwrap();
+            term.draw(|f| super::draw(f, &mut app)).unwrap();
+            let buf = term.backend().buffer();
+            assert_eq!(buf[(79, 19)].bg, app.theme.bg, "{name}");
+        }
+    }
+
+    #[test]
+    fn shift_t_cycles_themes() {
+        let mut app = app();
+        let mut seen = vec![app.theme.name.clone()];
+        for _ in 0..4 {
+            press(&mut app, "T");
+            seen.push(app.theme.name.clone());
+        }
+        assert_eq!(seen, ["dark", "light", "high-contrast", "gruvbox", "dark"]);
+        assert_eq!(app.message.as_deref(), Some("Theme: dark"));
+    }
+
+    #[test]
+    fn no_color_renders_without_colors() {
+        let mut app = app();
+        app.theme = Theme::dark().without_color();
+        press(&mut app, "j");
+        let mut term = Terminal::new(TestBackend::new(100, 20)).unwrap();
+        term.draw(|f| super::draw(f, &mut app)).unwrap();
+        let buf = term.backend().buffer();
+        for y in 0..20 {
+            for x in 0..100 {
+                let c = &buf[(x, y)];
+                assert_eq!(c.fg, ratatui::style::Color::Reset, "fg at {x},{y}");
+                assert_eq!(c.bg, ratatui::style::Color::Reset, "bg at {x},{y}");
+            }
+        }
     }
 }

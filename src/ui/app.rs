@@ -24,6 +24,8 @@ pub struct Settings {
     pub imported: bool,
     pub strings: &'static Strings,
     pub theme: Theme,
+    /// Themes cycled by `T` (the active one included).
+    pub themes: Vec<Theme>,
     pub icons: Icons,
     pub scan_opts: ScanOptions,
     pub classifier: Classifier,
@@ -123,6 +125,7 @@ pub struct App {
     pub quit: bool,
     pub s: &'static Strings,
     pub theme: Theme,
+    pub themes: Vec<Theme>,
     pub icons: Icons,
     pub message: Option<String>,
     pub areas: Areas,
@@ -177,6 +180,7 @@ impl App {
             quit: false,
             s: settings.strings,
             theme: settings.theme,
+            themes: settings.themes,
             icons: settings.icons,
             message: None,
             areas: Areas::default(),
@@ -339,6 +343,7 @@ impl App {
             KeyCode::Char('N') => self.next_hit(-1),
             KeyCode::Char('f') => self.open_filters(),
             KeyCode::Char('t') => self.open_types(),
+            KeyCode::Char('T') => self.cycle_theme(),
             KeyCode::Esc => self.search = None,
             KeyCode::Char('q') => self.quit = true,
             _ => {}
@@ -444,6 +449,20 @@ impl App {
         self.rebuild_rows(id);
     }
 
+    /// `T`: switches to the next theme.
+    pub fn cycle_theme(&mut self) {
+        if self.themes.is_empty() {
+            return;
+        }
+        let i = self
+            .themes
+            .iter()
+            .position(|t| t.name == self.theme.name)
+            .map_or(0, |i| (i + 1) % self.themes.len());
+        self.theme = self.themes[i].clone();
+        self.message = Some(format!("{}: {}", self.s.theme, self.theme.name));
+    }
+
     fn cycle_sort(&mut self) {
         self.sort = self.sort.next();
         self.resort();
@@ -506,6 +525,10 @@ pub(crate) mod test_util {
             imported: false,
             strings: &crate::i18n::EN,
             theme: Theme::dark(),
+            themes: Theme::BUILTIN
+                .iter()
+                .filter_map(|n| Theme::builtin(n))
+                .collect(),
             icons: Icons {
                 mode: IconMode::Unicode,
             },
