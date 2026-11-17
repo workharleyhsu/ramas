@@ -13,8 +13,11 @@ test) → commit → actualizar este archivo.
 - [x] 1.2 Walker paralelo: tamaños disco/aparente, no seguir symlinks, errores por nodo
 - [x] 1.3 Hard links una vez, `-x`, salto de pseudo-FS
 - [x] 1.4 Progreso (atómicos) y cancelación
-- [ ] 1.5 Benchmark simple (`examples/bench_scan.rs`)
-- Criterio: tests contra árboles temporales con tamaños conocidos; benchmark anotado.
+- [x] 1.5 Benchmark simple (`examples/bench_scan.rs`)
+  - 2026-11-17, `/usr` (398 737 entradas, btrfs, NVMe): frío 19.9 s; caliente 0.17-0.20 s
+    (~2M entradas/s). `du -sx /usr` caliente: 0.63 s. Orden por tamaño: 0.05 s.
+    Arena ~48 MiB (capacidad del Vec; ~72 B/nodo + nombres). Conteo = `os.walk` + raíz.
+- Criterio: tests contra árboles temporales con tamaños conocidos; benchmark anotado. ✔ (fase 1 cerrada)
 
 ## Fase 2 — TUI mínima
 - [ ] 2.1 Terminal guard + panic hook, loop de eventos, hilo de escaneo, pantalla de progreso
@@ -77,4 +80,4 @@ test) → commit → actualizar este archivo.
 (ninguno)
 
 ## Próxima tarea
-1.5
+2.1

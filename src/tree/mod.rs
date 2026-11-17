@@ -192,6 +192,13 @@ impl Tree {
         self.nodes.is_empty()
     }
 
+    /// Approximate heap footprint of the arena in bytes.
+    pub fn mem_bytes(&self) -> usize {
+        self.nodes.capacity() * std::mem::size_of::<Node>()
+            + self.names.capacity()
+            + self.devs.capacity() * 8
+    }
+
     /// Number of live nodes.
     pub fn live(&self) -> usize {
         self.nodes.len() - self.removed
