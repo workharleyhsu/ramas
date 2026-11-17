@@ -243,3 +243,45 @@ mod icon_tests {
         assert!(!ascii.contains('█') && !ascii.contains('├'), "{ascii}");
     }
 }
+
+#[cfg(test)]
+mod i18n_tests {
+    use super::test_util::render;
+    use crate::ui::app::test_util::*;
+
+    #[test]
+    fn spanish_ui_end_to_end() {
+        let mut app = app();
+        app.s = &crate::i18n::ES;
+        press(&mut app, "j");
+        let body = render(&mut app, 130, 30).join("\n");
+        assert!(body.contains("Detalle"), "{body}");
+        assert!(body.contains("orden: tamaño · uso en disco"), "{body}");
+        assert!(
+            body.contains("0 elementos marcados — 0 B a liberar"),
+            "{body}"
+        );
+        assert!(body.contains("q salir"), "{body}");
+        assert!(body.contains("Archivos más pesados"), "{body}");
+        press(&mut app, "?");
+        let body = render(&mut app, 130, 30).join("\n");
+        assert!(
+            body.contains("Teclas") && body.contains("ciclar orden"),
+            "{body}"
+        );
+        press(&mut app, "x");
+        press(&mut app, "s");
+        let body = render(&mut app, 130, 30).join("\n");
+        assert!(body.contains("orden: nombre"), "{body}");
+    }
+
+    #[test]
+    fn english_is_default() {
+        let mut app = app();
+        let body = render(&mut app, 130, 30).join("\n");
+        assert!(
+            body.contains("Details") && body.contains("q quit"),
+            "{body}"
+        );
+    }
+}

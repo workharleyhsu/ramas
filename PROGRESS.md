@@ -51,8 +51,8 @@ test) → commit → actualizar este archivo.
 - [x] 7.1 Mouse (clic, doble clic, scroll)
 - [x] 7.2 Temas (4 + custom), `T`, `NO_COLOR`
 - [x] 7.3 Iconos Nerd Font / Unicode / ASCII (`--no-icons`)
-- [ ] 7.4 i18n EN/ES (`--lang`, `language`)
-- Criterio: todos los temas renderizan; fallback sin Nerd Font.
+- [x] 7.4 i18n EN/ES (`--lang`, `language`)
+- Criterio: todos los temas renderizan; fallback sin Nerd Font. ✔ (fase 7 cerrada)
 
 ## Fase 8 — Exportar / importar / diff
 - [ ] 8.1 `--export`, `--import`, tecla `e`
@@ -96,8 +96,12 @@ test) → commit → actualizar este archivo.
 - Vista `t`: lista hasta 500 archivos por categoría; `Espacio` marca, `d` abre el mismo diálogo de borrado.
 - Incidente: el commit de fase 5 entró con un test roto (un `sed` no aplicó y la cadena `&&` cortó antes del CI). Arreglado en 73b7b5e; `scripts/ci.sh` ahora devuelve el código de salida real y los commits se encadenan a él.
 
+- Iconos: Unicode por defecto; `nerd` opcional; `ascii` (`--no-icons`) también cambia bordes, barras (`#`) y spinner. Test: sin glifos de uso privado (U+E000–F8FF) fuera de modo nerd.
+- Temas con fondo explícito (light, high-contrast, gruvbox) pintan todo el frame; dark usa el fondo de la terminal. `NO_COLOR` no vacío = sin colores (solo modificadores).
+- Prioridad de opciones: flag CLI > config TOML > valor por defecto.
+
 ## Bloqueos
 (ninguno)
 
 ## Próxima tarea
-7.4
+8.1
