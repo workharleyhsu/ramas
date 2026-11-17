@@ -7,6 +7,7 @@ pub mod actions;
 pub mod cli;
 pub mod config;
 pub mod export;
+pub mod i18n;
 pub mod scan;
 pub mod tree;
 pub mod ui;

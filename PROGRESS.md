@@ -20,10 +20,10 @@ test) → commit → actualizar este archivo.
 - Criterio: tests contra árboles temporales con tamaños conocidos; benchmark anotado. ✔ (fase 1 cerrada)
 
 ## Fase 2 — TUI mínima
-- [ ] 2.1 Terminal guard + panic hook, loop de eventos, hilo de escaneo, pantalla de progreso
-- [ ] 2.2 Vista aplanada (filas visibles), panel de árbol con conectores, barras gradiente
-- [ ] 2.3 Navegación (flechas, hjkl, PgUp/PgDn/Home/End, Enter), `s`, `a`, `q`
-- Criterio: navegación verificada con `TestBackend`.
+- [x] 2.1 Terminal guard + panic hook, loop de eventos, hilo de escaneo, pantalla de progreso
+- [x] 2.2 Vista aplanada (filas visibles), panel de árbol con conectores, barras gradiente
+- [x] 2.3 Navegación (flechas, hjkl, PgUp/PgDn/Home/End, Enter), `s`, `a`, `q`
+- Criterio: navegación verificada con `TestBackend`. ✔ (fase 2 cerrada; smoke pty OK, terminal restaurada)
 
 ## Fase 3 — Panel lateral y barra de estado
 - [ ] 3.1 Panel de detalle (ruta, tamaños, conteos, mtime, permisos, top 10, desglose)
@@ -76,8 +76,13 @@ test) → commit → actualizar este archivo.
 - Hard link duplicado: tamaño 0 en el árbol, flag HARDLINK; el primero en orden DFS se lleva el tamaño.
 - `-x`: no se testea con un montaje real (requiere root); test unitario de `skip_flag`.
 
+- 2.1-2.3 en un commit: el loop, la vista y la navegación dependen entre sí.
+- `i18n.rs` creado ya en fase 2 (tablas EN/ES completas) para no reescribir cadenas después; 7.4 solo cablea `--lang`/config.
+- Smoke TUI: `drive.py` (pty.fork + pyte en venv del scratchpad), `script` no está instalado.
+- Tamaños en unidades binarias (KiB, MiB, GiB).
+
 ## Bloqueos
 (ninguno)
 
 ## Próxima tarea
-2.1
+3.1

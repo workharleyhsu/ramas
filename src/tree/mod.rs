@@ -234,6 +234,11 @@ impl Tree {
         link(self.node(id).parent)
     }
 
+    /// Next sibling of a node in the current order.
+    pub fn next_sibling(&self, id: NodeId) -> Option<NodeId> {
+        link(self.node(id).next_sibling)
+    }
+
     /// Whether `id` has at least one child.
     pub fn has_children(&self, id: NodeId) -> bool {
         self.node(id).first_child != NONE
