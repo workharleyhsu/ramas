@@ -1,0 +1,115 @@
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.TH ramas 1  "ramas 0.1.0" 
+.SH NAME
+ramas \- Interactive tree\-style disk usage analyzer for the Linux terminal
+.SH SYNOPSIS
+\fBramas\fR [\fB\-x\fR|\fB\-\-one\-file\-system\fR] [\fB\-\-apparent\fR] [\fB\-\-read\-only\fR] [\fB\-\-export\fR] [\fB\-\-import\fR] [\fB\-\-diff\fR] [\fB\-\-icons\fR] [\fB\-\-no\-icons\fR] [\fB\-\-theme\fR] [\fB\-\-lang\fR] [\fB\-\-config\fR] [\fB\-h\fR|\fB\-\-help\fR] [\fB\-V\fR|\fB\-\-version\fR] [\fIPATH\fR] 
+.SH DESCRIPTION
+Interactive tree\-style disk usage analyzer.
+.PP
+Scans PATH (default: current directory) and shows its disk usage as an expandable tree with a detail panel, batch deletion, search, filters, per\-type analysis and JSON export/diff.
+.SH OPTIONS
+.TP
+\fB\-x\fR, \fB\-\-one\-file\-system\fR
+Do not cross filesystem boundaries
+.TP
+\fB\-\-apparent\fR
+Start showing apparent sizes instead of disk usage
+.TP
+\fB\-\-read\-only\fR
+Disable every delete action
+.TP
+\fB\-\-export\fR \fI<FILE>\fR
+Scan, write the result to FILE as JSON and exit without the TUI
+.TP
+\fB\-\-import\fR \fI<FILE>\fR
+Open a previously exported scan instead of scanning (delete disabled)
+.TP
+\fB\-\-diff\fR \fI<FILE>\fR
+Compare the scan against an earlier export and highlight changes
+.TP
+\fB\-\-icons\fR \fI<MODE>\fR
+Icon set (overrides the config file)
+.br
+
+.br
+\fIPossible values:\fR
+.RS 14
+.IP \(bu 2
+nerd: Nerd Font glyphs (needs a patched font)
+.IP \(bu 2
+unicode: Plain Unicode symbols that render in any modern font
+.IP \(bu 2
+ascii: Pure ASCII markers
+.RE
+.TP
+\fB\-\-no\-icons\fR
+Use plain ASCII markers instead of icons (same as \-\-icons ascii)
+.TP
+\fB\-\-theme\fR \fI<NAME>\fR
+Color theme: dark, light, high\-contrast, gruvbox or custom
+.TP
+\fB\-\-lang\fR \fI<LANG>\fR
+UI language
+.br
+
+.br
+\fIPossible values:\fR
+.RS 14
+.IP \(bu 2
+en: English
+.IP \(bu 2
+es: Spanish
+.RE
+.TP
+\fB\-\-config\fR \fI<FILE>\fR
+Config file path (default: ~/.config/ramas/config.toml)
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print help (see a summary with \*(Aq\-h\*(Aq)
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+Print version
+.TP
+[\fIPATH\fR]
+Directory to scan
+.SH EXTRA
+KEYS:
+  Up/Down, k/j        move              Right/l, Left/h   expand / collapse
+  Enter               toggle            PgUp PgDn Home End  page / first / last
+  Space               mark / unmark     d                 delete marked (confirm)
+  u                   clear marks       r                 rescan selected
+  / n N               search, next/prev f                 filters
+  t                   type analysis     s                 cycle sort
+  a                   apparent/disk     p                 toggle side panel
+  T                   cycle theme       e                 export JSON
+  ?                   help              q                 quit
+  Mouse: click selects, double click expands, wheel scrolls.
+
+DELETING:
+  Marked items go to the trash or are removed permanently; the dialog starts
+  on Cancel and permanent deletion asks you to type a confirmation word.
+  Paths outside the scanned root, /, $HOME (and its parents), the scan root
+  and entries changed since the scan are always refused. Symlinks are
+  removed, never followed. \-\-read\-only and imported scans disable deletion.
+
+CONFIGURATION (~/.config/ramas/config.toml, all keys optional):
+  language = "es"              # en | es
+  icons = "nerd"               # nerd | unicode | ascii
+  theme = "gruvbox"            # dark | light | high\-contrast | gruvbox | custom
+  [categories]                  # replace a built\-in list or add a category
+  models = ["gguf", "safetensors"]
+  [custom_theme]                # base = "dark", then fg, bg, accent, ... = "#rrggbb"
+  base = "dark"
+  accent = "#ff8800"
+  NO_COLOR disables colors.
+
+EXAMPLES:
+  ramas                         scan the current directory
+  ramas \-x /                    whole root filesystem, staying on it
+  ramas \-\-export home.json ~    scan without the TUI and save the result
+  ramas \-\-import home.json      browse a saved scan (deletion disabled)
+  ramas \-\-diff home.json ~      highlight what grew, shrank or is new
+.SH VERSION
+v0.1.0

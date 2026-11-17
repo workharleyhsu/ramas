@@ -81,8 +81,14 @@ test) → commit → actualizar este archivo.
   - Alpine 3.24 y Debian 13 (trixie) vía docker (imágenes locales): `--version`, `--export`, `--diff`
     y la TUI sobre `/etc` funcionan. Con podman el pull de debian falló por credenciales guardadas
     de docker.io; se usó docker, que la tenía local.
-- [ ] 10.2 README (EN/ES), `install.sh`, `--help`, página man
-- Criterio: `ldd` estático y arranque en Alpine y Debian.
+- [x] 10.2 README (EN/ES), `install.sh`, `--help`, página man
+  - `README.md` (inglés) + `README.es.md` (español), capturas generadas con `examples/screenshots.rs`
+    (TestBackend, árbol sintético determinista), tabla de teclas, seguridad, config, formato.
+  - `install.sh [--prefix DIR] [--uninstall]`: usa `dist/ramas` o compila (musl si está el target).
+    Probado en un prefijo del scratchpad.
+  - `--help` con teclas, reglas de borrado, config y ejemplos; `man/ramas.1` generado con
+    `ramas --man` y un test que falla si quedó desactualizado.
+- Criterio: `ldd` estático y arranque en Alpine y Debian. ✔ (fase 10 cerrada)
 
 ## Decisiones
 - UI en inglés por defecto, español con `--lang es` (decisión del usuario).

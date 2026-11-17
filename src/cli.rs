@@ -27,13 +27,59 @@ pub enum Lang {
     Es,
 }
 
+const AFTER_HELP: &str = "\
+KEYS:
+  Up/Down, k/j        move              Right/l, Left/h   expand / collapse
+  Enter               toggle            PgUp PgDn Home End  page / first / last
+  Space               mark / unmark     d                 delete marked (confirm)
+  u                   clear marks       r                 rescan selected
+  / n N               search, next/prev f                 filters
+  t                   type analysis     s                 cycle sort
+  a                   apparent/disk     p                 toggle side panel
+  T                   cycle theme       e                 export JSON
+  ?                   help              q                 quit
+  Mouse: click selects, double click expands, wheel scrolls.
+
+DELETING:
+  Marked items go to the trash or are removed permanently; the dialog starts
+  on Cancel and permanent deletion asks you to type a confirmation word.
+  Paths outside the scanned root, /, $HOME (and its parents), the scan root
+  and entries changed since the scan are always refused. Symlinks are
+  removed, never followed. --read-only and imported scans disable deletion.
+
+CONFIGURATION (~/.config/ramas/config.toml, all keys optional):
+  language = \"es\"              # en | es
+  icons = \"nerd\"               # nerd | unicode | ascii
+  theme = \"gruvbox\"            # dark | light | high-contrast | gruvbox | custom
+  [categories]                  # replace a built-in list or add a category
+  models = [\"gguf\", \"safetensors\"]
+  [custom_theme]                # base = \"dark\", then fg, bg, accent, ... = \"#rrggbb\"
+  base = \"dark\"
+  accent = \"#ff8800\"
+  NO_COLOR disables colors.
+
+EXAMPLES:
+  ramas                         scan the current directory
+  ramas -x /                    whole root filesystem, staying on it
+  ramas --export home.json ~    scan without the TUI and save the result
+  ramas --import home.json      browse a saved scan (deletion disabled)
+  ramas --diff home.json ~      highlight what grew, shrank or is new
+";
+
 /// Interactive tree-style disk usage analyzer.
 ///
 /// Scans PATH (default: current directory) and shows its disk usage as an
 /// expandable tree with a detail panel, batch deletion, search, filters,
 /// per-type analysis and JSON export/diff.
 #[derive(Debug, Parser)]
-#[command(name = "ramas", version, about, long_about)]
+#[command(
+    name = "ramas",
+    version,
+    about,
+    long_about,
+    after_long_help = AFTER_HELP,
+    after_help = "Run `ramas --help` for keys, configuration and examples."
+)]
 pub struct Cli {
     /// Directory to scan.
     pub path: Option<PathBuf>,
@@ -95,6 +141,20 @@ mod tests {
     #[test]
     fn cli_definition_is_consistent() {
         Cli::command().debug_assert();
+    }
+
+    #[test]
+    fn man_page_in_repo_is_up_to_date() {
+        let mut out = Vec::new();
+        clap_mangen::Man::new(Cli::command())
+            .render(&mut out)
+            .unwrap();
+        let committed = std::fs::read(concat!(env!("CARGO_MANIFEST_DIR"), "/man/ramas.1"))
+            .expect("man/ramas.1 missing: run `cargo run -- --man > man/ramas.1`");
+        assert!(
+            committed == out,
+            "man/ramas.1 is stale: run `cargo run -- --man > man/ramas.1`"
+        );
     }
 
     #[test]
