@@ -1,6 +1,8 @@
 //! Drawing of the whole screen from an [`App`].
 
+pub mod detail;
 pub mod progress;
+pub mod status;
 pub mod tree;
 mod widgets;
 
@@ -16,14 +18,32 @@ pub const PANEL_MIN_WIDTH: u16 = 70;
 
 /// Draws everything.
 pub fn draw(f: &mut Frame, app: &mut App) {
-    let [main, hint] =
-        Layout::vertical([Constraint::Min(3), Constraint::Length(1)]).areas(f.area());
-    tree::draw(f, main, app);
+    let [main, status_area, hint] = Layout::vertical([
+        Constraint::Min(3),
+        Constraint::Length(1),
+        Constraint::Length(1),
+    ])
+    .areas(f.area());
+    if panel_visible(app, main.width) {
+        let [left, right] =
+            Layout::horizontal([Constraint::Percentage(60), Constraint::Percentage(40)])
+                .areas(main);
+        tree::draw(f, left, app);
+        detail::draw(f, right, app);
+    } else {
+        tree::draw(f, main, app);
+    }
+    status::draw(f, status_area, app);
     draw_hint(f, hint, app);
     match app.overlay {
         Overlay::None => {}
         Overlay::Help => widgets::help(f, app),
     }
+}
+
+/// Whether the side panel fits and is enabled.
+pub fn panel_visible(app: &App, width: u16) -> bool {
+    app.show_panel && width >= PANEL_MIN_WIDTH
 }
 
 fn draw_hint(f: &mut Frame, area: Rect, app: &App) {

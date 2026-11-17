@@ -40,5 +40,6 @@ fn settings(cli: &Cli) -> Settings {
         scan_opts: ScanOptions {
             one_file_system: cli.one_file_system,
         },
+        classifier: ramas::classify::Classifier::default(),
     }
 }

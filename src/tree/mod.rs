@@ -252,6 +252,14 @@ impl Tree {
         }
     }
 
+    /// Iterates over all descendants of `id` (not `id` itself), depth first.
+    pub fn descendants(&self, id: NodeId) -> Descendants<'_> {
+        Descendants {
+            tree: self,
+            stack: self.children(id).collect(),
+        }
+    }
+
     /// Iterates from the parent of `id` up to the root.
     pub fn ancestors(&self, id: NodeId) -> impl Iterator<Item = NodeId> + '_ {
         std::iter::successors(self.parent(id), |&p| self.parent(p))
@@ -432,6 +440,22 @@ impl Iterator for Children<'_> {
     fn next(&mut self) -> Option<NodeId> {
         let cur = link(self.next)?;
         self.next = self.tree.node(cur).next_sibling;
+        Some(cur)
+    }
+}
+
+/// Depth-first iterator over a subtree.
+pub struct Descendants<'a> {
+    tree: &'a Tree,
+    stack: Vec<NodeId>,
+}
+
+impl Iterator for Descendants<'_> {
+    type Item = NodeId;
+
+    fn next(&mut self) -> Option<NodeId> {
+        let cur = self.stack.pop()?;
+        self.stack.extend(self.tree.children(cur));
         Some(cur)
     }
 }

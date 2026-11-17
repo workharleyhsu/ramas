@@ -6,6 +6,8 @@ use ratatui::layout::Rect;
 use super::icons::Icons;
 use super::rows::{self, Row};
 use super::theme::Theme;
+use crate::analysis::{self, Stats};
+use crate::classify::Classifier;
 use crate::i18n::Strings;
 use crate::scan::ScanOptions;
 use crate::tree::{NodeId, SortKey, Tree};
@@ -20,6 +22,7 @@ pub struct Settings {
     pub theme: Theme,
     pub icons: Icons,
     pub scan_opts: ScanOptions,
+    pub classifier: Classifier,
 }
 
 /// Modal layer drawn above the tree.
@@ -59,7 +62,16 @@ pub struct App {
     pub read_only: bool,
     pub imported: bool,
     pub scan_opts: ScanOptions,
+    pub classifier: Classifier,
+    /// Bumped on every structural change of the tree.
+    pub generation: u64,
+    /// Free bytes on the scanned filesystem, when known.
+    pub free: Option<u64>,
+    stats_cache: Option<((NodeId, bool, u64), Stats)>,
 }
+
+/// Number of files listed in the detail panel.
+pub const TOP_FILES: usize = 10;
 
 impl App {
     /// Builds the state for a scanned tree: sorted by size, root expanded.
@@ -86,9 +98,40 @@ impl App {
             read_only: settings.read_only,
             imported: settings.imported,
             scan_opts: settings.scan_opts,
+            classifier: settings.classifier,
+            generation: 0,
+            free: None,
+            stats_cache: None,
         };
+        app.refresh_free();
         app.rebuild_rows(NodeId::ROOT);
         app
+    }
+
+    /// Re-reads the free space of the scanned filesystem.
+    pub fn refresh_free(&mut self) {
+        self.free = rustix::fs::statvfs(self.tree.root_path())
+            .ok()
+            .map(|v| v.f_bavail.saturating_mul(v.f_frsize));
+    }
+
+    /// Statistics of the selected node, cached until selection, metric or
+    /// tree change.
+    pub fn selected_stats(&mut self) -> &Stats {
+        let key = (self.selected(), self.apparent, self.generation);
+        let entry = match self.stats_cache.take() {
+            Some((k, s)) if k == key => (k, s),
+            _ => {
+                let s = analysis::stats(&self.tree, key.0, key.1, &self.classifier, TOP_FILES);
+                (key, s)
+            }
+        };
+        &self.stats_cache.insert(entry).1
+    }
+
+    /// Number of marked items and the bytes they free.
+    pub fn marked_summary(&self) -> (usize, u64) {
+        (0, 0)
     }
 
     /// Node under the cursor.
@@ -338,6 +381,7 @@ pub(crate) mod test_util {
                 mode: IconMode::Unicode,
             },
             scan_opts: ScanOptions::default(),
+            classifier: Classifier::default(),
         }
     }
 

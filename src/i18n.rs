@@ -101,6 +101,8 @@ pub struct Strings {
     pub diff_shrank: &'static str,
     pub diff_new: &'static str,
     pub diff_against: &'static str,
+    /// Labels of built-in categories by key.
+    pub categories: &'static [(&'static str, &'static str)],
 }
 
 /// English table.
@@ -211,6 +213,16 @@ pub static EN: Strings = Strings {
     diff_shrank: "shrank",
     diff_new: "new",
     diff_against: "diff vs {path}",
+    categories: &[
+        ("video", "video"),
+        ("image", "images"),
+        ("audio", "audio"),
+        ("documents", "documents"),
+        ("archives", "archives"),
+        ("code", "code"),
+        ("cache", "cache/temp"),
+        ("other", "other"),
+    ],
 };
 
 /// Spanish table.
@@ -321,6 +333,16 @@ pub static ES: Strings = Strings {
     diff_shrank: "se achicó",
     diff_new: "nuevo",
     diff_against: "diff contra {path}",
+    categories: &[
+        ("video", "video"),
+        ("image", "imágenes"),
+        ("audio", "audio"),
+        ("documents", "documentos"),
+        ("archives", "comprimidos"),
+        ("code", "código"),
+        ("cache", "caché/temp"),
+        ("other", "otros"),
+    ],
 };
 
 /// Table for a language.
@@ -328,6 +350,16 @@ pub fn strings(lang: Lang) -> &'static Strings {
     match lang {
         Lang::En => &EN,
         Lang::Es => &ES,
+    }
+}
+
+impl Strings {
+    /// Display label of a category key (custom keys show as-is).
+    pub fn category<'a>(&self, key: &'a str) -> &'a str {
+        self.categories
+            .iter()
+            .find(|(k, _)| *k == key)
+            .map_or(key, |(_, label)| label)
     }
 }
 

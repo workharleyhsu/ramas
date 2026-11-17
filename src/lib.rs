@@ -4,6 +4,8 @@
 //! `main.rs` only wires the CLI to it.
 
 pub mod actions;
+pub mod analysis;
+pub mod classify;
 pub mod cli;
 pub mod config;
 pub mod export;

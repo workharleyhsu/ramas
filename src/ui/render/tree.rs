@@ -281,7 +281,7 @@ mod tests {
         let mut app = app();
         press(&mut app, "jl"); // 6 rows
         app.on_key(key(KeyCode::End));
-        let lines = render(&mut app, 80, 6); // 3 inner rows + hint
+        let lines = render(&mut app, 80, 7); // 3 inner rows + status + hint
         assert!(lines[3].contains("c/"), "{lines:?}");
         assert!(!lines.iter().any(|l| l.contains(" /r ") && l.contains("B ")));
     }

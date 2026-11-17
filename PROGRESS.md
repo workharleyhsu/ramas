@@ -26,9 +26,9 @@ test) → commit → actualizar este archivo.
 - Criterio: navegación verificada con `TestBackend`. ✔ (fase 2 cerrada; smoke pty OK, terminal restaurada)
 
 ## Fase 3 — Panel lateral y barra de estado
-- [ ] 3.1 Panel de detalle (ruta, tamaños, conteos, mtime, permisos, top 10, desglose)
-- [ ] 3.2 Barra de estado (total, libre, marcados, errores) + ayuda contextual + `p` + `?`
-- Criterio: el detalle coincide con el nodo seleccionado.
+- [x] 3.1 Panel de detalle (ruta, tamaños, conteos, mtime, permisos, top 10, desglose)
+- [x] 3.2 Barra de estado (total, libre, marcados, errores) + ayuda contextual + `p` + `?`
+- Criterio: el detalle coincide con el nodo seleccionado. ✔ (fase 3 cerrada)
 
 ## Fase 4 — Marcado y borrado en lote
 - [ ] 4.1 Conjunto de marcas con deduplicación padre/hijo
@@ -81,8 +81,12 @@ test) → commit → actualizar este archivo.
 - Smoke TUI: `drive.py` (pty.fork + pyte en venv del scratchpad), `script` no está instalado.
 - Tamaños en unidades binarias (KiB, MiB, GiB).
 
+- Clasificador (`classify.rs`) adelantado a fase 3 porque el panel necesita el desglose por tipo; 6.1 solo agrega la carga desde TOML. `ts` = código (TypeScript), no video.
+- Fechas en zona local vía `jiff` (ya era dependencia transitiva de `trash`); sin tzdata cae a UTC.
+- Estadísticas del panel (top 10 + desglose) cacheadas por (nodo, métrica, generación del árbol).
+
 ## Bloqueos
 (ninguno)
 
 ## Próxima tarea
-3.1
+4.1

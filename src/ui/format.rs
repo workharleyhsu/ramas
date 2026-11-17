@@ -69,30 +69,20 @@ pub fn mode(mode: u32) -> String {
     format!("{s} ({:04o})", mode & 0o7777)
 }
 
-/// UTC date `YYYY-MM-DD HH:MM` from seconds since the epoch.
+/// Local date `YYYY-MM-DD HH:MM` from seconds since the epoch.
 pub fn date(secs: i64) -> String {
-    let days = secs.div_euclid(86_400);
-    let rem = secs.rem_euclid(86_400);
-    let (y, m, d) = civil_from_days(days);
-    format!(
-        "{y:04}-{m:02}-{d:02} {:02}:{:02} UTC",
-        rem / 3600,
-        rem % 3600 / 60
-    )
+    date_in(secs, jiff::tz::TimeZone::system())
 }
 
-/// Howard Hinnant's days-to-civil algorithm.
-fn civil_from_days(z: i64) -> (i64, u32, u32) {
-    let z = z + 719_468;
-    let era = z.div_euclid(146_097);
-    let doe = z.rem_euclid(146_097);
-    let yoe = (doe - doe / 1460 + doe / 36_524 - doe / 146_096) / 365;
-    let y = yoe + era * 400;
-    let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
-    let mp = (5 * doy + 2) / 153;
-    let d = (doy - (153 * mp + 2) / 5 + 1) as u32;
-    let m = if mp < 10 { mp + 3 } else { mp - 9 } as u32;
-    (if m <= 2 { y + 1 } else { y }, m, d)
+/// Date in a given time zone.
+pub fn date_in(secs: i64, tz: jiff::tz::TimeZone) -> String {
+    match jiff::Timestamp::from_second(secs) {
+        Ok(ts) => ts
+            .to_zoned_datetime(tz)
+            .strftime("%Y-%m-%d %H:%M")
+            .to_string(),
+        Err(_) => "?".into(),
+    }
 }
 
 /// Parses `10M`, `1.5G`, `200k` or a plain byte count (binary multiples).
@@ -135,8 +125,9 @@ mod tests {
     fn modes_and_dates() {
         assert_eq!(mode(0o040755), "drwxr-xr-x (0755)");
         assert_eq!(mode(0o100600), "-rw------- (0600)");
-        assert_eq!(date(0), "1970-01-01 00:00 UTC");
-        assert_eq!(date(1_700_000_000), "2023-11-14 22:13 UTC");
+        let utc = jiff::tz::TimeZone::UTC;
+        assert_eq!(date_in(0, utc.clone()), "1970-01-01 00:00");
+        assert_eq!(date_in(1_700_000_000, utc), "2023-11-14 22:13");
     }
 
     #[test]
