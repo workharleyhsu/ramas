@@ -7,6 +7,7 @@ use ratatui::text::{Line, Span};
 use ratatui::widgets::{Block, Paragraph};
 use unicode_width::{UnicodeWidthChar, UnicodeWidthStr};
 
+use crate::export::diff::Change;
 use crate::tree::{Kind, NodeId, flags};
 use crate::ui::app::App;
 use crate::ui::format;
@@ -14,6 +15,7 @@ use crate::ui::rows::Row;
 
 const SIZE_W: usize = 10;
 const PCT_W: usize = 7;
+const DELTA_W: usize = 11;
 
 /// Draws the tree pane in `area` and records its inner area in the app.
 pub fn draw(f: &mut Frame, area: Rect, app: &mut App) {
@@ -67,7 +69,8 @@ fn row_line(app: &App, row: Row, width: usize, selected: bool) -> Line<'static> 
 
     let bar_w = bar_width(width);
     let pct_w = if width < 36 { 0 } else { PCT_W };
-    let right_w = SIZE_W + pct_w + if bar_w > 0 { bar_w + 1 } else { 0 };
+    let delta_w = if app.diff.is_some() { DELTA_W } else { 0 };
+    let right_w = delta_w + SIZE_W + pct_w + if bar_w > 0 { bar_w + 1 } else { 0 };
 
     let mut spans: Vec<Span<'static>> = Vec::new();
     let prefix = connectors(app, row, width / 2);
@@ -110,6 +113,18 @@ fn row_line(app: &App, row: Row, width: usize, selected: bool) -> Line<'static> 
         spans.push(Span::styled(name, name_style));
     }
     spans.push(Span::raw(" ".repeat(name_pad + 1)));
+    if let Some(diff) = &app.diff {
+        let (text, color) = match diff.change(&app.tree, id, app.apparent) {
+            Change::New => (app.s.diff_new.to_owned(), t.new),
+            Change::Grew(d) => (format!("+{}", format::size(d)), t.grew),
+            Change::Shrank(d) => (format!("-{}", format::size(d)), t.shrank),
+            Change::Same => (String::new(), t.dim),
+        };
+        spans.push(Span::styled(
+            format!("{:>w$}", fit(&text, DELTA_W - 1), w = DELTA_W),
+            t.fg(color),
+        ));
+    }
 
     spans.push(Span::styled(
         format!("{:>w$}", format::size(size), w = SIZE_W),

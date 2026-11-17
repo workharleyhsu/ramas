@@ -11,6 +11,7 @@ use super::theme::Theme;
 use crate::actions::marks::Marks;
 use crate::analysis::{self, Stats};
 use crate::classify::Classifier;
+use crate::export::diff::Diff;
 use crate::filter::Filter;
 use crate::i18n::Strings;
 use crate::scan::ScanOptions;
@@ -29,6 +30,10 @@ pub struct Settings {
     pub icons: Icons,
     pub scan_opts: ScanOptions,
     pub classifier: Classifier,
+    /// Earlier scan to compare against (`--diff`) and its file.
+    pub diff: Option<(Tree, std::path::PathBuf)>,
+    /// When the shown data was scanned (seconds since the epoch).
+    pub scanned_at: i64,
 }
 
 /// Modal layer drawn above the tree.
@@ -147,6 +152,12 @@ pub struct App {
     pub filter_match: Option<Vec<bool>>,
     /// Last left click: time and row, for double-click detection.
     pub last_click: Option<(std::time::Instant, usize)>,
+    /// Comparison against an earlier export.
+    pub diff: Option<Diff>,
+    /// When the data was scanned.
+    pub scanned_at: i64,
+    /// Directory where `e` writes exports.
+    pub export_dir: std::path::PathBuf,
 }
 
 /// Committed or in-progress search.
@@ -198,7 +209,13 @@ impl App {
             filter: Filter::default(),
             filter_match: None,
             last_click: None,
+            diff: None,
+            scanned_at: settings.scanned_at,
+            export_dir: std::path::PathBuf::from("."),
         };
+        if let Some((old, path)) = settings.diff {
+            app.diff = Some(Diff::new(&app.tree, old, path));
+        }
         app.refresh_free();
         app.rebuild_rows(NodeId::ROOT);
         app
@@ -344,6 +361,7 @@ impl App {
             KeyCode::Char('f') => self.open_filters(),
             KeyCode::Char('t') => self.open_types(),
             KeyCode::Char('T') => self.cycle_theme(),
+            KeyCode::Char('e') => self.export_here(),
             KeyCode::Esc => self.search = None,
             KeyCode::Char('q') => self.quit = true,
             _ => {}
@@ -534,6 +552,8 @@ pub(crate) mod test_util {
             },
             scan_opts: ScanOptions::default(),
             classifier: Classifier::default(),
+            diff: None,
+            scanned_at: 0,
         }
     }
 

@@ -245,3 +245,76 @@ fn rescan_of_a_file_is_refused() {
     assert!(!app.busy());
     assert_eq!(app.message.as_deref(), Some(app.s.rescan_not_dir));
 }
+
+#[test]
+fn e_exports_a_reimportable_file() {
+    let (tmp, mut app) = fixture();
+    let out = tempfile::tempdir().unwrap();
+    app.export_dir = out.path().to_path_buf();
+    app.scanned_at = 42;
+    press(&mut app, "e");
+    let msg = app.message.clone().unwrap();
+    assert!(msg.starts_with("Exported to"), "{msg}");
+    let files: Vec<_> = fs::read_dir(out.path()).unwrap().collect();
+    assert_eq!(files.len(), 1);
+    let path = files[0].as_ref().unwrap().path();
+    let name = path.file_name().unwrap().to_string_lossy().into_owned();
+    assert!(
+        name.starts_with("ramas-") && name.ends_with(".json"),
+        "{name}"
+    );
+    let back = crate::export::read_file(&path).unwrap();
+    assert_eq!(back.scanned_at, 42);
+    assert_eq!(back.tree.root().disk, app.tree.root().disk);
+    assert_eq!(back.tree.root_path(), tmp.path().canonicalize().unwrap());
+}
+
+#[test]
+fn diff_highlights_changes_in_tree_and_panel() {
+    let (tmp, app) = fixture();
+    let old = app.tree.clone();
+    fs::write(tmp.path().join("big/b"), vec![1u8; 90_000]).unwrap();
+    fs::write(tmp.path().join("fresh"), vec![1u8; 10]).unwrap();
+    fs::remove_file(tmp.path().join("small")).unwrap();
+    let tree = scan(
+        tmp.path(),
+        &ScanOptions::default(),
+        &Progress::default(),
+        &AtomicBool::new(false),
+    )
+    .unwrap();
+    let mut s = settings();
+    s.diff = Some((old, "before.json".into()));
+    let mut app = App::new(tree, s);
+    let diff = app.diff.as_ref().unwrap();
+    assert_eq!(diff.removed, 1, "small is gone");
+    select(&mut app, "big/b");
+    let body = render(&mut app, 140, 30).join("\n");
+    assert!(body.contains("+"), "{body}");
+    assert!(body.contains("new"), "fresh is new: {body}");
+    assert!(body.contains("diff vs before.json"), "{body}");
+    assert!(body.contains("grew +"), "panel shows the change: {body}");
+}
+
+#[test]
+fn imported_tree_blocks_delete_until_root_rescan() {
+    let (tmp, app) = fixture();
+    let mut buf = Vec::new();
+    crate::export::write(&app.tree, 1, &mut buf).unwrap();
+    let imported = crate::export::read(&buf[..]).unwrap();
+    let mut s = settings();
+    s.imported = true;
+    let mut app = App::new(imported.tree, s);
+    select(&mut app, "small");
+    press(&mut app, " d");
+    assert_eq!(app.overlay, Overlay::None);
+    assert_eq!(app.message.as_deref(), Some(app.s.delete_disabled_import));
+    app.move_to(0);
+    press(&mut app, "r");
+    wait(&mut app);
+    assert!(!app.imported);
+    select(&mut app, "small");
+    press(&mut app, " d");
+    assert!(matches!(app.overlay, Overlay::Confirm { .. }));
+    assert!(tmp.path().join("small").exists());
+}

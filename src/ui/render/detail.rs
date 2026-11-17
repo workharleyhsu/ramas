@@ -73,6 +73,23 @@ pub fn lines(app: &mut App, width: usize) -> Vec<Line<'static>> {
         out.push(kv(s.files, node.files.to_string(), t.text()));
         out.push(kv(s.subdirs, node.dirs.to_string(), t.text()));
     }
+    if let Some(diff) = &app.diff {
+        use crate::export::diff::Change;
+        let (text, color) = match diff.change(&app.tree, id, app.apparent) {
+            Change::New => (s.diff_new.to_owned(), t.new),
+            Change::Grew(d) => (format!("{} +{}", s.diff_grew, format::size(d)), t.grew),
+            Change::Shrank(d) => (format!("{} -{}", s.diff_shrank, format::size(d)), t.shrank),
+            Change::Same => ("=".to_owned(), t.dim),
+        };
+        let was = diff
+            .before(id, app.apparent)
+            .map(|b| format!(" ({})", format::size(b)))
+            .unwrap_or_default();
+        out.push(Line::from(vec![
+            Span::styled(format!("{:<lw$}", "Δ"), t.dimmed()),
+            Span::styled(format!("{text}{was}"), t.fg(color)),
+        ]));
+    }
     out.push(kv(s.modified, format::date(node.mtime), t.text()));
     out.push(kv(s.permissions, format::mode(node.mode), t.text()));
     for (flag, text, color) in [

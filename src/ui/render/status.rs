@@ -39,6 +39,17 @@ pub fn draw(f: &mut Frame, area: Rect, app: &App) {
             },
         ));
     }
+    if let Some(diff) = &app.diff {
+        let name = diff.against.file_name().map_or_else(
+            || diff.against.display().to_string(),
+            |n| n.to_string_lossy().into_owned(),
+        );
+        spans.push(Span::raw(" · "));
+        spans.push(Span::styled(
+            crate::i18n::fill(s.diff_against, &[("path", &name)]),
+            t.status().add_modifier(Modifier::BOLD),
+        ));
+    }
     let mut badges = Vec::new();
     if app.read_only {
         badges.push(s.read_only);

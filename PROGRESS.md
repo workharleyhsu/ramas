@@ -55,9 +55,9 @@ test) → commit → actualizar este archivo.
 - Criterio: todos los temas renderizan; fallback sin Nerd Font. ✔ (fase 7 cerrada)
 
 ## Fase 8 — Exportar / importar / diff
-- [ ] 8.1 `--export`, `--import`, tecla `e`
-- [ ] 8.2 `--diff`
-- Criterio: round-trip JSON idéntico; diff detecta cambios.
+- [x] 8.1 `--export`, `--import`, tecla `e`
+- [x] 8.2 `--diff`
+- Criterio: round-trip JSON idéntico; diff detecta cambios. ✔ (fase 8 cerrada; `--export` → `--import` + `e` da un archivo byte-idéntico, verificado con `cmp`)
 
 ## Fase 9 — Rendimiento y pulido
 - [ ] 9.1 Árbol sintético 1M, perfilado y resultados
@@ -100,8 +100,12 @@ test) → commit → actualizar este archivo.
 - Temas con fondo explícito (light, high-contrast, gruvbox) pintan todo el frame; dark usa el fondo de la terminal. `NO_COLOR` no vacío = sin colores (solo modificadores).
 - Prioridad de opciones: flag CLI > config TOML > valor por defecto.
 
+- Formato JSON plano v1 (registro por nodo con índice del padre): sin límite de recursión de serde_json. Tamaños propios por nodo; totales recalculados al importar. Nombres no UTF-8 en `nb` (bytes). Hijos en orden canónico por nombre: la salida no depende del orden en pantalla.
+- `--export` escanea sin TUI (progreso en stderr si es terminal) y sale. `e` escribe `ramas-<raíz>-<fecha>.json` en el directorio actual.
+- `--diff`: emparejado por ruta relativa desde las raíces (permite comparar un árbol movido). Columna delta en el árbol, línea Δ en el panel, "diff vs" en la barra.
+
 ## Bloqueos
 (ninguno)
 
 ## Próxima tarea
-8.1
+9.1

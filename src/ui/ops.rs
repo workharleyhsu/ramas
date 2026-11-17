@@ -204,6 +204,7 @@ impl App {
                 self.tree.replace_subtree(target, &sub);
                 if target == NodeId::ROOT {
                     self.imported = false;
+                    self.scanned_at = crate::export::now();
                 }
                 self.marks.prune(&self.tree);
                 self.tree_changed(target);
@@ -219,8 +220,25 @@ impl App {
         self.search = None;
         self.tree.sort(self.sort, self.apparent);
         self.refilter();
+        if let Some(diff) = &mut self.diff {
+            diff.recompute(&self.tree);
+        }
         self.refresh_free();
         self.rebuild_rows(keep);
+    }
+
+    /// `e`: exports the tree to a timestamped JSON file in the current
+    /// directory.
+    pub fn export_here(&mut self) {
+        let path = self
+            .export_dir
+            .join(export_name(&self.tree, crate::export::now()));
+        self.message = Some(
+            match crate::export::write_file(&self.tree, self.scanned_at, &path) {
+                Ok(()) => fill(self.s.exported, &[("path", &path.display().to_string())]),
+                Err(e) => fill(self.s.export_failed, &[("err", &format!("{e:#}"))]),
+            },
+        );
     }
 
     /// Status line text for marks.
@@ -231,6 +249,32 @@ impl App {
             &[("n", &n.to_string()), ("size", &super::format::size(bytes))],
         )
     }
+}
+
+/// `ramas-<root name>-YYYYmmdd-HHMMSS.json`.
+pub fn export_name(tree: &crate::tree::Tree, now: i64) -> String {
+    let base = tree
+        .root_path()
+        .file_name()
+        .map_or_else(|| "root".to_owned(), |n| n.to_string_lossy().into_owned());
+    let base: String = base
+        .chars()
+        .map(|c| {
+            if c.is_alphanumeric() || c == '-' || c == '_' {
+                c
+            } else {
+                '_'
+            }
+        })
+        .collect();
+    let stamp = jiff::Timestamp::from_second(now)
+        .map(|t| {
+            t.to_zoned_datetime(jiff::tz::TimeZone::system())
+                .strftime("%Y%m%d-%H%M%S")
+                .to_string()
+        })
+        .unwrap_or_else(|_| now.to_string());
+    format!("ramas-{base}-{stamp}.json")
 }
 
 #[cfg(test)]

@@ -1,11 +1,14 @@
-use std::path::PathBuf;
+use std::io::IsTerminal;
+use std::path::{Path, PathBuf};
+use std::time::Duration;
 
 use anyhow::{Context, Result};
 use clap::{CommandFactory, Parser};
 use ramas::cli::{Cli, IconMode, Lang};
 use ramas::config::Config;
+use ramas::export;
 use ramas::scan::ScanOptions;
-use ramas::ui::{self, app::Settings, icons::Icons, theme::Theme};
+use ramas::ui::{self, app::Settings, format, icons::Icons, job::ScanJob, theme::Theme};
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
@@ -14,12 +17,58 @@ fn main() -> Result<()> {
         clap_mangen::Man::new(Cli::command()).render(&mut out)?;
         return Ok(());
     }
+    let config = Config::load(cli.config.as_deref())?;
+    let mut settings = settings(&cli, &config)?;
+    if let Some(old) = &cli.diff {
+        let imported = export::read_file(old)?;
+        settings.diff = Some((imported.tree, old.clone()));
+    }
+
+    if let Some(file) = &cli.import {
+        let imported = export::read_file(file)?;
+        settings.imported = true;
+        settings.scanned_at = imported.scanned_at;
+        return ui::run_with_tree(imported.tree, settings);
+    }
+
     let root = cli.path.clone().unwrap_or_else(|| PathBuf::from("."));
     let root =
         std::fs::canonicalize(&root).with_context(|| format!("cannot open {}", root.display()))?;
-    let config = Config::load(cli.config.as_deref())?;
-    let settings = settings(&cli, &config)?;
-    ui::run(&root, settings)
+    settings.scanned_at = export::now();
+    match &cli.export {
+        Some(file) => export_only(&root, &settings.scan_opts, settings.scanned_at, file),
+        None => ui::run(&root, settings),
+    }
+}
+
+/// `--export`: scans without the TUI and writes the JSON file.
+fn export_only(root: &Path, opts: &ScanOptions, at: i64, file: &Path) -> Result<()> {
+    let job = ScanJob::start(root.to_path_buf(), opts.clone(), None);
+    let live = std::io::stderr().is_terminal();
+    let tree = loop {
+        if let Some(res) = job.try_result() {
+            break res?;
+        }
+        if live {
+            let p = job.snapshot();
+            eprint!("\r\x1b[2K{} entries, {}", p.entries, format::size(p.bytes));
+        }
+        std::thread::sleep(Duration::from_millis(100));
+    };
+    if live {
+        eprint!("\r\x1b[2K");
+    }
+    export::write_file(&tree, at, file)?;
+    eprintln!(
+        "{}: {} entries, {} on disk, {} errors, {:.1}s -> {}",
+        root.display(),
+        tree.live(),
+        format::size(tree.root().disk),
+        tree.root().errors,
+        job.elapsed().as_secs_f64(),
+        file.display()
+    );
+    Ok(())
 }
 
 fn settings(cli: &Cli, config: &Config) -> Result<Settings> {
@@ -41,6 +90,8 @@ fn settings(cli: &Cli, config: &Config) -> Result<Settings> {
             one_file_system: cli.one_file_system,
         },
         classifier: config.classifier(),
+        diff: None,
+        scanned_at: 0,
     })
 }
 

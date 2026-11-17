@@ -1,7 +1,6 @@
 //! Search (`/`, `n`, `N`) and filters (`f`) in the TUI.
 
 use std::collections::HashSet;
-use std::time::{SystemTime, UNIX_EPOCH};
 
 use crossterm::event::{KeyCode, KeyEvent};
 
@@ -208,9 +207,7 @@ pub fn parse_form(form: &FilterForm) -> Option<Filter> {
 }
 
 fn now() -> i64 {
-    SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .map_or(0, |d| d.as_secs() as i64)
+    crate::export::now()
 }
 
 #[cfg(test)]
