@@ -9,29 +9,41 @@ use super::widgets::{centered, popup};
 use crate::i18n::Strings;
 use crate::ui::app::Settings;
 use crate::ui::format;
+use crate::ui::icons::Icons;
 use crate::ui::job::ScanJob;
 use crate::ui::theme::Theme;
 
-const SPINNER: [&str; 8] = ["⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷"];
-
 /// Draws the progress box centered in `area`.
 pub fn draw(f: &mut Frame, area: Rect, job: &ScanJob, title: &str, settings: &Settings) {
-    draw_job(f, area, job, title, settings.strings, &settings.theme);
+    draw_job(
+        f,
+        area,
+        job,
+        title,
+        settings.strings,
+        &settings.theme,
+        settings.icons,
+    );
 }
 
 /// Same as [`draw`] with explicit strings and theme.
-pub fn draw_job(f: &mut Frame, area: Rect, job: &ScanJob, title: &str, s: &Strings, t: &Theme) {
+pub fn draw_job(
+    f: &mut Frame,
+    area: Rect,
+    job: &ScanJob,
+    title: &str,
+    s: &Strings,
+    t: &Theme,
+    icons: Icons,
+) {
     let snap = job.snapshot();
     let elapsed = job.elapsed();
     let w = area.width.saturating_sub(4).clamp(30, 76);
     let rect = centered(area, w, 9);
-    let spin = SPINNER[(elapsed.as_millis() / 100) as usize % SPINNER.len()];
-    let inner = popup(
-        f,
-        rect,
-        &format!("{spin} {title} {}", job.root.display()),
-        t,
-    );
+    let frames = icons.spinner();
+    let spin = frames[(elapsed.as_millis() / 100) as usize % frames.len()];
+    let title = format!("{spin} {title} {}", job.root.display());
+    let inner = popup(f, rect, &title, t, icons);
     let label_w = [s.entries, s.size, s.errors, s.elapsed, s.current]
         .iter()
         .map(|l| l.chars().count())

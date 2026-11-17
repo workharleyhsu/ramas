@@ -4,10 +4,10 @@ use ratatui::Frame;
 use ratatui::layout::Rect;
 use ratatui::style::{Modifier, Style};
 use ratatui::text::{Line, Span};
-use ratatui::widgets::{Block, BorderType, Paragraph};
+use ratatui::widgets::{Block, Paragraph};
 use unicode_width::UnicodeWidthStr;
 
-use super::tree::{bar, fit};
+use super::tree::fit;
 use crate::tree::{Kind, flags};
 use crate::ui::app::App;
 use crate::ui::format;
@@ -15,7 +15,7 @@ use crate::ui::format;
 /// Draws the detail panel.
 pub fn draw(f: &mut Frame, area: Rect, app: &mut App) {
     let block = Block::bordered()
-        .border_type(BorderType::Rounded)
+        .border_set(app.icons.border())
         .border_style(app.theme.fg(app.theme.border))
         .style(app.theme.text())
         .title(Span::styled(
@@ -125,7 +125,10 @@ pub fn lines(app: &mut App, width: usize) -> Vec<Line<'static>> {
         let label = fit(s.category(app.classifier.name(cat)), name_w - 1);
         let mut spans = vec![Span::styled(format!("{label:<name_w$}"), t.text())];
         if bar_w > 0 {
-            spans.push(Span::styled(bar(frac, bar_w), t.fg(t.gradient(frac))));
+            spans.push(Span::styled(
+                app.icons.bar(frac, bar_w),
+                t.fg(t.gradient(frac)),
+            ));
         }
         spans.push(Span::styled(
             format!("{:>10}", format::size(c.size)),

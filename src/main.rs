@@ -26,14 +26,14 @@ fn settings(cli: &Cli, config: &Config) -> Result<Settings> {
     let icons = if cli.no_icons {
         IconMode::Ascii
     } else {
-        cli.icons.unwrap_or(IconMode::Unicode)
+        cli.icons.or(config.icons).unwrap_or(IconMode::Unicode)
     };
     let (theme, themes) = themes(cli, config)?;
     Ok(Settings {
         apparent: cli.apparent,
         read_only: cli.read_only,
         imported: false,
-        strings: ramas::i18n::strings(cli.lang.unwrap_or(Lang::En)),
+        strings: ramas::i18n::strings(cli.lang.or(config.language).unwrap_or(Lang::En)),
         theme,
         themes,
         icons: Icons { mode: icons },

@@ -57,7 +57,15 @@ pub fn draw(f: &mut Frame, app: &mut App) {
     }
     if let Some(job) = &app.job {
         let settings_title = app.s.rescanning;
-        progress::draw_job(f, f.area(), job, settings_title, app.s, &app.theme);
+        progress::draw_job(
+            f,
+            f.area(),
+            job,
+            settings_title,
+            app.s,
+            &app.theme,
+            app.icons,
+        );
     }
     if app.delete_job.is_some() {
         dialogs::deleting(f, app);
@@ -193,5 +201,45 @@ mod theme_tests {
                 assert_eq!(c.bg, ratatui::style::Color::Reset, "bg at {x},{y}");
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod icon_tests {
+    use super::test_util::render;
+    use crate::cli::IconMode;
+    use crate::ui::app::test_util::*;
+    use crate::ui::icons::Icons;
+
+    fn has_private_use(text: &str) -> bool {
+        text.chars().any(|c| ('\u{e000}'..='\u{f8ff}').contains(&c))
+    }
+
+    fn screen(mode: IconMode) -> String {
+        let mut app = app();
+        app.icons = Icons { mode };
+        press(&mut app, "jl"); // expand a
+        press(&mut app, "j "); // mark y
+        render(&mut app, 120, 24).join("\n")
+    }
+
+    #[test]
+    fn nerd_mode_uses_nerd_glyphs() {
+        assert!(has_private_use(&screen(IconMode::Nerd)));
+    }
+
+    #[test]
+    fn fallbacks_need_no_nerd_font() {
+        let unicode = screen(IconMode::Unicode);
+        assert!(!has_private_use(&unicode));
+        assert!(
+            unicode.contains("├── ") && unicode.contains('▾'),
+            "{unicode}"
+        );
+        let ascii = screen(IconMode::Ascii);
+        assert!(!has_private_use(&ascii));
+        assert!(ascii.contains("|-- ") && ascii.contains("`-- "), "{ascii}");
+        assert!(ascii.contains("+--"), "ascii borders: {ascii}");
+        assert!(!ascii.contains('█') && !ascii.contains('├'), "{ascii}");
     }
 }

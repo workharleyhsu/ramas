@@ -25,7 +25,7 @@ pub fn confirm(f: &mut Frame, app: &App, focus: Button) {
     let w = f.area().width.saturating_sub(6).clamp(40, 100);
     let h = (listed + extra + 7) as u16;
     let area = centered(f.area(), w, h);
-    let inner = popup(f, area, s.delete_title, t);
+    let inner = popup(f, area, s.delete_title, t, app.icons);
     let width = usize::from(inner.width);
     let mut lines = Vec::new();
     let mut sorted = ids.clone();
@@ -75,7 +75,7 @@ pub fn type_confirm(f: &mut Frame, app: &App, input: &str) {
     let s = app.s;
     let t = &app.theme;
     let area = centered(f.area(), 60, 7);
-    let inner = popup(f, area, s.confirm_title, t);
+    let inner = popup(f, area, s.confirm_title, t, app.icons);
     let lines = vec![
         Line::from(Span::styled(
             format!(" {}", fill(s.confirm_prompt, &[("word", s.confirm_word)])),
@@ -100,7 +100,7 @@ pub fn summary(f: &mut Frame, app: &App, sum: &DeleteSummary) {
     let shown = sum.failed.len().min(MAX_LISTED);
     let w = f.area().width.saturating_sub(6).clamp(40, 100);
     let area = centered(f.area(), w, (shown + 7) as u16);
-    let inner = popup(f, area, s.summary_title, t);
+    let inner = popup(f, area, s.summary_title, t, app.icons);
     let width = usize::from(inner.width);
     let mut lines = vec![Line::from(Span::styled(
         format!(
@@ -141,7 +141,7 @@ pub fn summary(f: &mut Frame, app: &App, sum: &DeleteSummary) {
 /// Small "Deleting…" popup.
 pub fn deleting(f: &mut Frame, app: &App) {
     let area = centered(f.area(), 30, 3);
-    let inner = popup(f, area, app.s.deleting, &app.theme);
+    let inner = popup(f, area, app.s.deleting, &app.theme, app.icons);
     f.render_widget(
         Paragraph::new(Span::styled(
             format!(" {}", app.s.deleting),

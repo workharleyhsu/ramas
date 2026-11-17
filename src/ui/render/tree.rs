@@ -4,7 +4,7 @@ use ratatui::Frame;
 use ratatui::layout::Rect;
 use ratatui::style::{Modifier, Style};
 use ratatui::text::{Line, Span};
-use ratatui::widgets::{Block, BorderType, Paragraph};
+use ratatui::widgets::{Block, Paragraph};
 use unicode_width::{UnicodeWidthChar, UnicodeWidthStr};
 
 use crate::tree::{Kind, NodeId, flags};
@@ -14,7 +14,6 @@ use crate::ui::rows::Row;
 
 const SIZE_W: usize = 10;
 const PCT_W: usize = 7;
-const EIGHTHS: [&str; 8] = ["", "▏", "▎", "▍", "▌", "▋", "▊", "▉"];
 
 /// Draws the tree pane in `area` and records its inner area in the app.
 pub fn draw(f: &mut Frame, area: Rect, app: &mut App) {
@@ -27,7 +26,7 @@ pub fn draw(f: &mut Frame, area: Rect, app: &mut App) {
     };
     let right = format!(" {}: {} · {} ", app.s.sort, app.sort_label(), metric);
     let block = Block::bordered()
-        .border_type(BorderType::Rounded)
+        .border_set(app.icons.border())
         .border_style(t.fg(t.border))
         .style(t.text())
         .title(Span::styled(
@@ -124,7 +123,10 @@ fn row_line(app: &App, row: Row, width: usize, selected: bool) -> Line<'static> 
     }
     if bar_w > 0 {
         spans.push(Span::raw(" "));
-        spans.push(Span::styled(bar(frac, bar_w), t.fg(t.gradient(frac))));
+        spans.push(Span::styled(
+            app.icons.bar(frac, bar_w),
+            t.fg(t.gradient(frac)),
+        ));
     }
 
     let mut line = Line::from(spans);
@@ -217,19 +219,6 @@ fn has_next_visible(app: &App, id: NodeId) -> bool {
         .any(|s| app.is_shown(s))
 }
 
-/// Proportional bar with eighth-block resolution.
-pub fn bar(frac: f64, width: usize) -> String {
-    let eighths = (frac * width as f64 * 8.0).round() as usize;
-    let full = (eighths / 8).min(width);
-    let mut s = "█".repeat(full);
-    if full < width {
-        s.push_str(EIGHTHS[eighths % 8]);
-    }
-    let used = s.chars().count();
-    s.push_str(&" ".repeat(width - used));
-    s
-}
-
 /// Truncates `text` to `max` columns with a trailing ellipsis.
 pub fn fit(text: &str, max: usize) -> String {
     if text.width() <= max {
@@ -265,14 +254,6 @@ mod tests {
     use crate::ui::app::test_util::*;
     use crate::ui::render::test_util::render;
     use crossterm::event::KeyCode;
-
-    #[test]
-    fn bars_scale() {
-        assert_eq!(bar(0.0, 4), "    ");
-        assert_eq!(bar(1.0, 4), "████");
-        assert_eq!(bar(0.5, 4), "██  ");
-        assert_eq!(bar(0.5 + 1.0 / 16.0, 4).chars().count(), 4);
-    }
 
     #[test]
     fn fit_truncates_with_ellipsis() {

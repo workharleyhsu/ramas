@@ -4,9 +4,10 @@ use ratatui::Frame;
 use ratatui::layout::{Constraint, Flex, Layout, Rect};
 use ratatui::style::Modifier;
 use ratatui::text::{Line, Span};
-use ratatui::widgets::{Block, BorderType, Clear, Paragraph};
+use ratatui::widgets::{Block, Clear, Paragraph};
 
 use crate::ui::app::App;
+use crate::ui::icons::Icons;
 use crate::ui::theme::Theme;
 
 /// Rect of `w`x`h` centered in `area`, shrunk to fit.
@@ -21,10 +22,10 @@ pub fn centered(area: Rect, w: u16, h: u16) -> Rect {
 }
 
 /// Clears `area` and draws a titled rounded border; returns the inner area.
-pub fn popup(f: &mut Frame, area: Rect, title: &str, theme: &Theme) -> Rect {
+pub fn popup(f: &mut Frame, area: Rect, title: &str, theme: &Theme, icons: Icons) -> Rect {
     f.render_widget(Clear, area);
     let block = Block::bordered()
-        .border_type(BorderType::Rounded)
+        .border_set(icons.border())
         .border_style(theme.fg(theme.accent))
         .style(theme.text())
         .title(Span::styled(
@@ -52,7 +53,7 @@ pub fn help(f: &mut Frame, app: &App) {
     let w = (key_w + desc_w + 6) as u16;
     let h = lines.len() as u16 + 4;
     let area = centered(f.area(), w, h);
-    let inner = popup(f, area, app.s.help_title, &app.theme);
+    let inner = popup(f, area, app.s.help_title, &app.theme, app.icons);
     let t = &app.theme;
     let mut text: Vec<Line> = lines
         .iter()

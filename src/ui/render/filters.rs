@@ -13,7 +13,7 @@ pub fn draw(f: &mut Frame, app: &App, form: &FilterForm) {
     let s = app.s;
     let t = &app.theme;
     let area = centered(f.area(), 64, 12);
-    let inner = popup(f, area, s.filters_title, t);
+    let inner = popup(f, area, s.filters_title, t, app.icons);
     let labels = [s.filter_min_size, s.filter_ext, s.filter_age];
     let mut lines = Vec::new();
     for (i, label) in labels.iter().enumerate() {

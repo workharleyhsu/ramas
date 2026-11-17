@@ -6,7 +6,7 @@ use ratatui::style::Modifier;
 use ratatui::text::{Line, Span};
 use ratatui::widgets::Paragraph;
 
-use super::tree::{bar, fit};
+use super::tree::fit;
 use super::widgets::popup;
 use crate::i18n::fill;
 use crate::ui::app::{App, CategoryList, TypesView};
@@ -30,7 +30,7 @@ pub fn draw(f: &mut Frame, app: &mut App, view: &TypesView) {
             app.s.category(app.classifier.name(l.cat))
         ),
     };
-    let inner = popup(f, area, &title, &app.theme.clone());
+    let inner = popup(f, area, &title, &app.theme.clone(), app.icons);
     let lines = match &view.list {
         None => table(app, view, inner),
         Some(list) => files(app, view, list, inner),
@@ -58,7 +58,7 @@ fn table(app: &mut App, view: &TypesView, area: Rect) -> Vec<Line<'static>> {
             Span::styled(format!(" {label:<15}"), t.text()),
             Span::styled(format!("{:>11}", format::size(c.size)), t.fg(t.size)),
             Span::styled(format!("{:>9}  ", c.count), t.dimmed()),
-            Span::styled(bar(frac, bar_w), t.fg(t.gradient(frac))),
+            Span::styled(app.icons.bar(frac, bar_w), t.fg(t.gradient(frac))),
             Span::styled(format!(" {}", format::percent(frac)), t.dimmed()),
         ]);
         if i == view.cursor {
