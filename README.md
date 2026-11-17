@@ -61,15 +61,53 @@ fuzzy search, filters, per-type analysis, themes and JSON export/diff.
 
 ## Install
 
+Requires x86-64 Linux. After any of these, run it by typing `ramas`.
+
+### Package (Debian, Ubuntu, Fedora, openSUSE…)
+
+Download the package for your distribution from the
+[latest release](https://github.com/workharleyhsu/ramas/releases/latest) and open it with your software centre,
+or install it from a terminal:
+
 ```sh
-git clone <this repo> && cd ramas
-./install.sh                    # ~/.local/bin/ramas and its man page
-./install.sh --prefix /usr/local
-./install.sh --uninstall
+sudo apt install ./ramas_0.1.0-1_amd64.deb      # Debian, Ubuntu, Mint…
+sudo dnf install ./ramas-0.1.0-1.x86_64.rpm     # Fedora, RHEL…
+sudo zypper install ./ramas-0.1.0-1.x86_64.rpm  # openSUSE
 ```
 
-`scripts/build-static.sh` builds the static binary into `dist/` and checks
-it with `ldd` (`--containers` also runs it in Alpine and Debian).
+Uninstall with `sudo apt remove ramas` or `sudo dnf remove ramas`.
+
+### One-line installer (any distribution)
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/workharleyhsu/ramas/main/install.sh | sh
+```
+
+It downloads the latest release, verifies its SHA-256 checksum and installs
+the binary to `~/.local/bin` and the man page to `~/.local/share/man/man1`.
+It does not need root. If that folder is not in your `PATH`, the script tells
+you the line to add. Uninstall with `rm ~/.local/bin/ramas`.
+
+### Manual
+
+Every option uses the same static executable, so it does not depend on your
+distribution's version. You can also unpack it yourself:
+
+```sh
+tar -xzf ramas-0.1.0-x86_64-linux.tar.gz
+sha256sum -c ramas-0.1.0-x86_64-linux.tar.gz.sha256   # optional
+install -Dm755 ramas-0.1.0-x86_64-linux/ramas ~/.local/bin/ramas
+```
+
+### From source
+
+```sh
+git clone https://github.com/workharleyhsu/ramas && cd ramas
+cargo install --path .
+```
+
+`scripts/package.sh` builds the static binary, the tarball, the `.deb` and the
+`.rpm` into `dist/` (`--containers` also runs the binary in Alpine and Debian).
 
 ## Usage
 

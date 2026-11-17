@@ -65,15 +65,53 @@ exportación/diff en JSON.
 
 ## Instalación
 
+Requiere Linux x86-64. Con cualquiera de estas opciones, se abre escribiendo `ramas`.
+
+### Paquete (Debian, Ubuntu, Fedora, openSUSE…)
+
+Bajá el paquete de tu distribución desde el
+[último release](https://github.com/workharleyhsu/ramas/releases/latest) y abrilo con tu centro de software,
+o instalalo desde una terminal:
+
 ```sh
-git clone <este repo> && cd ramas
-./install.sh                    # ~/.local/bin/ramas y su página man
-./install.sh --prefix /usr/local
-./install.sh --uninstall
+sudo apt install ./ramas_0.1.0-1_amd64.deb      # Debian, Ubuntu, Mint…
+sudo dnf install ./ramas-0.1.0-1.x86_64.rpm     # Fedora, RHEL…
+sudo zypper install ./ramas-0.1.0-1.x86_64.rpm  # openSUSE
 ```
 
-`scripts/build-static.sh` compila el binario estático en `dist/` y lo verifica
-con `ldd` (`--containers` además lo ejecuta en Alpine y Debian).
+Se desinstala con `sudo apt remove ramas` o `sudo dnf remove ramas`.
+
+### Instalador de una línea (cualquier distribución)
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/workharleyhsu/ramas/main/install.sh | sh
+```
+
+Baja el último release, verifica su suma SHA-256 e instala el binario en
+`~/.local/bin` y la página man en `~/.local/share/man/man1`. No necesita root.
+Si esa carpeta no está en tu `PATH`, el script te dice qué línea agregar. Se
+desinstala con `rm ~/.local/bin/ramas`.
+
+### Manual
+
+Todas las opciones usan el mismo ejecutable estático, así que no depende de la
+versión de tu distribución. También podés descomprimirlo vos:
+
+```sh
+tar -xzf ramas-0.1.0-x86_64-linux.tar.gz
+sha256sum -c ramas-0.1.0-x86_64-linux.tar.gz.sha256   # opcional
+install -Dm755 ramas-0.1.0-x86_64-linux/ramas ~/.local/bin/ramas
+```
+
+### Desde el código
+
+```sh
+git clone https://github.com/workharleyhsu/ramas && cd ramas
+cargo install --path .
+```
+
+`scripts/package.sh` arma en `dist/` el binario estático, el tarball, el `.deb`
+y el `.rpm` (`--containers` además lo ejecuta en Alpine y Debian).
 
 ## Uso
 

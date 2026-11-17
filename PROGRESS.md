@@ -77,7 +77,7 @@ test) → commit → actualizar este archivo.
 
 ## Fase 10 — Distribución
 - [x] 10.1 Binario musl estático + `ldd` + contenedores Alpine/Debian
-  - `scripts/build-static.sh [--containers]`: `static-pie linked`, `ldd` → "statically linked", 2.8 MiB.
+  - `scripts/build-static.sh [--containers]` (hoy `scripts/package.sh`): `static-pie linked`, `ldd` → "statically linked", 2.8 MiB.
   - Alpine 3.24 y Debian 13 (trixie) vía docker (imágenes locales): `--version`, `--export`, `--diff`
     y la TUI sobre `/etc` funcionan. Con podman el pull de debian falló por credenciales guardadas
     de docker.io; se usó docker, que la tenía local.
@@ -137,6 +137,5 @@ Alpine 3.24 y Debian 13.
 Pendientes conocidos (no bloquean ningún criterio):
 - `-x` solo tiene test unitario (un montaje real requiere root).
 - Pico de memoria transitorio del escaneo (~130 MiB extra por millón de entradas).
-- Sin repositorio remoto ni releases publicados.
 
 LOOP_COMPLETE

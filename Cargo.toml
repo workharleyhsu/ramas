@@ -6,6 +6,8 @@ description = "Interactive tree-style disk usage analyzer for the Linux terminal
 license = "MIT OR Apache-2.0"
 authors = ["HarleyHsu <270751439+workharleyhsu@users.noreply.github.com>"]
 readme = "README.md"
+repository = "https://github.com/workharleyhsu/ramas"
+homepage = "https://github.com/workharleyhsu/ramas"
 keywords = ["tui", "disk", "ncdu", "terminal", "linux"]
 categories = ["command-line-utilities", "filesystem"]
 
@@ -30,6 +32,38 @@ unicode-width = "0.2.3"
 [dev-dependencies]
 insta = "1.49.0"
 tempfile = "3.27.0"
+
+[package.metadata.deb]
+maintainer = "HarleyHsu <270751439+workharleyhsu@users.noreply.github.com>"
+section = "utils"
+priority = "optional"
+# Static binary: "$auto" finds no shared libraries and declares none.
+depends = "$auto"
+extended-description = """\
+ramas scans a directory in parallel and shows its disk usage as an \
+expandable tree with proportional bars and a detail panel. It marks and \
+deletes files in batches (trash or permanent) behind safety checks, and adds \
+fuzzy search, filters, per-type analysis, themes and JSON export and diff."""
+assets = [
+    ["target/release/ramas", "usr/bin/", "755"],
+    ["man/ramas.1", "usr/share/man/man1/", "644"],
+    ["README.md", "usr/share/doc/ramas/", "644"],
+    ["README.es.md", "usr/share/doc/ramas/", "644"],
+    ["LICENSE-MIT", "usr/share/doc/ramas/", "644"],
+    ["LICENSE-APACHE", "usr/share/doc/ramas/", "644"],
+]
+
+[package.metadata.generate-rpm]
+# Static binary: no automatically detected requirements.
+auto-req = "no"
+assets = [
+    { source = "target/release/ramas", dest = "/usr/bin/ramas", mode = "755" },
+    { source = "man/ramas.1", dest = "/usr/share/man/man1/ramas.1", mode = "644", doc = true },
+    { source = "README.md", dest = "/usr/share/doc/ramas/README.md", mode = "644", doc = true },
+    { source = "README.es.md", dest = "/usr/share/doc/ramas/README.es.md", mode = "644", doc = true },
+    { source = "LICENSE-MIT", dest = "/usr/share/licenses/ramas/LICENSE-MIT", mode = "644" },
+    { source = "LICENSE-APACHE", dest = "/usr/share/licenses/ramas/LICENSE-APACHE", mode = "644" },
+]
 
 [lints.rust]
 unsafe_code = "forbid"
