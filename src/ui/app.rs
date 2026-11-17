@@ -142,6 +142,8 @@ pub struct App {
     pub filter: Filter,
     /// Match flag per node for `filter`; `None` when no filter is active.
     pub filter_match: Option<Vec<bool>>,
+    /// Last left click: time and row, for double-click detection.
+    pub last_click: Option<(std::time::Instant, usize)>,
 }
 
 /// Committed or in-progress search.
@@ -191,6 +193,7 @@ impl App {
             search: None,
             filter: Filter::default(),
             filter_match: None,
+            last_click: None,
         };
         app.refresh_free();
         app.rebuild_rows(NodeId::ROOT);
@@ -253,9 +256,6 @@ impl App {
         self.poll_rescan();
         self.poll_delete();
     }
-
-    /// Handles a mouse event.
-    pub fn on_mouse(&mut self, _ev: crossterm::event::MouseEvent) {}
 
     /// Whether a directory is expanded.
     pub fn is_open(&self, id: NodeId) -> bool {

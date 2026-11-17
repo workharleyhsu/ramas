@@ -5,6 +5,7 @@ pub mod find;
 pub mod format;
 pub mod icons;
 pub mod job;
+pub mod mouse;
 pub mod ops;
 pub mod render;
 pub mod rows;

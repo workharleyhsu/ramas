@@ -48,7 +48,7 @@ test) → commit → actualizar este archivo.
 - Criterio: categorías correctas sobre árbol de prueba. ✔ (fase 6 cerrada)
 
 ## Fase 7 — Mouse, temas, iconos, idioma
-- [ ] 7.1 Mouse (clic, doble clic, scroll)
+- [x] 7.1 Mouse (clic, doble clic, scroll)
 - [ ] 7.2 Temas (4 + custom), `T`, `NO_COLOR`
 - [ ] 7.3 Iconos Nerd Font / Unicode / ASCII (`--no-icons`)
 - [ ] 7.4 i18n EN/ES (`--lang`, `language`)
@@ -100,4 +100,4 @@ test) → commit → actualizar este archivo.
 (ninguno)
 
 ## Próxima tarea
-7.1
+7.2
