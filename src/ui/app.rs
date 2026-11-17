@@ -47,6 +47,27 @@ pub enum Overlay {
     Search { input: String, origin: NodeId },
     /// Filter form.
     Filters(FilterForm),
+    /// Per-category analysis of a node.
+    Types(TypesView),
+}
+
+/// State of the type analysis view.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TypesView {
+    /// Node analyzed.
+    pub node: NodeId,
+    /// Selected row of the category table.
+    pub cursor: usize,
+    /// Largest files of the opened category.
+    pub list: Option<CategoryList>,
+}
+
+/// Largest files of one category.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CategoryList {
+    pub cat: crate::classify::CatId,
+    pub files: Vec<NodeId>,
+    pub cursor: usize,
 }
 
 /// Editable state of the filter panel.
@@ -285,6 +306,7 @@ impl App {
             Overlay::TypeConfirm { .. } => self.type_confirm_key(key),
             Overlay::Search { .. } => self.search_key(key),
             Overlay::Filters(_) => self.filter_key(key),
+            Overlay::Types(_) => self.types_key(key),
             Overlay::Summary(_) => {
                 if matches!(key.code, KeyCode::Enter | KeyCode::Esc | KeyCode::Char('q')) {
                     self.overlay = Overlay::None;
@@ -316,6 +338,7 @@ impl App {
             KeyCode::Char('n') => self.next_hit(1),
             KeyCode::Char('N') => self.next_hit(-1),
             KeyCode::Char('f') => self.open_filters(),
+            KeyCode::Char('t') => self.open_types(),
             KeyCode::Esc => self.search = None,
             KeyCode::Char('q') => self.quit = true,
             _ => {}

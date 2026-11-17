@@ -6,6 +6,7 @@ pub mod filters;
 pub mod progress;
 pub mod status;
 pub mod tree;
+pub mod types;
 mod widgets;
 
 use ratatui::Frame;
@@ -37,7 +38,7 @@ pub fn draw(f: &mut Frame, app: &mut App) {
     }
     status::draw(f, status_area, app);
     draw_hint(f, hint, app);
-    match &app.overlay {
+    match &app.overlay.clone() {
         Overlay::None => {}
         Overlay::Help => widgets::help(f, app),
         Overlay::Confirm { focus } => dialogs::confirm(f, app, *focus),
@@ -45,6 +46,10 @@ pub fn draw(f: &mut Frame, app: &mut App) {
         Overlay::Summary(sum) => dialogs::summary(f, app, sum),
         Overlay::Search { .. } => {}
         Overlay::Filters(form) => filters::draw(f, app, form),
+        Overlay::Types(view) => {
+            let view = view.clone();
+            types::draw(f, app, &view);
+        }
     }
     if let Some(job) = &app.job {
         let settings_title = app.s.rescanning;
@@ -90,6 +95,8 @@ fn draw_hint(f: &mut Frame, area: Rect, app: &App) {
                 Overlay::Filters(_) => app.s.filters_hint,
                 Overlay::Summary(_) => app.s.summary_close,
                 Overlay::Help => app.s.help_close,
+                Overlay::Types(v) if v.list.is_some() => app.s.category_files_hint,
+                Overlay::Types(_) => app.s.types_hint,
                 _ => app.s.hint_browse,
             };
             let style = if app.message.is_some() {

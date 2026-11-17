@@ -10,6 +10,7 @@ pub mod render;
 pub mod rows;
 pub mod terminal;
 pub mod theme;
+pub mod types;
 
 use std::path::Path;
 use std::time::Duration;

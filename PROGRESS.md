@@ -44,8 +44,8 @@ test) → commit → actualizar este archivo.
 
 ## Fase 6 — Análisis por tipo
 - [x] 6.1 Clasificador configurable
-- [ ] 6.2 Vista `t` y lista por categoría marcable
-- Criterio: categorías correctas sobre árbol de prueba.
+- [x] 6.2 Vista `t` y lista por categoría marcable
+- Criterio: categorías correctas sobre árbol de prueba. ✔ (fase 6 cerrada)
 
 ## Fase 7 — Mouse, temas, iconos, idioma
 - [ ] 7.1 Mouse (clic, doble clic, scroll)
@@ -93,8 +93,11 @@ test) → commit → actualizar este archivo.
 - Búsqueda: `nucleo-matcher`, smart case, solo nombres (no la ruta). Resultados por puntaje; al teclear se salta al mejor y se expanden sus ancestros; con Enter se expanden las ramas de los 100 mejores. `Esc` vuelve al nodo de origen.
 - Filtros: un archivo coincide si cumple todo; un directorio si contiene un archivo que coincide (o, con solo tamaño mínimo, si su total alcanza). Modo atenuar/ocultar. Los tamaños del filtro siguen la métrica activa (`a`).
 
+- Vista `t`: lista hasta 500 archivos por categoría; `Espacio` marca, `d` abre el mismo diálogo de borrado.
+- Incidente: el commit de fase 5 entró con un test roto (un `sed` no aplicó y la cadena `&&` cortó antes del CI). Arreglado en 73b7b5e; `scripts/ci.sh` ahora devuelve el código de salida real y los commits se encadenan a él.
+
 ## Bloqueos
 (ninguno)
 
 ## Próxima tarea
-6.2
+7.1
