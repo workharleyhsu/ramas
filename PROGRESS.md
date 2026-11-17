@@ -31,8 +31,8 @@ test) → commit → actualizar este archivo.
 - Criterio: el detalle coincide con el nodo seleccionado. ✔ (fase 3 cerrada)
 
 ## Fase 4 — Marcado y borrado en lote
-- [ ] 4.1 Conjunto de marcas con deduplicación padre/hijo
-- [ ] 4.2 Validación de seguridad y borrado (papelera/permanente) con resultados por ruta
+- [x] 4.1 Conjunto de marcas con deduplicación padre/hijo
+- [x] 4.2 Validación de seguridad y borrado (papelera/permanente) con resultados por ruta
 - [ ] 4.3 Diálogos (confirmación, texto `delete`/`borrar`, resumen), actualización del árbol, `--read-only`
 - [ ] 4.4 `r` reescanear nodo
 - Criterio: tests de papelera, permanente, dedup y rutas prohibidas.
@@ -89,4 +89,4 @@ test) → commit → actualizar este archivo.
 (ninguno)
 
 ## Próxima tarea
-4.1
+4.3
