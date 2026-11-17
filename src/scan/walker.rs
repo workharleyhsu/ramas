@@ -33,51 +33,50 @@ pub(super) fn walk_root(ctx: &Ctx, root: &Path, md: &Metadata) -> (Meta, Vec<Ent
     if meta.kind != Kind::Dir {
         return (meta, Vec::new());
     }
-    let (children, failed) = walk_dir(ctx, root, meta.dev);
-    if failed {
-        meta.flags |= flags::ERROR;
-    }
+    let (children, fail) = walk_dir(ctx, root, meta.dev);
+    meta.flags |= fail;
     (meta, children)
 }
 
 /// Lists `dir` and descends into its subdirectories in parallel.
-/// Returns the entries and whether listing hit an error.
-fn walk_dir(ctx: &Ctx, dir: &Path, dev: u64) -> (Vec<Entry>, bool) {
+/// Returns the entries and the error flags listing produced (0 if none).
+fn walk_dir(ctx: &Ctx, dir: &Path, dev: u64) -> (Vec<Entry>, u8) {
     if ctx.cancel.load(Ordering::Relaxed) {
-        return (Vec::new(), false);
+        return (Vec::new(), 0);
     }
     ctx.progress.set_current(dir);
-    let (mut entries, failed) = list(ctx, dir, dev);
+    let (mut entries, fail) = list(ctx, dir, dev);
     entries
         .par_iter_mut()
         .filter(|e| e.meta.kind == Kind::Dir && e.meta.flags == 0)
         .for_each(|e| {
             let path = dir.join(&e.name);
-            let (children, failed) = walk_dir(ctx, &path, e.meta.dev);
-            if failed {
-                e.meta.flags |= flags::ERROR;
-            }
+            let (children, fail) = walk_dir(ctx, &path, e.meta.dev);
+            e.meta.flags |= fail;
             e.children = children;
         });
-    (entries, failed)
+    (entries, fail)
 }
 
 /// Reads one directory level without descending.
-fn list(ctx: &Ctx, dir: &Path, dev: u64) -> (Vec<Entry>, bool) {
+fn list(ctx: &Ctx, dir: &Path, dev: u64) -> (Vec<Entry>, u8) {
     let rd = match fs::read_dir(dir) {
         Ok(rd) => rd,
-        Err(_) => {
+        Err(e) => {
             ctx.progress.add_error();
-            return (Vec::new(), true);
+            return (Vec::new(), fail_flags(&e));
         }
     };
-    let mut failed = false;
+    let mut fail = 0;
     let mut out = Vec::new();
     for item in rd {
-        let Ok(item) = item else {
-            ctx.progress.add_error();
-            failed = true;
-            continue;
+        let item = match item {
+            Ok(item) => item,
+            Err(e) => {
+                ctx.progress.add_error();
+                fail |= fail_flags(&e);
+                continue;
+            }
         };
         let name = item.file_name();
         // DirEntry::metadata does not follow symlinks on Unix.
@@ -94,12 +93,14 @@ fn list(ctx: &Ctx, dir: &Path, dev: u64) -> (Vec<Entry>, bool) {
                     children: Vec::new(),
                 }
             }
-            Err(_) => {
+            Err(e) => {
                 ctx.progress.add_error();
                 let kind = item.file_type().map(kind_of).unwrap_or(Kind::Other);
+                let mut meta = Meta::error(kind);
+                meta.flags |= fail_flags(&e);
                 Entry {
                     name,
-                    meta: Meta::error(kind),
+                    meta,
                     nlink: 1,
                     children: Vec::new(),
                 }
@@ -108,7 +109,17 @@ fn list(ctx: &Ctx, dir: &Path, dev: u64) -> (Vec<Entry>, bool) {
         ctx.progress.add_entry(entry.meta.disk);
         out.push(entry);
     }
-    (out, failed)
+    (out, fail)
+}
+
+/// Flags for a read failure: always [`flags::ERROR`], plus
+/// [`flags::DENIED`] when it is only a matter of permissions.
+fn fail_flags(e: &std::io::Error) -> u8 {
+    if e.kind() == std::io::ErrorKind::PermissionDenied {
+        flags::ERROR | flags::DENIED
+    } else {
+        flags::ERROR
+    }
 }
 
 /// Decides whether a subdirectory must not be descended.

@@ -74,9 +74,9 @@ Bajá el paquete de tu distribución desde el
 o instalalo desde una terminal:
 
 ```sh
-sudo apt install ./ramas_0.1.0-1_amd64.deb      # Debian, Ubuntu, Mint…
-sudo dnf install ./ramas-0.1.0-1.x86_64.rpm     # Fedora, RHEL…
-sudo zypper install ./ramas-0.1.0-1.x86_64.rpm  # openSUSE
+sudo apt install ./ramas_0.1.1-1_amd64.deb      # Debian, Ubuntu, Mint…
+sudo dnf install ./ramas-0.1.1-1.x86_64.rpm     # Fedora, RHEL…
+sudo zypper install ./ramas-0.1.1-1.x86_64.rpm  # openSUSE
 ```
 
 Se desinstala con `sudo apt remove ramas` o `sudo dnf remove ramas`.
@@ -98,9 +98,9 @@ Todas las opciones usan el mismo ejecutable estático, así que no depende de la
 versión de tu distribución. También podés descomprimirlo vos:
 
 ```sh
-tar -xzf ramas-0.1.0-x86_64-linux.tar.gz
-sha256sum -c ramas-0.1.0-x86_64-linux.tar.gz.sha256   # opcional
-install -Dm755 ramas-0.1.0-x86_64-linux/ramas ~/.local/bin/ramas
+tar -xzf ramas-0.1.1-x86_64-linux.tar.gz
+sha256sum -c ramas-0.1.1-x86_64-linux.tar.gz.sha256   # opcional
+install -Dm755 ramas-0.1.1-x86_64-linux/ramas ~/.local/bin/ramas
 ```
 
 ### Desde el código
@@ -189,6 +189,15 @@ Los symlinks se borran, nunca se siguen. Marcar un directorio cubre todo su
 contenido, así que nunca quedan marcados a la vez un padre y su hijo.
 `--read-only` deshabilita el borrado por completo, igual que un escaneo
 importado hasta que reescanees su raíz con `r`.
+
+## Carpetas marcadas `[sin acceso]`
+
+Sin root hay carpetas que no se pueden leer: por ejemplo datos del sistema o
+de contenedores que son de otro usuario. `ramas` las marca con `⊘` y
+`[sin acceso]`, las cuenta como *Sin acceso* en la barra de estado y lo
+explica en el panel: no hay nada dañado, solo que su contenido no se cuenta,
+así que los tamaños de las carpetas de arriba son un mínimo. Para incluirlas,
+escaneá como su dueño, por ejemplo `sudo ramas --read-only RUTA`.
 
 ## Análisis por tipo
 

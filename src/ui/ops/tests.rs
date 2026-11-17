@@ -318,3 +318,36 @@ fn imported_tree_blocks_delete_until_root_rescan() {
     assert!(matches!(app.overlay, Overlay::Confirm { .. }));
     assert!(tmp.path().join("small").exists());
 }
+
+#[test]
+fn unreadable_folder_is_explained_not_alarming() {
+    use std::os::unix::fs::PermissionsExt;
+    let tmp = tempfile::tempdir().unwrap();
+    let locked = tmp.path().join("locked");
+    fs::create_dir(&locked).unwrap();
+    fs::write(locked.join("inside"), b"x").unwrap();
+    fs::set_permissions(&locked, fs::Permissions::from_mode(0o000)).unwrap();
+    let readable = fs::read_dir(&locked).is_ok(); // running as root
+    let tree = scan(
+        tmp.path(),
+        &ScanOptions::default(),
+        &Progress::default(),
+        &AtomicBool::new(false),
+    );
+    fs::set_permissions(&locked, fs::Permissions::from_mode(0o755)).unwrap();
+    if readable {
+        return;
+    }
+    let mut app = App::new(tree.unwrap(), settings());
+    select(&mut app, "locked");
+    let body = render(&mut app, 140, 30).join("\n");
+    assert!(body.contains("⊘ locked/ [no access]"), "{body}");
+    assert!(body.contains("Nothing is damaged"), "{body}");
+    assert!(body.contains("sudo ramas --read-only"), "{body}");
+    assert!(body.contains("Owner"), "{body}");
+    assert!(body.contains("Unreadable 1"), "{body}");
+    assert!(!body.contains("Errors"), "{body}");
+    app.move_to(0);
+    let body = render(&mut app, 140, 30).join("\n");
+    assert!(body.contains("Unreadable inside: 1"), "{body}");
+}

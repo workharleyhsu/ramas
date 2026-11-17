@@ -60,7 +60,7 @@ fn export_only(root: &Path, opts: &ScanOptions, at: i64, file: &Path) -> Result<
     }
     export::write_file(&tree, at, file)?;
     eprintln!(
-        "{}: {} entries, {} on disk, {} errors, {:.1}s -> {}",
+        "{}: {} entries, {} on disk, {} unreadable, {:.1}s -> {}",
         root.display(),
         tree.live(),
         format::size(tree.root().disk),

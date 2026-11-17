@@ -56,6 +56,9 @@ pub mod flags {
     pub const SKIP_FS: u8 = 1 << 3;
     /// Removed from the tree (deleted); the slot is dead.
     pub const REMOVED: u8 = 1 << 4;
+    /// Set together with [`ERROR`] when the cause is missing permissions
+    /// (nothing is damaged: the user just may not read it).
+    pub const DENIED: u8 = 1 << 5;
 }
 
 /// Metadata of one filesystem entry, as recorded by the scanner.

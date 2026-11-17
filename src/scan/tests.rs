@@ -135,6 +135,10 @@ fn unreadable_directory_is_marked_not_fatal() {
     }
     let id = t.find(Path::new("locked")).unwrap();
     assert!(t.node(id).has(flags::ERROR));
+    assert!(
+        t.node(id).has(flags::DENIED),
+        "permission problem, not damage"
+    );
     assert_eq!(t.root().errors, 1);
     assert_eq!(progress.snapshot().errors, 1);
     assert!(t.find(Path::new("visible")).is_some());

@@ -14,6 +14,19 @@ pub struct Icons {
 impl Icons {
     /// Icon for a node. `open` tells whether a directory is expanded.
     pub fn node(&self, kind: Kind, open: bool, error: bool) -> &'static str {
+        self.node_with(kind, open, error, false)
+    }
+
+    /// Like [`Icons::node`]; `denied` shows a lock instead of a warning,
+    /// since a permission problem is not damage.
+    pub fn node_with(&self, kind: Kind, open: bool, error: bool, denied: bool) -> &'static str {
+        if denied {
+            return match self.mode {
+                IconMode::Nerd => "\u{f023}",
+                IconMode::Unicode => "⊘",
+                IconMode::Ascii => "x",
+            };
+        }
         if error {
             return match self.mode {
                 IconMode::Nerd => "\u{f071}",

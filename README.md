@@ -70,9 +70,9 @@ Download the package for your distribution from the
 or install it from a terminal:
 
 ```sh
-sudo apt install ./ramas_0.1.0-1_amd64.deb      # Debian, Ubuntu, Mint…
-sudo dnf install ./ramas-0.1.0-1.x86_64.rpm     # Fedora, RHEL…
-sudo zypper install ./ramas-0.1.0-1.x86_64.rpm  # openSUSE
+sudo apt install ./ramas_0.1.1-1_amd64.deb      # Debian, Ubuntu, Mint…
+sudo dnf install ./ramas-0.1.1-1.x86_64.rpm     # Fedora, RHEL…
+sudo zypper install ./ramas-0.1.1-1.x86_64.rpm  # openSUSE
 ```
 
 Uninstall with `sudo apt remove ramas` or `sudo dnf remove ramas`.
@@ -94,9 +94,9 @@ Every option uses the same static executable, so it does not depend on your
 distribution's version. You can also unpack it yourself:
 
 ```sh
-tar -xzf ramas-0.1.0-x86_64-linux.tar.gz
-sha256sum -c ramas-0.1.0-x86_64-linux.tar.gz.sha256   # optional
-install -Dm755 ramas-0.1.0-x86_64-linux/ramas ~/.local/bin/ramas
+tar -xzf ramas-0.1.1-x86_64-linux.tar.gz
+sha256sum -c ramas-0.1.1-x86_64-linux.tar.gz.sha256   # optional
+install -Dm755 ramas-0.1.1-x86_64-linux/ramas ~/.local/bin/ramas
 ```
 
 ### From source
@@ -186,6 +186,15 @@ Symlinks are removed, never followed. Marking a directory covers its whole
 content, so a parent and its child are never marked together. `--read-only`
 disables deletion entirely, and so does an imported scan until you rescan its
 root with `r`.
+
+## Folders marked `[no access]`
+
+Without root, some folders cannot be read: system or container data owned by
+another user, for example. `ramas` marks them with `⊘` and `[no access]`,
+counts them as *Unreadable* in the status bar and explains it in the side
+panel: nothing is damaged, their content is simply not counted, so sizes
+above them are a minimum. To include them, scan as their owner, e.g.
+`sudo ramas --read-only PATH`.
 
 ## Type analysis
 

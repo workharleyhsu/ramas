@@ -82,13 +82,17 @@ fn row_line(app: &App, row: Row, width: usize, selected: bool) -> Line<'static> 
     let icon = if marked {
         app.icons.mark()
     } else {
-        app.icons
-            .node(node.kind, app.is_open(id), node.has(flags::ERROR))
+        app.icons.node_with(
+            node.kind,
+            app.is_open(id),
+            node.has(flags::ERROR),
+            node.has(flags::DENIED),
+        )
     };
     let icon_style = if covered {
         t.fg(t.marked).add_modifier(Modifier::BOLD)
     } else if node.has(flags::ERROR) {
-        t.fg(t.error)
+        t.fg(t.warn)
     } else if node.kind == Kind::Dir {
         t.fg(t.dir)
     } else {
@@ -98,7 +102,14 @@ fn row_line(app: &App, row: Row, width: usize, selected: bool) -> Line<'static> 
     let lead_w = lead.width();
     spans.push(Span::styled(lead, icon_style));
 
-    let name_w = width.saturating_sub(prefix_w + lead_w + right_w + 1);
+    let tag = if node.has(flags::DENIED) {
+        format!(" [{}]", app.s.no_access)
+    } else {
+        String::new()
+    };
+    let name_w = width
+        .saturating_sub(prefix_w + lead_w + right_w + 1)
+        .saturating_sub(tag.width());
     let name = fit(&display_name(app, id), name_w);
     let name_pad = name_w.saturating_sub(name.width());
     let name_style = match node.kind {
@@ -111,6 +122,9 @@ fn row_line(app: &App, row: Row, width: usize, selected: bool) -> Line<'static> 
         spans.extend(highlight(app, id, &name, name_style));
     } else {
         spans.push(Span::styled(name, name_style));
+    }
+    if !tag.is_empty() {
+        spans.push(Span::styled(tag, t.dimmed()));
     }
     spans.push(Span::raw(" ".repeat(name_pad + 1)));
     if let Some(diff) = &app.diff {

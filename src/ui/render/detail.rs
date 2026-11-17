@@ -92,8 +92,27 @@ pub fn lines(app: &mut App, width: usize) -> Vec<Line<'static>> {
     }
     out.push(kv(s.modified, format::date(node.mtime), t.text()));
     out.push(kv(s.permissions, format::mode(node.mode), t.text()));
+    if let Some(owner) = crate::ui::owner::of_path(&app.tree.path(id)) {
+        out.push(kv(s.owner, owner, t.text()));
+    }
+    let note = |text: String| -> Vec<Line<'static>> {
+        wrap_words(&text, width.saturating_sub(2))
+            .into_iter()
+            .enumerate()
+            .map(|(i, l)| {
+                let head = if i == 0 { "› " } else { "  " };
+                Line::from(Span::styled(format!("{head}{l}"), t.fg(t.warn)))
+            })
+            .collect()
+    };
+    if node.has(flags::DENIED) {
+        out.extend(note(s.flag_denied.to_owned()));
+        let path = app.tree.path(id).display().to_string();
+        out.extend(note(crate::i18n::fill(s.denied_hint, &[("path", &path)])));
+    } else if node.has(flags::ERROR) {
+        out.extend(note(s.flag_error.to_owned()));
+    }
     for (flag, text, color) in [
-        (flags::ERROR, s.flag_error, t.error),
         (flags::HARDLINK, s.flag_hardlink, t.warn),
         (flags::SKIP_PSEUDO, s.flag_pseudo, t.warn),
         (flags::SKIP_FS, s.flag_other_fs, t.warn),
@@ -102,10 +121,11 @@ pub fn lines(app: &mut App, width: usize) -> Vec<Line<'static>> {
             out.push(Line::from(Span::styled(format!("⚠ {text}"), t.fg(color))));
         }
     }
-    if node.kind == Kind::Dir && node.errors > u32::from(node.has(flags::ERROR)) {
-        out.push(Line::from(Span::styled(
-            format!("⚠ {}: {}", s.errors, node.errors),
-            t.fg(t.error),
+    let inner = node.errors - u32::from(node.has(flags::ERROR));
+    if node.kind == Kind::Dir && inner > 0 {
+        out.extend(note(crate::i18n::fill(
+            s.inner_unreadable,
+            &[("n", &inner.to_string())],
         )));
     }
     if node.kind != Kind::Dir {
@@ -164,6 +184,36 @@ fn section(title: &str, t: &crate::ui::theme::Theme) -> Line<'static> {
     ))
 }
 
+/// Word-wraps `text` to lines of at most `width` characters.
+fn wrap_words(text: &str, width: usize) -> Vec<String> {
+    let width = width.max(8);
+    let mut lines = Vec::new();
+    let mut cur = String::new();
+    let pieces = text.split_whitespace().flat_map(|w| {
+        // Words longer than a line (paths) are cut into line-sized chunks.
+        let chars: Vec<char> = w.chars().collect();
+        chars
+            .chunks(width)
+            .map(|c| c.iter().collect::<String>())
+            .collect::<Vec<_>>()
+    });
+    for word in pieces {
+        let word = word.as_str();
+        let needed = cur.chars().count() + usize::from(!cur.is_empty()) + word.chars().count();
+        if needed > width && !cur.is_empty() {
+            lines.push(std::mem::take(&mut cur));
+        }
+        if !cur.is_empty() {
+            cur.push(' ');
+        }
+        cur.push_str(word);
+    }
+    if !cur.is_empty() {
+        lines.push(cur);
+    }
+    lines
+}
+
 /// Splits `text` in chunks of at most `width` characters.
 fn wrap(text: &str, width: usize) -> Vec<String> {
     let chars: Vec<char> = text.chars().collect();
@@ -177,6 +227,16 @@ fn wrap(text: &str, width: usize) -> Vec<String> {
 mod tests {
     use super::*;
     use crate::ui::app::test_util::*;
+
+    #[test]
+    fn wrap_words_breaks_long_paths() {
+        let lines = wrap_words("run: sudo ramas /very/long/path/that/does/not/fit", 12);
+        assert!(lines.iter().all(|l| l.chars().count() <= 12), "{lines:?}");
+        assert_eq!(
+            lines.concat().replace(' ', ""),
+            "run:sudoramas/very/long/path/that/does/not/fit"
+        );
+    }
     use crate::ui::render::test_util::render;
 
     fn text(app: &mut App) -> Vec<String> {

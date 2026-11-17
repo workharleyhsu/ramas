@@ -7,6 +7,7 @@ pub mod icons;
 pub mod job;
 pub mod mouse;
 pub mod ops;
+pub mod owner;
 pub mod render;
 pub mod rows;
 pub mod terminal;
