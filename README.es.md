@@ -52,9 +52,9 @@ Bajá el paquete de tu distribución desde el
 o instalalo desde una terminal:
 
 ```sh
-sudo apt install ./ramas_0.2.0-1_amd64.deb      # Debian, Ubuntu, Mint…
-sudo dnf install ./ramas-0.2.0-1.x86_64.rpm     # Fedora, RHEL…
-sudo zypper install ./ramas-0.2.0-1.x86_64.rpm  # openSUSE
+sudo apt install ./ramas_0.2.1-1_amd64.deb      # Debian, Ubuntu, Mint…
+sudo dnf install ./ramas-0.2.1-1.x86_64.rpm     # Fedora, RHEL…
+sudo zypper install ./ramas-0.2.1-1.x86_64.rpm  # openSUSE
 ```
 
 Se desinstala con `sudo apt remove ramas` o `sudo dnf remove ramas`.
@@ -76,9 +76,9 @@ Todas las opciones usan el mismo ejecutable estático, así que no depende de la
 versión de tu distribución. También podés descomprimirlo vos:
 
 ```sh
-tar -xzf ramas-0.2.0-x86_64-linux.tar.gz
-sha256sum -c ramas-0.2.0-x86_64-linux.tar.gz.sha256   # opcional
-install -Dm755 ramas-0.2.0-x86_64-linux/ramas ~/.local/bin/ramas
+tar -xzf ramas-0.2.1-x86_64-linux.tar.gz
+sha256sum -c ramas-0.2.1-x86_64-linux.tar.gz.sha256   # opcional
+install -Dm755 ramas-0.2.1-x86_64-linux/ramas ~/.local/bin/ramas
 ```
 
 ### Desde el código

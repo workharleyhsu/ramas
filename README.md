@@ -48,9 +48,9 @@ Download the package for your distribution from the
 or install it from a terminal:
 
 ```sh
-sudo apt install ./ramas_0.2.0-1_amd64.deb      # Debian, Ubuntu, Mint…
-sudo dnf install ./ramas-0.2.0-1.x86_64.rpm     # Fedora, RHEL…
-sudo zypper install ./ramas-0.2.0-1.x86_64.rpm  # openSUSE
+sudo apt install ./ramas_0.2.1-1_amd64.deb      # Debian, Ubuntu, Mint…
+sudo dnf install ./ramas-0.2.1-1.x86_64.rpm     # Fedora, RHEL…
+sudo zypper install ./ramas-0.2.1-1.x86_64.rpm  # openSUSE
 ```
 
 Uninstall with `sudo apt remove ramas` or `sudo dnf remove ramas`.
@@ -72,9 +72,9 @@ Every option uses the same static executable, so it does not depend on your
 distribution's version. You can also unpack it yourself:
 
 ```sh
-tar -xzf ramas-0.2.0-x86_64-linux.tar.gz
-sha256sum -c ramas-0.2.0-x86_64-linux.tar.gz.sha256   # optional
-install -Dm755 ramas-0.2.0-x86_64-linux/ramas ~/.local/bin/ramas
+tar -xzf ramas-0.2.1-x86_64-linux.tar.gz
+sha256sum -c ramas-0.2.1-x86_64-linux.tar.gz.sha256   # optional
+install -Dm755 ramas-0.2.1-x86_64-linux/ramas ~/.local/bin/ramas
 ```
 
 ### From source
