@@ -54,6 +54,26 @@ pub fn draw(f: &mut Frame, app: &mut App) {
             let view = view.clone();
             types::draw(f, app, &view);
         }
+        Overlay::ThemePicker { .. } => {}
+    }
+    // The picker sits on the right so the tree shows the previewed theme.
+    let theme = app.theme.clone();
+    let labels = tui_themes::Labels {
+        title: app.s.theme,
+        filter: app.s.theme_filter,
+        placeholder: app.s.theme_placeholder,
+        hint: app.s.theme_keys,
+        no_match: app.s.theme_no_match,
+        invalid: app.s.theme_invalid,
+        ascii: app.icons.mode == crate::cli::IconMode::Ascii,
+    };
+    if let Overlay::ThemePicker { picker, .. } = &mut app.overlay {
+        picker.render(
+            tui_themes::Picker::area(main),
+            f.buffer_mut(),
+            &theme,
+            &labels,
+        );
     }
     if let Some(job) = &app.job {
         let settings_title = app.s.rescanning;
@@ -109,6 +129,7 @@ fn draw_hint(f: &mut Frame, area: Rect, app: &App) {
                 Overlay::Help => app.s.help_close,
                 Overlay::Types(v) if v.list.is_some() => app.s.category_files_hint,
                 Overlay::Types(_) => app.s.types_hint,
+                Overlay::ThemePicker { .. } => app.s.theme_hint,
                 _ => app.s.hint_browse,
             };
             let style = if app.message.is_some() {
@@ -147,8 +168,10 @@ pub(crate) mod test_util {
 #[cfg(test)]
 mod theme_tests {
     use super::test_util::render;
+    use crate::ui::app::Overlay;
     use crate::ui::app::test_util::*;
     use crate::ui::theme::{Catalog, ColorDepth, default_theme};
+    use crossterm::event::KeyCode;
     use ratatui::Terminal;
     use ratatui::backend::TestBackend;
 
@@ -176,21 +199,65 @@ mod theme_tests {
     }
 
     #[test]
-    fn shift_t_cycles_themes() {
+    fn shift_t_opens_the_picker_and_previews_live() {
         let mut app = app();
-        let ids: Vec<String> = app.themes.iter().map(|t| t.id.clone()).collect();
-        let mut seen = vec![app.theme.id.clone()];
-        for _ in 0..ids.len() {
-            press(&mut app, "T");
-            seen.push(app.theme.id.clone());
+        assert_eq!(app.theme.id, "ramas");
+        press(&mut app, "T");
+        assert!(matches!(app.overlay, Overlay::ThemePicker { .. }));
+        let body = render(&mut app, 100, 30).join("\n");
+        for needle in ["Theme", "* ramas", "Gruvbox Dark", "Enter save"] {
+            assert!(body.contains(needle), "{needle}: {body}");
         }
-        // One full turn visits every theme once and comes back.
-        let start = ids.iter().position(|id| *id == seen[0]).unwrap();
-        let mut turn = ids.clone();
-        turn.rotate_left(start);
-        assert_eq!(seen[..ids.len()], turn[..]);
-        assert_eq!(seen.last(), seen.first());
-        assert_eq!(app.message.as_deref(), Some("Theme: ramas"));
+        assert!(body.contains("Total"), "the tree stays visible: {body}");
+        // Moving previews at once; Esc brings the old theme back.
+        app.on_key(key(KeyCode::Down));
+        assert_eq!(app.theme.id, "ramas-light");
+        let mut term = Terminal::new(TestBackend::new(100, 20)).unwrap();
+        term.draw(|f| super::draw(f, &mut app)).unwrap();
+        assert_eq!(term.backend().buffer()[(5, 12)].bg, app.theme.bg);
+        assert_ne!(app.theme.bg, ratatui::style::Color::Reset);
+        app.on_key(key(KeyCode::Esc));
+        assert_eq!(app.overlay, Overlay::None);
+        assert_eq!(app.theme.id, "ramas");
+    }
+
+    #[test]
+    fn picker_filters_by_typing_and_enter_keeps_the_theme() {
+        let mut app = app();
+        press(&mut app, "T");
+        // Letters filter instead of acting as shortcuts: `q` does not quit.
+        press(&mut app, "gruvq");
+        assert!(!app.quit);
+        app.on_key(key(KeyCode::Backspace));
+        assert_eq!(app.theme.id, "gruvbox-dark");
+        app.on_key(key(KeyCode::Enter));
+        assert_eq!(app.overlay, Overlay::None);
+        assert_eq!(app.theme.id, "gruvbox-dark");
+        assert_eq!(app.message.as_deref(), Some("Theme: Gruvbox Dark"));
+    }
+
+    #[test]
+    fn picker_is_ascii_with_ascii_icons_and_translated() {
+        let mut app = app();
+        app.icons.mode = crate::cli::IconMode::Ascii;
+        app.s = &crate::i18n::ES;
+        press(&mut app, "T");
+        let mut term = Terminal::new(TestBackend::new(100, 24)).unwrap();
+        term.draw(|f| super::draw(f, &mut app)).unwrap();
+        let buf = term.backend().buffer();
+        let panel = tui_themes::Picker::area(ratatui::layout::Rect::new(0, 0, 100, 22));
+        let mut text = String::new();
+        for y in panel.top()..panel.bottom() {
+            for x in panel.left()..panel.right() {
+                text.push_str(buf[(x, y)].symbol());
+            }
+            text.push('\n');
+        }
+        assert!(text.is_ascii(), "{text}");
+        assert!(
+            text.contains("Tema") && text.contains("Enter guardar"),
+            "{text}"
+        );
     }
 
     #[test]

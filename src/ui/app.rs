@@ -7,9 +7,7 @@ use super::icons::Icons;
 use super::job::ScanJob;
 use super::ops::DeleteJob;
 use super::rows::{self, Row};
-#[cfg(test)]
-use super::theme::Catalog;
-use super::theme::Theme;
+use super::theme::{Theme, Themes};
 use crate::actions::marks::Marks;
 use crate::analysis::{self, Stats};
 use crate::classify::Classifier;
@@ -18,6 +16,7 @@ use crate::filter::Filter;
 use crate::i18n::Strings;
 use crate::scan::ScanOptions;
 use crate::tree::{NodeId, SortKey, Tree};
+use tui_themes::{Picker, PickerEvent, PickerKey};
 
 /// Startup settings resolved from CLI and config.
 #[derive(Debug, Clone)]
@@ -27,8 +26,8 @@ pub struct Settings {
     pub imported: bool,
     pub strings: &'static Strings,
     pub theme: Theme,
-    /// Themes cycled by `T` (the active one included).
-    pub themes: Vec<Theme>,
+    /// Themes offered by the picker (`T`).
+    pub themes: Themes,
     pub icons: Icons,
     pub scan_opts: ScanOptions,
     pub classifier: Classifier,
@@ -58,6 +57,11 @@ pub enum Overlay {
     Filters(FilterForm),
     /// Per-category analysis of a node.
     Types(TypesView),
+    /// Theme picker; `before` is restored on Esc.
+    ThemePicker {
+        picker: Box<Picker>,
+        before: Box<Theme>,
+    },
 }
 
 /// State of the type analysis view.
@@ -132,7 +136,7 @@ pub struct App {
     pub quit: bool,
     pub s: &'static Strings,
     pub theme: Theme,
-    pub themes: Vec<Theme>,
+    pub themes: Themes,
     pub icons: Icons,
     pub message: Option<String>,
     pub areas: Areas,
@@ -330,6 +334,7 @@ impl App {
             Overlay::Search { .. } => self.search_key(key),
             Overlay::Filters(_) => self.filter_key(key),
             Overlay::Types(_) => self.types_key(key),
+            Overlay::ThemePicker { .. } => self.theme_key(key),
             Overlay::Summary(_) => {
                 if matches!(key.code, KeyCode::Enter | KeyCode::Esc | KeyCode::Char('q')) {
                     self.overlay = Overlay::None;
@@ -362,7 +367,7 @@ impl App {
             KeyCode::Char('N') => self.next_hit(-1),
             KeyCode::Char('f') => self.open_filters(),
             KeyCode::Char('t') => self.open_types(),
-            KeyCode::Char('T') => self.cycle_theme(),
+            KeyCode::Char('T') => self.open_theme_picker(),
             KeyCode::Char('e') => self.export_here(),
             KeyCode::Esc => self.search = None,
             KeyCode::Char('q') => self.quit = true,
@@ -469,18 +474,58 @@ impl App {
         self.rebuild_rows(id);
     }
 
-    /// `T`: switches to the next theme.
-    pub fn cycle_theme(&mut self) {
-        if self.themes.is_empty() {
+    /// Opens the theme picker on the active theme.
+    pub fn open_theme_picker(&mut self) {
+        self.overlay = Overlay::ThemePicker {
+            picker: Box::new(Picker::new(&self.themes.catalog, &self.theme.id)),
+            before: Box::new(self.theme.clone()),
+        };
+    }
+
+    /// A key inside the theme picker: moving previews the theme at once,
+    /// Enter keeps it and Esc goes back to the previous one.
+    fn theme_key(&mut self, key: KeyEvent) {
+        let Overlay::ThemePicker { picker, before } = &mut self.overlay else {
             return;
+        };
+        let key = match key.code {
+            KeyCode::Up => PickerKey::Up,
+            KeyCode::Down => PickerKey::Down,
+            KeyCode::PageUp => PickerKey::PageUp,
+            KeyCode::PageDown => PickerKey::PageDown,
+            KeyCode::Home => PickerKey::Home,
+            KeyCode::End => PickerKey::End,
+            KeyCode::Enter => PickerKey::Enter,
+            KeyCode::Esc => PickerKey::Esc,
+            KeyCode::Backspace => PickerKey::Backspace,
+            KeyCode::Char(c)
+                if !key
+                    .modifiers
+                    .intersects(KeyModifiers::CONTROL | KeyModifiers::ALT) =>
+            {
+                PickerKey::Char(c)
+            }
+            _ => return,
+        };
+        match picker.on_key(key) {
+            PickerEvent::None => {}
+            PickerEvent::Preview(id) => {
+                if let Some(theme) = self.themes.get(&id) {
+                    self.theme = theme;
+                }
+            }
+            PickerEvent::Confirm(id) => {
+                if let Some(theme) = self.themes.get(&id) {
+                    self.theme = theme;
+                }
+                self.overlay = Overlay::None;
+                self.message = Some(format!("{}: {}", self.s.theme, self.theme.name));
+            }
+            PickerEvent::Cancel(_) => {
+                self.theme = (**before).clone();
+                self.overlay = Overlay::None;
+            }
         }
-        let i = self
-            .themes
-            .iter()
-            .position(|t| t.id == self.theme.id)
-            .map_or(0, |i| (i + 1) % self.themes.len());
-        self.theme = self.themes[i].clone();
-        self.message = Some(format!("{}: {}", self.s.theme, self.theme.name));
     }
 
     fn cycle_sort(&mut self) {
@@ -545,7 +590,7 @@ pub(crate) mod test_util {
             imported: false,
             strings: &crate::i18n::EN,
             theme: crate::ui::theme::default_theme(),
-            themes: Catalog::builtin().themes().into_iter().cloned().collect(),
+            themes: Themes::default(),
             icons: Icons {
                 mode: IconMode::Unicode,
             },

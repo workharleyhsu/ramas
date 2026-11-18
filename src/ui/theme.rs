@@ -24,6 +24,30 @@ pub fn canonical(name: &str) -> &str {
     }
 }
 
+/// Every available theme and the color depth of this terminal.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Themes {
+    /// Embedded and user themes, plus `custom` when the config defines it.
+    pub catalog: Catalog,
+    pub depth: ColorDepth,
+}
+
+impl Themes {
+    /// Theme by id, ready to draw with; `None` when it does not exist.
+    pub fn get(&self, id: &str) -> Option<Theme> {
+        self.catalog.get(id).map(|t| t.at(self.depth))
+    }
+}
+
+impl Default for Themes {
+    fn default() -> Self {
+        Themes {
+            catalog: Catalog::builtin(),
+            depth: ColorDepth::TrueColor,
+        }
+    }
+}
+
 /// The default theme at full color depth.
 pub fn default_theme() -> Theme {
     Catalog::builtin().get_or_plain(DEFAULT)
@@ -44,7 +68,7 @@ pub fn custom(catalog: &Catalog, spec: &BTreeMap<String, String>) -> Result<Them
         .map_err(|e| format!("[custom_theme] {e}"))
 }
 
-/// The active theme and every available one, converted to `depth`.
+/// The active theme, converted to `depth`, and the set it was picked from.
 ///
 /// `name` is the `--theme` or `theme = "…"` value; `spec` is the
 /// `[custom_theme]` table (empty when absent).
@@ -53,7 +77,7 @@ pub fn select(
     name: Option<&str>,
     spec: &BTreeMap<String, String>,
     depth: ColorDepth,
-) -> Result<(Theme, Vec<Theme>), String> {
+) -> Result<(Theme, Themes), String> {
     if !spec.is_empty() {
         let theme = custom(&catalog, spec)?;
         catalog.push(theme);
@@ -71,8 +95,7 @@ pub fn select(
             )
         })?
         .at(depth);
-    let all = catalog.themes().iter().map(|t| t.at(depth)).collect();
-    Ok((active, all))
+    Ok((active, Themes { catalog, depth }))
 }
 
 #[cfg(test)]
@@ -149,7 +172,7 @@ mod tests {
         )
         .unwrap();
         assert_eq!(active.id, DEFAULT);
-        assert!(all.iter().any(|t| t.id == CUSTOM));
+        assert!(all.get(CUSTOM).is_some());
     }
 
     #[test]
@@ -166,7 +189,11 @@ mod tests {
         let at = |depth| select(Catalog::builtin(), None, &spec(&[]), depth).unwrap();
         let (t, all) = at(ColorDepth::Ansi256);
         assert!(matches!(t.fg, Color::Indexed(_)));
-        assert!(all.iter().all(|t| t.depth == ColorDepth::Ansi256));
+        assert_eq!(all.depth, ColorDepth::Ansi256);
+        assert!(matches!(
+            all.get("gruvbox").or(all.get("gruvbox-dark")).unwrap().bg,
+            Color::Indexed(_)
+        ));
         let (plain, _) = at(ColorDepth::NoColor);
         assert_eq!(plain.fg(plain.value), Style::new());
         assert_eq!(plain.text(), Style::new());

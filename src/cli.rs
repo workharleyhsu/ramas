@@ -36,7 +36,7 @@ KEYS:
   / n N               search, next/prev f                 filters
   t                   type analysis     s                 cycle sort
   a                   apparent/disk     p                 toggle side panel
-  T                   cycle theme       e                 export JSON
+  T                   choose theme      e                 export JSON
   ?                   help              q                 quit
   Mouse: click selects, double click expands, wheel scrolls.
 
@@ -50,13 +50,13 @@ DELETING:
 CONFIGURATION (~/.config/ramas/config.toml, all keys optional):
   language = \"es\"              # en | es
   icons = \"nerd\"               # nerd | unicode | ascii
-  theme = \"gruvbox\"            # dark | light | high-contrast | gruvbox | custom
+  theme = \"gruvbox-dark\"       # any theme id (press T to browse them), or custom
   [categories]                  # replace a built-in list or add a category
   models = [\"gguf\", \"safetensors\"]
   [custom_theme]                # base = \"dark\", then fg, bg, accent, ... = \"#rrggbb\"
   base = \"dark\"
   accent = \"#ff8800\"
-  NO_COLOR disables colors.
+  NO_COLOR disables colors. Your own themes: ~/.config/tui-themes/themes/*.toml
 
 EXAMPLES:
   ramas                         scan the current directory
@@ -116,7 +116,7 @@ pub struct Cli {
     #[arg(long, conflicts_with = "icons")]
     pub no_icons: bool,
 
-    /// Color theme: dark, light, high-contrast, gruvbox or custom.
+    /// Color theme id, e.g. ramas, gruvbox-dark, high-contrast-dark or custom (T browses them).
     #[arg(long, value_name = "NAME")]
     pub theme: Option<String>,
 

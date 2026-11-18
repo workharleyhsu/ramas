@@ -13,7 +13,7 @@ use ramas::tree::{Kind, Meta, NodeId, Tree};
 use ramas::ui::app::{App, Settings};
 use ramas::ui::icons::Icons;
 use ramas::ui::render;
-use ramas::ui::theme::default_theme;
+use ramas::ui::theme::{Themes, default_theme};
 use ratatui::Terminal;
 use ratatui::backend::TestBackend;
 
@@ -104,7 +104,7 @@ fn main() -> anyhow::Result<()> {
         imported: false,
         strings: &ramas::i18n::EN,
         theme: default_theme(),
-        themes: vec![default_theme()],
+        themes: Themes::default(),
         icons: Icons {
             mode: IconMode::Unicode,
         },

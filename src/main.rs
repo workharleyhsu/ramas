@@ -8,7 +8,7 @@ use ramas::cli::{Cli, IconMode, Lang};
 use ramas::config::Config;
 use ramas::export;
 use ramas::scan::ScanOptions;
-use ramas::ui::theme::{self, Catalog, ColorDepth, Theme};
+use ramas::ui::theme::{self, Catalog, ColorDepth, Theme, Themes};
 use ramas::ui::{self, app::Settings, format, icons::Icons, job::ScanJob};
 
 fn main() -> Result<()> {
@@ -96,9 +96,9 @@ fn settings(cli: &Cli, config: &Config) -> Result<Settings> {
     })
 }
 
-/// Active theme and the `T` cycle, at the terminal's color depth
+/// Active theme and the set the picker offers, at the terminal's color depth
 /// (`NO_COLOR` included).
-fn themes(cli: &Cli, config: &Config) -> Result<(Theme, Vec<Theme>)> {
+fn themes(cli: &Cli, config: &Config) -> Result<(Theme, Themes)> {
     let name = cli.theme.as_deref().or(config.theme.as_deref());
     theme::select(
         Catalog::builtin(),
