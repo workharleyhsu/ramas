@@ -284,7 +284,12 @@ mod theme_tests {
             }
             text.push('\n');
         }
-        assert!(text.is_ascii(), "{text}");
+        // Borders, cursor and swatches are ASCII; theme names are data and
+        // may carry accents.
+        for glyph in ['╭', '╮', '╰', '╯', '─', '│', '▏', '●'] {
+            assert!(!text.contains(glyph), "{glyph}: {text}");
+        }
+        assert!(text.contains("+--") && text.contains('|'), "{text}");
         assert!(
             text.contains("Tema") && text.contains("Enter guardar"),
             "{text}"
