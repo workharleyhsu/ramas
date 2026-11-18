@@ -49,7 +49,7 @@ pub fn draw(f: &mut Frame, app: &App, form: &FilterForm) {
         lines.push(Line::default());
         lines.push(Line::from(Span::styled(
             format!("  {}", s.filter_invalid),
-            t.fg(t.error).add_modifier(Modifier::BOLD),
+            t.fg(t.danger).add_modifier(Modifier::BOLD),
         )));
     }
     f.render_widget(Paragraph::new(lines), inner);

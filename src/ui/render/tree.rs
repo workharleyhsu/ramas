@@ -142,7 +142,7 @@ fn row_line(app: &App, row: Row, width: usize, selected: bool) -> Line<'static> 
 
     spans.push(Span::styled(
         format!("{:>w$}", format::size(size), w = SIZE_W),
-        t.fg(t.size),
+        t.fg(t.value),
     ));
     if pct_w > 0 {
         spans.push(Span::styled(
@@ -154,7 +154,7 @@ fn row_line(app: &App, row: Row, width: usize, selected: bool) -> Line<'static> 
         spans.push(Span::raw(" "));
         spans.push(Span::styled(
             app.icons.bar(frac, bar_w),
-            t.fg(t.gradient(frac)),
+            t.fg(t.size_color(frac)),
         ));
     }
 
@@ -314,7 +314,7 @@ mod tests {
         term.draw(|f| crate::ui::render::draw(f, &mut app)).unwrap();
         let buf = term.backend().buffer();
         // Row 0 border, row 1 root, row 2 a, row 3 b (selected).
-        let sel = app.theme.selected_bg;
+        let sel = app.theme.selection_bg;
         assert_eq!(buf[(5, 3)].bg, sel);
         assert_ne!(buf[(5, 2)].bg, sel);
         app.on_key(key(KeyCode::Up));

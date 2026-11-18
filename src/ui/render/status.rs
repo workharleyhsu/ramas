@@ -32,7 +32,7 @@ pub fn draw(f: &mut Frame, area: Rect, app: &App) {
         spans.push(Span::raw(" · "));
         spans.push(Span::styled(
             format!("{} {}", s.errors, root.errors),
-            if t.color {
+            if t.colored() {
                 t.status().fg(t.warn)
             } else {
                 t.status()

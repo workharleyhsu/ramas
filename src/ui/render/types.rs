@@ -56,9 +56,9 @@ fn table(app: &mut App, view: &TypesView, area: Rect) -> Vec<Line<'static>> {
         let label = fit(s.category(app.classifier.name(cat)), 14);
         let mut line = Line::from(vec![
             Span::styled(format!(" {label:<15}"), t.text()),
-            Span::styled(format!("{:>11}", format::size(c.size)), t.fg(t.size)),
+            Span::styled(format!("{:>11}", format::size(c.size)), t.fg(t.value)),
             Span::styled(format!("{:>9}  ", c.count), t.dimmed()),
-            Span::styled(app.icons.bar(frac, bar_w), t.fg(t.gradient(frac))),
+            Span::styled(app.icons.bar(frac, bar_w), t.fg(t.size_color(frac))),
             Span::styled(format!(" {}", format::percent(frac)), t.dimmed()),
         ]);
         if i == view.cursor {
@@ -99,7 +99,7 @@ fn files(app: &App, view: &TypesView, list: &CategoryList, area: Rect) -> Vec<Li
             };
             let mut line = Line::from(vec![
                 Span::styled(format!(" {mark}"), t.fg(t.marked)),
-                Span::styled(size, t.fg(t.size)),
+                Span::styled(size, t.fg(t.value)),
                 Span::styled(rel, name_style),
             ]);
             if i == list.cursor {

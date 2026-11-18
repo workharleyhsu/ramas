@@ -35,7 +35,7 @@ pub fn confirm(f: &mut Frame, app: &App, focus: Button) {
         let path = app.tree.path(id).display().to_string();
         let path = shorten(&path, width.saturating_sub(size.len() + 1));
         lines.push(Line::from(vec![
-            Span::styled(size, t.fg(t.size)),
+            Span::styled(size, t.fg(t.value)),
             Span::styled(path, t.text()),
         ]));
     }
@@ -79,7 +79,7 @@ pub fn type_confirm(f: &mut Frame, app: &App, input: &str) {
     let lines = vec![
         Line::from(Span::styled(
             format!(" {}", fill(s.confirm_prompt, &[("word", s.confirm_word)])),
-            t.fg(t.error).add_modifier(Modifier::BOLD),
+            t.fg(t.danger).add_modifier(Modifier::BOLD),
         )),
         Line::default(),
         Line::from(vec![
@@ -121,7 +121,7 @@ pub fn summary(f: &mut Frame, app: &App, sum: &DeleteSummary) {
                 " {}",
                 fill(s.summary_failed, &[("n", &sum.failed.len().to_string())])
             ),
-            t.fg(t.error),
+            t.fg(t.danger),
         )));
         for (path, why) in sum.failed.iter().take(MAX_LISTED) {
             let why_w = why.chars().count() + 5;

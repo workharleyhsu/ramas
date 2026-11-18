@@ -7,6 +7,8 @@ use super::icons::Icons;
 use super::job::ScanJob;
 use super::ops::DeleteJob;
 use super::rows::{self, Row};
+#[cfg(test)]
+use super::theme::Catalog;
 use super::theme::Theme;
 use crate::actions::marks::Marks;
 use crate::analysis::{self, Stats};
@@ -475,7 +477,7 @@ impl App {
         let i = self
             .themes
             .iter()
-            .position(|t| t.name == self.theme.name)
+            .position(|t| t.id == self.theme.id)
             .map_or(0, |i| (i + 1) % self.themes.len());
         self.theme = self.themes[i].clone();
         self.message = Some(format!("{}: {}", self.s.theme, self.theme.name));
@@ -542,11 +544,8 @@ pub(crate) mod test_util {
             read_only: false,
             imported: false,
             strings: &crate::i18n::EN,
-            theme: Theme::dark(),
-            themes: Theme::BUILTIN
-                .iter()
-                .filter_map(|n| Theme::builtin(n))
-                .collect(),
+            theme: crate::ui::theme::default_theme(),
+            themes: Catalog::builtin().themes().into_iter().cloned().collect(),
             icons: Icons {
                 mode: IconMode::Unicode,
             },

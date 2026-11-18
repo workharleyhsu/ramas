@@ -148,14 +148,15 @@ pub(crate) mod test_util {
 mod theme_tests {
     use super::test_util::render;
     use crate::ui::app::test_util::*;
-    use crate::ui::theme::Theme;
+    use crate::ui::theme::{Catalog, ColorDepth, default_theme};
     use ratatui::Terminal;
     use ratatui::backend::TestBackend;
 
     #[test]
     fn every_theme_renders_every_screen() {
-        for name in Theme::BUILTIN {
-            let theme = Theme::builtin(name).unwrap();
+        let catalog = Catalog::builtin();
+        for theme in catalog.themes().into_iter().cloned() {
+            let name = theme.id.clone();
             for keys in ["", "?", "d", "t", "f", "/a"] {
                 let mut a = app();
                 a.theme = theme.clone();
@@ -177,19 +178,25 @@ mod theme_tests {
     #[test]
     fn shift_t_cycles_themes() {
         let mut app = app();
-        let mut seen = vec![app.theme.name.clone()];
-        for _ in 0..4 {
+        let ids: Vec<String> = app.themes.iter().map(|t| t.id.clone()).collect();
+        let mut seen = vec![app.theme.id.clone()];
+        for _ in 0..ids.len() {
             press(&mut app, "T");
-            seen.push(app.theme.name.clone());
+            seen.push(app.theme.id.clone());
         }
-        assert_eq!(seen, ["dark", "light", "high-contrast", "gruvbox", "dark"]);
-        assert_eq!(app.message.as_deref(), Some("Theme: dark"));
+        // One full turn visits every theme once and comes back.
+        let start = ids.iter().position(|id| *id == seen[0]).unwrap();
+        let mut turn = ids.clone();
+        turn.rotate_left(start);
+        assert_eq!(seen[..ids.len()], turn[..]);
+        assert_eq!(seen.last(), seen.first());
+        assert_eq!(app.message.as_deref(), Some("Theme: ramas"));
     }
 
     #[test]
     fn no_color_renders_without_colors() {
         let mut app = app();
-        app.theme = Theme::dark().without_color();
+        app.theme = default_theme().at(ColorDepth::NoColor);
         press(&mut app, "j");
         let mut term = Terminal::new(TestBackend::new(100, 20)).unwrap();
         term.draw(|f| super::draw(f, &mut app)).unwrap();

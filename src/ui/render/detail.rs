@@ -67,8 +67,8 @@ pub fn lines(app: &mut App, width: usize) -> Vec<Line<'static>> {
     };
     let kv = |l: &str, v: String, style: Style| Line::from(vec![label(l), Span::styled(v, style)]);
     out.push(kv(s.kind, kind.to_owned(), t.text()));
-    out.push(kv(s.on_disk, format::size(node.disk), t.fg(t.size)));
-    out.push(kv(s.apparent, format::size(node.apparent), t.fg(t.size)));
+    out.push(kv(s.on_disk, format::size(node.disk), t.fg(t.value)));
+    out.push(kv(s.apparent, format::size(node.apparent), t.fg(t.value)));
     if node.kind == Kind::Dir {
         out.push(kv(s.files, node.files.to_string(), t.text()));
         out.push(kv(s.subdirs, node.dirs.to_string(), t.text()));
@@ -147,7 +147,7 @@ pub fn lines(app: &mut App, width: usize) -> Vec<Line<'static>> {
             .unwrap_or_default();
         let name = fit(&rel, width.saturating_sub(size.width()));
         out.push(Line::from(vec![
-            Span::styled(size, t.fg(t.size)),
+            Span::styled(size, t.fg(t.value)),
             Span::styled(name, t.text()),
         ]));
     }
@@ -164,12 +164,12 @@ pub fn lines(app: &mut App, width: usize) -> Vec<Line<'static>> {
         if bar_w > 0 {
             spans.push(Span::styled(
                 app.icons.bar(frac, bar_w),
-                t.fg(t.gradient(frac)),
+                t.fg(t.size_color(frac)),
             ));
         }
         spans.push(Span::styled(
             format!("{:>10}", format::size(c.size)),
-            t.fg(t.size),
+            t.fg(t.value),
         ));
         spans.push(Span::styled(format!("{:>7}", c.count), t.dimmed()));
         out.push(Line::from(spans));

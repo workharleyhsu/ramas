@@ -8,7 +8,8 @@ use ramas::cli::{Cli, IconMode, Lang};
 use ramas::config::Config;
 use ramas::export;
 use ramas::scan::ScanOptions;
-use ramas::ui::{self, app::Settings, format, icons::Icons, job::ScanJob, theme::Theme};
+use ramas::ui::theme::{self, Catalog, ColorDepth, Theme};
+use ramas::ui::{self, app::Settings, format, icons::Icons, job::ScanJob};
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
@@ -95,35 +96,15 @@ fn settings(cli: &Cli, config: &Config) -> Result<Settings> {
     })
 }
 
-/// Active theme and the `T` cycle, honoring `NO_COLOR`.
+/// Active theme and the `T` cycle, at the terminal's color depth
+/// (`NO_COLOR` included).
 fn themes(cli: &Cli, config: &Config) -> Result<(Theme, Vec<Theme>)> {
-    let mut all: Vec<Theme> = Theme::BUILTIN
-        .iter()
-        .filter_map(|n| Theme::builtin(n))
-        .collect();
-    if !config.custom_theme.is_empty() {
-        all.push(Theme::custom(&config.custom_theme).map_err(anyhow::Error::msg)?);
-    }
-    let name = cli
-        .theme
-        .as_deref()
-        .or(config.theme.as_deref())
-        .unwrap_or("dark");
-    let theme = match name {
-        "custom" if config.custom_theme.is_empty() => {
-            anyhow::bail!("theme \"custom\" needs a [custom_theme] table in the config")
-        }
-        _ => all
-            .iter()
-            .find(|t| t.name == name)
-            .cloned()
-            .with_context(|| {
-                format!("unknown theme {name:?} (dark, light, high-contrast, gruvbox, custom)")
-            })?,
-    };
-    if std::env::var_os("NO_COLOR").is_some_and(|v| !v.is_empty()) {
-        let plain = |t: Theme| t.without_color();
-        return Ok((plain(theme), all.into_iter().map(plain).collect()));
-    }
-    Ok((theme, all))
+    let name = cli.theme.as_deref().or(config.theme.as_deref());
+    theme::select(
+        Catalog::builtin(),
+        name,
+        &config.custom_theme,
+        ColorDepth::detect(),
+    )
+    .map_err(anyhow::Error::msg)
 }
