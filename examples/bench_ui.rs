@@ -105,6 +105,8 @@ fn main() -> anyhow::Result<()> {
         strings: &ramas::i18n::EN,
         theme: default_theme(),
         themes: Themes::default(),
+        config_path: None,
+        notice: None,
         icons: Icons {
             mode: IconMode::Unicode,
         },

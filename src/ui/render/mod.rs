@@ -237,6 +237,37 @@ mod theme_tests {
     }
 
     #[test]
+    fn enter_saves_the_theme_and_esc_does_not() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("config.toml");
+        std::fs::write(&path, "# mine\nicons = \"ascii\"\n").unwrap();
+        let mut app = app();
+        app.config_path = Some(path.clone());
+        press(&mut app, "T");
+        app.on_key(key(KeyCode::Down));
+        app.on_key(key(KeyCode::Esc));
+        assert_eq!(
+            std::fs::read_to_string(&path).unwrap(),
+            "# mine\nicons = \"ascii\"\n"
+        );
+        press(&mut app, "T");
+        app.on_key(key(KeyCode::Down));
+        app.on_key(key(KeyCode::Enter));
+        assert_eq!(
+            std::fs::read_to_string(&path).unwrap(),
+            "# mine\nicons = \"ascii\"\ntheme = \"ramas-light\"\n"
+        );
+        let saved = crate::config::Config::load(Some(&path)).unwrap();
+        assert_eq!(saved.theme.as_deref(), Some("ramas-light"));
+        // A config that cannot be written is reported, not fatal.
+        app.config_path = Some("/proc/nope/config.toml".into());
+        press(&mut app, "T");
+        app.on_key(key(KeyCode::Enter));
+        assert!(app.message.as_deref().unwrap().contains("/proc/nope"));
+        assert_eq!(app.theme.id, "ramas-light");
+    }
+
+    #[test]
     fn picker_is_ascii_with_ascii_icons_and_translated() {
         let mut app = app();
         app.icons.mode = crate::cli::IconMode::Ascii;

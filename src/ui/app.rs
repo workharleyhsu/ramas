@@ -28,6 +28,10 @@ pub struct Settings {
     pub theme: Theme,
     /// Themes offered by the picker (`T`).
     pub themes: Themes,
+    /// Config file where the picked theme is saved; `None` = do not save.
+    pub config_path: Option<std::path::PathBuf>,
+    /// Message shown until the first key press.
+    pub notice: Option<String>,
     pub icons: Icons,
     pub scan_opts: ScanOptions,
     pub classifier: Classifier,
@@ -137,6 +141,7 @@ pub struct App {
     pub s: &'static Strings,
     pub theme: Theme,
     pub themes: Themes,
+    pub config_path: Option<std::path::PathBuf>,
     pub icons: Icons,
     pub message: Option<String>,
     pub areas: Areas,
@@ -198,8 +203,9 @@ impl App {
             s: settings.strings,
             theme: settings.theme,
             themes: settings.themes,
+            config_path: settings.config_path,
             icons: settings.icons,
-            message: None,
+            message: settings.notice,
             areas: Areas::default(),
             read_only: settings.read_only,
             imported: settings.imported,
@@ -520,6 +526,13 @@ impl App {
                 }
                 self.overlay = Overlay::None;
                 self.message = Some(format!("{}: {}", self.s.theme, self.theme.name));
+                // Remember the choice. A config that cannot be written only
+                // costs a message: the theme stays for this session.
+                if let Some(path) = &self.config_path
+                    && let Err(error) = tui_themes::save_theme(path, &["theme"], &self.theme.id)
+                {
+                    self.message = Some(error);
+                }
             }
             PickerEvent::Cancel(_) => {
                 self.theme = (**before).clone();
@@ -591,6 +604,8 @@ pub(crate) mod test_util {
             strings: &crate::i18n::EN,
             theme: crate::ui::theme::default_theme(),
             themes: Themes::default(),
+            config_path: None,
+            notice: None,
             icons: Icons {
                 mode: IconMode::Unicode,
             },

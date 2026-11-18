@@ -68,6 +68,72 @@ pub fn custom(catalog: &Catalog, spec: &BTreeMap<String, String>) -> Result<Them
         .map_err(|e| format!("[custom_theme] {e}"))
 }
 
+/// What the user asked for, from the command line and the config file.
+#[derive(Debug, Clone, Copy)]
+pub struct Request<'a> {
+    /// `--theme`: a wrong name is an error.
+    pub cli: Option<&'a str>,
+    /// `theme = "…"` in the config: a wrong name falls back to the default
+    /// theme with a notice, so a deleted or broken theme file never keeps
+    /// ramas from starting.
+    pub config: Option<&'a str>,
+    /// The `[custom_theme]` table (empty when absent).
+    pub custom: &'a BTreeMap<String, String>,
+}
+
+/// Outcome of [`start`].
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Start {
+    pub theme: Theme,
+    pub themes: Themes,
+    /// Something the user should know: an unknown configured theme, or
+    /// theme files that failed to load.
+    pub notice: Option<String>,
+}
+
+/// Picks the theme to start with. `failed` is the text for "N theme files
+/// could not be loaded" and `unknown` the one for an unknown theme name.
+pub fn start(
+    catalog: Catalog,
+    request: Request<'_>,
+    depth: ColorDepth,
+    unknown: &str,
+    failed: &str,
+) -> Result<Start, String> {
+    let mut notice = match catalog.errors().len() {
+        0 => None,
+        n => Some(format!("{n} {failed}")),
+    };
+    if let Some(name) = request.cli {
+        let (theme, themes) = select(catalog, Some(name), request.custom, depth)?;
+        return Ok(Start {
+            theme,
+            themes,
+            notice,
+        });
+    }
+    let (theme, themes) = match select(catalog.clone(), request.config, request.custom, depth) {
+        Ok(found) => found,
+        Err(_)
+            if request
+                .config
+                .is_some_and(|n| catalog.get(canonical(n)).is_none() && n != CUSTOM) =>
+        {
+            notice = Some(format!(
+                "{unknown} {:?}",
+                request.config.unwrap_or_default()
+            ));
+            select(catalog, None, request.custom, depth)?
+        }
+        Err(e) => return Err(e),
+    };
+    Ok(Start {
+        theme,
+        themes,
+        notice,
+    })
+}
+
 /// The active theme, converted to `depth`, and the set it was picked from.
 ///
 /// `name` is the `--theme` or `theme = "…"` value; `spec` is the
@@ -182,6 +248,64 @@ mod tests {
         assert!(err(&[("fg", "notacolor")]).starts_with("[custom_theme] fg: invalid color"));
         assert!(err(&[("background", "#000000")]).contains("unknown theme key \"background\""));
         assert_eq!(err(&[("base", "nope")]), "unknown base theme \"nope\"");
+    }
+
+    #[test]
+    fn a_wrong_config_theme_falls_back_but_a_wrong_cli_theme_fails() {
+        let none = spec(&[]);
+        let go = |cli, config| {
+            start(
+                Catalog::builtin(),
+                Request {
+                    cli,
+                    config,
+                    custom: &none,
+                },
+                ColorDepth::TrueColor,
+                "Unknown theme",
+                "theme file(s) failed",
+            )
+        };
+        let ok = go(None, Some("gruvbox")).unwrap();
+        assert_eq!(ok.theme.id, "gruvbox-dark");
+        assert_eq!(ok.notice, None);
+        let fallback = go(None, Some("gone")).unwrap();
+        assert_eq!(fallback.theme.id, DEFAULT);
+        assert_eq!(fallback.notice.as_deref(), Some("Unknown theme \"gone\""));
+        assert!(
+            go(Some("gone"), None)
+                .unwrap_err()
+                .starts_with("unknown theme")
+        );
+        // The command line wins over the config.
+        assert_eq!(
+            go(Some("light"), Some("gone")).unwrap().theme.id,
+            "ramas-light"
+        );
+        // `custom` without its table stays an error: the config is wrong.
+        assert!(go(None, Some("custom")).is_err());
+    }
+
+    #[test]
+    fn broken_user_theme_files_only_produce_a_notice() {
+        let dir = tempfile::tempdir().unwrap();
+        std::fs::write(dir.path().join("bad.toml"), "nope").unwrap();
+        let none = spec(&[]);
+        let started = start(
+            Catalog::with_user_dir(dir.path()),
+            Request {
+                cli: None,
+                config: Some("bad"),
+                custom: &none,
+            },
+            ColorDepth::TrueColor,
+            "Unknown theme",
+            "theme file(s) failed",
+        )
+        .unwrap();
+        assert_eq!(started.theme.id, DEFAULT);
+        assert_eq!(started.notice.as_deref(), Some("Unknown theme \"bad\""));
+        assert_eq!(started.themes.catalog.errors().len(), 1);
     }
 
     #[test]

@@ -98,6 +98,8 @@ fn main() {
         strings,
         theme: default_theme(),
         themes: Themes::default(),
+        config_path: None,
+        notice: None,
         icons: Icons {
             mode: IconMode::Unicode,
         },

@@ -8,7 +8,7 @@ use ramas::cli::{Cli, IconMode, Lang};
 use ramas::config::Config;
 use ramas::export;
 use ramas::scan::ScanOptions;
-use ramas::ui::theme::{self, Catalog, ColorDepth, Theme, Themes};
+use ramas::ui::theme::{self, Catalog, ColorDepth};
 use ramas::ui::{self, app::Settings, format, icons::Icons, job::ScanJob};
 
 fn main() -> Result<()> {
@@ -78,14 +78,34 @@ fn settings(cli: &Cli, config: &Config) -> Result<Settings> {
     } else {
         cli.icons.or(config.icons).unwrap_or(IconMode::Unicode)
     };
-    let (theme, themes) = themes(cli, config)?;
+    let strings = ramas::i18n::strings(cli.lang.or(config.language).unwrap_or(Lang::En));
+    // Embedded themes plus the user's own. A broken theme file is reported
+    // and skipped; it never keeps ramas from starting.
+    let catalog = Catalog::load();
+    for error in catalog.errors() {
+        eprintln!("ramas: {error}");
+    }
+    let started = theme::start(
+        catalog,
+        theme::Request {
+            cli: cli.theme.as_deref(),
+            config: config.theme.as_deref(),
+            custom: &config.custom_theme,
+        },
+        ColorDepth::detect(),
+        strings.unknown_theme,
+        strings.theme_files_failed,
+    )
+    .map_err(anyhow::Error::msg)?;
     Ok(Settings {
         apparent: cli.apparent,
         read_only: cli.read_only,
         imported: false,
-        strings: ramas::i18n::strings(cli.lang.or(config.language).unwrap_or(Lang::En)),
-        theme,
-        themes,
+        strings,
+        theme: started.theme,
+        themes: started.themes,
+        config_path: cli.config.clone().or_else(Config::default_path),
+        notice: started.notice,
         icons: Icons { mode: icons },
         scan_opts: ScanOptions {
             one_file_system: cli.one_file_system,
@@ -94,17 +114,4 @@ fn settings(cli: &Cli, config: &Config) -> Result<Settings> {
         diff: None,
         scanned_at: 0,
     })
-}
-
-/// Active theme and the set the picker offers, at the terminal's color depth
-/// (`NO_COLOR` included).
-fn themes(cli: &Cli, config: &Config) -> Result<(Theme, Themes)> {
-    let name = cli.theme.as_deref().or(config.theme.as_deref());
-    theme::select(
-        Catalog::builtin(),
-        name,
-        &config.custom_theme,
-        ColorDepth::detect(),
-    )
-    .map_err(anyhow::Error::msg)
 }
