@@ -30,7 +30,7 @@ fuzzy search, filters, per-type analysis, themes and JSON export/diff.
   cache/temp and others, configurable; open a category to list and mark its
   largest files.
 - **Themes and icons**: 31 themes (Catppuccin, Gruvbox, Nord, Dracula, light,
-  retro, high-contrast, color-blind safe…) picked with `T` and a live preview,
+  retro, high-contrast, color-blind safe…) picked with `Shift+T` and a live preview,
   plus your own; Nerd Font, Unicode or pure ASCII icons; honors `NO_COLOR`.
 - **English and Spanish UI** (`--lang es`).
 - **Export / import / diff**: save a scan as JSON, browse it later, or compare
@@ -121,7 +121,7 @@ the same.
 | `s` | Cycle sort: size, name, date, items |
 | `a` | Toggle apparent size / disk usage |
 | `p` | Show / hide the side panel |
-| `T` | Choose a theme (live preview) |
+| `Shift+T` | Choose a theme (live preview) |
 | `e` | Export JSON to the current directory |
 | `?` | Help |
 | `q` | Quit |
@@ -201,7 +201,7 @@ Command line flags win over the file.
 ```toml
 language = "es"            # en | es
 icons = "nerd"             # nerd | unicode | ascii
-theme = "gruvbox-dark"     # any theme id; `T` picks one and saves it here
+theme = "gruvbox-dark"     # any theme id; `Shift+T` picks one and saves it here
 
 [categories]               # a built-in key replaces its list, a new key adds a category
 video = ["mp4", "mkv", "webm"]
@@ -219,7 +219,7 @@ status_bg grew shrank new matched`.
 
 ## Themes
 
-Press `T` to open the theme picker: the arrows preview each theme on the
+Press `Shift+T` to open the theme picker: the arrows preview each theme on the
 whole screen, typing filters the list, `Enter` keeps the theme and saves it
 in the config file, and `Esc` goes back to the one you had. `--theme ID`
 picks one for a single run.

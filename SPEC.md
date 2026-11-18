@@ -103,7 +103,7 @@ del nodo seleccionado; `Enter` lista los archivos más pesados de la categoría
 ### Temas e iconos
 Temas: 31 incluidos en cinco familias (`src/themes/`, `themes/*.toml`), más
 los del usuario en `~/.config/ramas/themes/` y `custom` desde la
-configuración. Por defecto `ramas` (el `dark` original). `T` abre el selector
+configuración. Por defecto `ramas` (el `dark` original). `Shift+T` abre el selector
 con vista previa en vivo y `Enter` guarda la elección en la configuración. Los
 nombres de la 0.1 (`dark`, `light`, `high-contrast`, `gruvbox`) siguen
 valiendo. Iconos Nerd Font opcionales (`icons = "nerd"`),

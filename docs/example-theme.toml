@@ -2,7 +2,7 @@
 #
 # Copy this file to ~/.config/ramas/themes/<name>.toml and edit it. The file
 # name (without .toml, in lowercase) is the theme's id: it is what the config
-# file holds and what the picker (key T) saves.
+# file holds and what the picker (Shift+T) saves.
 #
 # A color is one of:
 #   "#rrggbb"    a 24-bit color (terminals with fewer colors get the nearest)

@@ -32,7 +32,7 @@ exportación/diff en JSON.
   código, caché/temporales y otros, configurable; abrí una categoría para
   listar y marcar sus archivos más pesados.
 - **Temas e iconos**: 31 temas (Catppuccin, Gruvbox, Nord, Dracula, claros,
-  retro, alto contraste, seguros para daltonismo…) que se eligen con `T` con
+  retro, alto contraste, seguros para daltonismo…) que se eligen con `Shift+T` con
   vista previa en vivo, más los tuyos; iconos Nerd Font, Unicode o ASCII puro;
   respeta `NO_COLOR`.
 - **Interfaz en inglés y español** (`--lang es`).
@@ -124,7 +124,7 @@ ramas --diff home.json ~      # resaltar qué creció, se achicó o es nuevo
 | `s` | Ciclar orden: tamaño, nombre, fecha, ítems |
 | `a` | Alternar tamaño aparente / en disco |
 | `p` | Mostrar / ocultar el panel lateral |
-| `T` | Elegir tema (vista previa en vivo) |
+| `Shift+T` | Elegir tema (vista previa en vivo) |
 | `e` | Exportar JSON al directorio actual |
 | `?` | Ayuda |
 | `q` | Salir |
@@ -204,7 +204,7 @@ opcionales. Las opciones de línea de comandos tienen prioridad.
 ```toml
 language = "es"            # en | es
 icons = "nerd"             # nerd | unicode | ascii
-theme = "gruvbox-dark"     # el id de cualquier tema; `T` elige uno y lo guarda acá
+theme = "gruvbox-dark"     # el id de cualquier tema; `Shift+T` elige uno y lo guarda acá
 
 [categories]               # una clave existente reemplaza su lista, una nueva agrega categoría
 video = ["mp4", "mkv", "webm"]
@@ -222,7 +222,7 @@ status_fg status_bg grew shrank new matched`.
 
 ## Temas
 
-`T` abre el selector de temas: las flechas muestran cada tema en toda la
+`Shift+T` abre el selector de temas: las flechas muestran cada tema en toda la
 pantalla, escribir filtra la lista, `Enter` deja el tema y lo guarda en la
 configuración, y `Esc` vuelve al que tenías. `--theme ID` elige uno para una
 sola ejecución.

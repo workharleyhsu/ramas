@@ -8,7 +8,7 @@ Leer en español: [THEMES.es.md](THEMES.es.md).
 
 ## Choosing a theme
 
-Press **`T`**.
+Press **`Shift+T`**.
 
 | Key | Action |
 |---|---|
@@ -58,7 +58,7 @@ background, it was moved toward the text color just enough to reach 3:1.
    `~/.config/ramas/themes/<name>.toml` (create the folder if needed; with
    `XDG_CONFIG_HOME` set, it is `$XDG_CONFIG_HOME/ramas/themes`).
 2. Edit the colors.
-3. Start ramas and press `T`. Your theme is listed under its `family`
+3. Start ramas and press `Shift+T`. Your theme is listed under its `family`
    ("User" unless you set one).
 
 The file name without `.toml`, in lowercase, is the theme's **id**. A file

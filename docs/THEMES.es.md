@@ -8,7 +8,7 @@ Read in English: [THEMES.md](THEMES.md).
 
 ## Elegir un tema
 
-Pulsa **`T`**.
+Pulsa **`Shift+T`**.
 
 | Tecla | Acción |
 |---|---|
@@ -58,7 +58,7 @@ fondo, se lo acercó al color del texto lo justo para llegar a 3:1.
    `~/.config/ramas/themes/<nombre>.toml` (crea la carpeta si no existe; con
    `XDG_CONFIG_HOME` definido es `$XDG_CONFIG_HOME/ramas/themes`).
 2. Cambia los colores.
-3. Abre ramas y pulsa `T`. Tu tema aparece bajo su `family` ("User" si no
+3. Abre ramas y pulsa `Shift+T`. Tu tema aparece bajo su `family` ("User" si no
    pones otra).
 
 El nombre del archivo sin `.toml`, en minúsculas, es el **id** del tema. Un

@@ -36,7 +36,7 @@ KEYS:
   / n N               search, next/prev f                 filters
   t                   type analysis     s                 cycle sort
   a                   apparent/disk     p                 toggle side panel
-  T                   choose theme      e                 export JSON
+  Shift+T             choose theme      e                 export JSON
   ?                   help              q                 quit
   Mouse: click selects, double click expands, wheel scrolls.
 
@@ -50,7 +50,7 @@ DELETING:
 CONFIGURATION (~/.config/ramas/config.toml, all keys optional):
   language = \"es\"              # en | es
   icons = \"nerd\"               # nerd | unicode | ascii
-  theme = \"gruvbox-dark\"       # any theme id (press T to browse them), or custom
+  theme = \"gruvbox-dark\"       # any theme id (Shift+T browses them), or custom
   [categories]                  # replace a built-in list or add a category
   models = [\"gguf\", \"safetensors\"]
   [custom_theme]                # base = \"dark\", then fg, bg, accent, ... = \"#rrggbb\"
@@ -116,7 +116,7 @@ pub struct Cli {
     #[arg(long, conflicts_with = "icons")]
     pub no_icons: bool,
 
-    /// Color theme id, e.g. ramas, gruvbox-dark, high-contrast-dark or custom (T browses them).
+    /// Color theme id, e.g. ramas, gruvbox-dark, high-contrast-dark or custom (Shift+T browses them).
     #[arg(long, value_name = "NAME")]
     pub theme: Option<String>,
 

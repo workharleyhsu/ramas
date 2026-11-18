@@ -48,7 +48,7 @@ ascii: Pure ASCII markers
 Use plain ASCII markers instead of icons (same as \-\-icons ascii)
 .TP
 \fB\-\-theme\fR \fI<NAME>\fR
-Color theme id, e.g. ramas, gruvbox\-dark, high\-contrast\-dark or custom (T browses them)
+Color theme id, e.g. ramas, gruvbox\-dark, high\-contrast\-dark or custom (Shift+T browses them)
 .TP
 \fB\-\-lang\fR \fI<LANG>\fR
 UI language
@@ -83,7 +83,7 @@ KEYS:
   / n N               search, next/prev f                 filters
   t                   type analysis     s                 cycle sort
   a                   apparent/disk     p                 toggle side panel
-  T                   choose theme      e                 export JSON
+  Shift+T             choose theme      e                 export JSON
   ?                   help              q                 quit
   Mouse: click selects, double click expands, wheel scrolls.
 
@@ -97,7 +97,7 @@ DELETING:
 CONFIGURATION (~/.config/ramas/config.toml, all keys optional):
   language = "es"              # en | es
   icons = "nerd"               # nerd | unicode | ascii
-  theme = "gruvbox\-dark"       # any theme id (press T to browse them), or custom
+  theme = "gruvbox\-dark"       # any theme id (Shift+T browses them), or custom
   [categories]                  # replace a built\-in list or add a category
   models = ["gguf", "safetensors"]
   [custom_theme]                # base = "dark", then fg, bg, accent, ... = "#rrggbb"
