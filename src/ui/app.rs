@@ -15,8 +15,8 @@ use crate::export::diff::Diff;
 use crate::filter::Filter;
 use crate::i18n::Strings;
 use crate::scan::ScanOptions;
+use crate::themes::{Picker, PickerEvent, PickerKey};
 use crate::tree::{NodeId, SortKey, Tree};
-use tui_themes::{Picker, PickerEvent, PickerKey};
 
 /// Startup settings resolved from CLI and config.
 #[derive(Debug, Clone)]
@@ -529,7 +529,7 @@ impl App {
                 // Remember the choice. A config that cannot be written only
                 // costs a message: the theme stays for this session.
                 if let Some(path) = &self.config_path
-                    && let Err(error) = tui_themes::save_theme(path, &["theme"], &self.theme.id)
+                    && let Err(error) = crate::themes::save_theme(path, &["theme"], &self.theme.id)
                 {
                     self.message = Some(error);
                 }

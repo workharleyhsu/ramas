@@ -1,0 +1,33 @@
+# ramas' original dark theme: Nord-like colors over the terminal's background.
+name = "ramas"
+family = "Default"
+appearance = "dark"
+icon_mode = "app"
+assumed_bg = "#1e222a"
+
+[colors]
+bg = "terminal"
+fg = "#d8dee9"
+dim = "#6b7280"
+accent = "#88c0d0"
+border = "#4c566a"
+selection_fg = "#eceff4"
+selection_bg = "#3b4252"
+ok = "#a3be8c"
+warn = "#d08770"
+danger = "#bf616a"
+connector = "#4c566a"
+dir = "#81a1c1"
+marked = "#b48ead"
+matched = "#ebcb8b"
+status_fg = "#e5e9f0"
+status_bg = "#2e3440"
+grew = "#bf616a"
+shrank = "#a3be8c"
+new = "#88c0d0"
+ram = "#b48ead"
+value = "#ebcb8b"
+
+[gradients]
+graph = ["#a3be8c", "#ebcb8b", "#bf616a"]
+size = ["#a3be8c", "#ebcb8b", "#bf616a"]

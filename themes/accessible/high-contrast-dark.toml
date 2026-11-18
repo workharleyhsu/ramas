@@ -1,0 +1,35 @@
+# Maximum contrast on black: pure, bright colors and white text.
+name = "High Contrast Dark"
+family = "Accessible"
+appearance = "dark"
+high_contrast = true
+icon_mode = "tint"
+
+[colors]
+bg = "#000000"
+fg = "#ffffff"
+dim = "#c0c0c0"
+accent = "#00ffff"
+border = "#ffffff"
+selection_fg = "#000000"
+selection_bg = "#ffff00"
+ok = "#00ff00"
+warn = "#ffd000"
+danger = "#ff6060"
+header = "#ffffff"
+connector = "#c0c0c0"
+dir = "#00ffff"
+marked = "#ff80ff"
+matched = "#ffff00"
+status_fg = "#000000"
+status_bg = "#ffffff"
+grew = "#ff6060"
+shrank = "#00ff00"
+new = "#00ffff"
+ram = "#ff80ff"
+value = "#ffff00"
+icon = "#ffffff"
+
+[gradients]
+graph = ["#00ff00", "#ffff00", "#ff6060"]
+size = ["#00ff00", "#ffff00", "#ff6060"]

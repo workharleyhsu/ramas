@@ -1,0 +1,34 @@
+# Amber: a P3 amber monochrome terminal, warm and steady.
+name = "Amber"
+family = "Retro & neon"
+appearance = "dark"
+icon_mode = "mono"
+
+[colors]
+bg = "#0a0600"
+fg = "#ffb000"
+dim = "#a86f00"
+accent = "#ffd980"
+border = "#6b4700"
+selection_fg = "#ffd980"
+selection_bg = "#4d3300"
+ok = "#d99600"
+warn = "#ff8a1f"
+danger = "#ff5a36"
+header = "#ffb000"
+connector = "#6b4700"
+dir = "#ffc94d"
+marked = "#ffc266"
+matched = "#ffd35c"
+status_fg = "#ffb000"
+status_bg = "#3b2700"
+grew = "#ff5a36"
+shrank = "#d99600"
+new = "#ffe08a"
+ram = "#ffc266"
+value = "#ffd35c"
+icon = "#ffb000"
+
+[gradients]
+graph = ["#a86f00", "#ffb000", "#ff5a36"]
+size = ["#a86f00", "#ffb000", "#ff5a36"]

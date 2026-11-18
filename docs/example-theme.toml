@@ -1,0 +1,54 @@
+# Example theme for ramas.
+#
+# Copy this file to ~/.config/ramas/themes/<name>.toml and edit it. The file
+# name (without .toml, in lowercase) is the theme's id: it is what the config
+# file holds and what the picker (key T) saves.
+#
+# A color is one of:
+#   "#rrggbb"    a 24-bit color (terminals with fewer colors get the nearest)
+#   "terminal"   whatever the terminal uses by default (only for roles)
+#   "red", "lightblue", "gray" ...   one of the 16 terminal colors, by name
+#   "214"        an index of the 256-color palette
+
+name = "Example"          # shown in the picker; defaults to the file name
+family = "User"           # group heading in the picker; defaults to "User"
+appearance = "dark"       # dark | light; guessed from bg when omitted
+# high_contrast = true    # only a label; the built-in themes that set it are
+                          # held to a 7:1 text contrast
+# assumed_bg = "#1a1b26"  # only when bg = "terminal": the background to
+                          # assume when checking contrast
+
+# ---- Required roles -------------------------------------------------------
+[colors]
+bg = "#16181d"            # background of the whole screen
+fg = "#d7dae0"            # normal text
+dim = "#7b8290"           # secondary text, hints, units
+accent = "#6cb6ff"        # shortcuts, titles of dialogs, the active thing
+border = "#3a404b"        # frames and separators
+selection_fg = "#ffffff"  # text of the selected row or app
+selection_bg = "#2d4f7c"  # background of the selected row or app
+ok = "#7ccf8a"            # low load; things that shrank
+warn = "#e5b567"          # medium load; notices that are not errors
+danger = "#f2777a"        # high load; errors; things about to be deleted
+
+# ---- Optional roles -------------------------------------------------------
+# Leave any of these out and it takes the value shown in parentheses.
+header = "#aab2c0"        # section headings (fg)
+connector = "#3a404b"     # tree lines (border)
+dir = "#6cb6ff"           # directory names (accent)
+marked = "#c792ea"        # items marked for deletion (accent)
+matched = "#e5b567"       # search matches (warn)
+status_fg = "#d7dae0"     # status bar text (selection_fg)
+status_bg = "#22262e"     # status bar background (selection_bg)
+grew = "#f2777a"          # --diff: got bigger (danger)
+shrank = "#7ccf8a"        # --diff: got smaller (ok)
+new = "#6cb6ff"           # --diff: new entry (accent)
+ram = "#c792ea"           # not used by ramas (accent)
+value = "#e5b567"         # sizes and other numbers (warn)
+icon = "#6cb6ff"          # not used by ramas (accent)
+
+# ---- Gradients ------------------------------------------------------------
+# Two or more colors, from low to high. Both default to [ok, warn, danger].
+[gradients]
+graph = ["#7ccf8a", "#e5b567", "#f2777a"]   # not used by ramas
+size = ["#7ccf8a", "#e5b567", "#f2777a"]    # size bars, small to large

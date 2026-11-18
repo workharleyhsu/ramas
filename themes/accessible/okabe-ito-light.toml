@@ -1,0 +1,34 @@
+# Color-blind safe (Okabe-Ito palette) on a light background. Yellow and orange are too pale on white, so warnings use reddish purple.
+name = "Okabe-Ito Light"
+family = "Accessible"
+appearance = "light"
+icon_mode = "tint"
+
+[colors]
+bg = "#fbfbf8"
+fg = "#1a1a1a"
+dim = "#6b6b6b"
+accent = "#0072b2"
+border = "#b8b8b8"
+selection_fg = "#1a1a1a"
+selection_bg = "#dbe9f4"
+ok = "#009e73"
+warn = "#c877a3"
+danger = "#d55e00"
+header = "#1a1a1a"
+connector = "#b8b8b8"
+dir = "#0072b2"
+marked = "#c877a3"
+matched = "#0072b2"
+status_fg = "#fbfbf8"
+status_bg = "#1a1a1a"
+grew = "#d55e00"
+shrank = "#009e73"
+new = "#0072b2"
+ram = "#c877a3"
+value = "#0072b2"
+icon = "#0072b2"
+
+[gradients]
+graph = ["#56b4e9", "#e69f00", "#d55e00"]
+size = ["#56b4e9", "#e69f00", "#d55e00"]

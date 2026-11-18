@@ -1,0 +1,34 @@
+# Solarized dark (Ethan Schoonover): precise, low-contrast colors on deep teal.
+name = "Solarized Dark"
+family = "Popular"
+appearance = "dark"
+icon_mode = "app"
+
+[colors]
+bg = "#002b36"
+fg = "#93a1a1"
+dim = "#5e7379"
+accent = "#268bd2"
+border = "#586e75"
+selection_fg = "#eee8d5"
+selection_bg = "#073642"
+ok = "#859900"
+warn = "#cb4b16"
+danger = "#dc322f"
+header = "#93a1a1"
+connector = "#586e75"
+dir = "#268bd2"
+marked = "#d33682"
+matched = "#b58900"
+status_fg = "#93a1a1"
+status_bg = "#073642"
+grew = "#dc322f"
+shrank = "#859900"
+new = "#2aa198"
+ram = "#6c71c4"
+value = "#b58900"
+icon = "#268bd2"
+
+[gradients]
+graph = ["#859900", "#b58900", "#dc322f"]
+size = ["#859900", "#b58900", "#dc322f"]

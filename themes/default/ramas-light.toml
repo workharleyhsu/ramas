@@ -1,0 +1,32 @@
+# ramas' original light theme, with its own light background.
+name = "ramas light"
+family = "Default"
+appearance = "light"
+icon_mode = "app"
+
+[colors]
+bg = "#fafaf7"
+fg = "#2e3440"
+dim = "#8a8f98"
+accent = "#1f6fb2"
+border = "#b8bec8"
+selection_fg = "#101010"
+selection_bg = "#d6e4f5"
+ok = "#2f852f"
+warn = "#b35c00"
+danger = "#c0292b"
+connector = "#a0a6b0"
+dir = "#235a97"
+marked = "#8e3ca8"
+matched = "#c24f00"
+status_fg = "#fafaf7"
+status_bg = "#3b4a5e"
+grew = "#c0292b"
+shrank = "#2f852f"
+new = "#1f6fb2"
+ram = "#8e3ca8"
+value = "#9a5b00"
+
+[gradients]
+graph = ["#4c9a2a", "#d49b00", "#d03a2f"]
+size = ["#4c9a2a", "#d49b00", "#d03a2f"]

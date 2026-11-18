@@ -1,0 +1,34 @@
+# Synthwave: 80s sunset neon, pink and cyan glowing on deep purple.
+name = "Synthwave"
+family = "Retro & neon"
+appearance = "dark"
+icon_mode = "tint"
+
+[colors]
+bg = "#241b2f"
+fg = "#f4eeff"
+dim = "#848bbd"
+accent = "#ff7edb"
+border = "#495495"
+selection_fg = "#f4eeff"
+selection_bg = "#463465"
+ok = "#72f1b8"
+warn = "#ff8b39"
+danger = "#fe4450"
+header = "#f4eeff"
+connector = "#495495"
+dir = "#36f9f6"
+marked = "#b893ce"
+matched = "#fede5d"
+status_fg = "#f4eeff"
+status_bg = "#34294f"
+grew = "#fe4450"
+shrank = "#72f1b8"
+new = "#36f9f6"
+ram = "#ff7edb"
+value = "#fede5d"
+icon = "#ff7edb"
+
+[gradients]
+graph = ["#72f1b8", "#fede5d", "#fe4450"]
+size = ["#72f1b8", "#fede5d", "#fe4450"]

@@ -1,0 +1,34 @@
+# Everforest (sainnhe), dark medium: green-tinted, warm and easy on the eyes.
+name = "Everforest"
+family = "Popular"
+appearance = "dark"
+icon_mode = "app"
+
+[colors]
+bg = "#2d353b"
+fg = "#d3c6aa"
+dim = "#859289"
+accent = "#a7c080"
+border = "#475258"
+selection_fg = "#d3c6aa"
+selection_bg = "#475258"
+ok = "#a7c080"
+warn = "#e69875"
+danger = "#e67e80"
+header = "#d3c6aa"
+connector = "#475258"
+dir = "#7fbbb3"
+marked = "#d699b6"
+matched = "#dbbc7f"
+status_fg = "#d3c6aa"
+status_bg = "#3d484d"
+grew = "#e67e80"
+shrank = "#a7c080"
+new = "#83c092"
+ram = "#d699b6"
+value = "#dbbc7f"
+icon = "#a7c080"
+
+[gradients]
+graph = ["#a7c080", "#dbbc7f", "#e67e80"]
+size = ["#a7c080", "#dbbc7f", "#e67e80"]

@@ -1,0 +1,34 @@
+# Solarized light (Ethan Schoonover): the same sixteen colors on warm paper.
+name = "Solarized Light"
+family = "Popular"
+appearance = "light"
+icon_mode = "app"
+
+[colors]
+bg = "#fdf6e3"
+fg = "#586e75"
+dim = "#819294"
+accent = "#268bd2"
+border = "#93a1a1"
+selection_fg = "#566b72"
+selection_bg = "#eee8d5"
+ok = "#849803"
+warn = "#cb4b16"
+danger = "#dc322f"
+header = "#586e75"
+connector = "#93a1a1"
+dir = "#268bd2"
+marked = "#d33682"
+matched = "#b38803"
+status_fg = "#eee8d5"
+status_bg = "#073642"
+grew = "#dc322f"
+shrank = "#849803"
+new = "#2c9e96"
+ram = "#6c71c4"
+value = "#b38803"
+icon = "#268bd2"
+
+[gradients]
+graph = ["#849803", "#b38803", "#dc322f"]
+size = ["#849803", "#b38803", "#dc322f"]

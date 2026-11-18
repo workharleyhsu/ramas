@@ -1,0 +1,34 @@
+# Dracula (Zeno Rocha): vivid neon accents on a dark blue-gray.
+name = "Dracula"
+family = "Popular"
+appearance = "dark"
+icon_mode = "app"
+
+[colors]
+bg = "#282a36"
+fg = "#f8f8f2"
+dim = "#6272a4"
+accent = "#bd93f9"
+border = "#6272a4"
+selection_fg = "#f8f8f2"
+selection_bg = "#44475a"
+ok = "#50fa7b"
+warn = "#ffb86c"
+danger = "#ff5555"
+header = "#f8f8f2"
+connector = "#44475a"
+dir = "#8be9fd"
+marked = "#ff79c6"
+matched = "#f1fa8c"
+status_fg = "#f8f8f2"
+status_bg = "#44475a"
+grew = "#ff5555"
+shrank = "#50fa7b"
+new = "#8be9fd"
+ram = "#ff79c6"
+value = "#f1fa8c"
+icon = "#bd93f9"
+
+[gradients]
+graph = ["#50fa7b", "#f1fa8c", "#ff5555"]
+size = ["#50fa7b", "#f1fa8c", "#ff5555"]

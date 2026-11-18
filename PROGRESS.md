@@ -145,10 +145,15 @@ Pendientes conocidos (no bloquean ningún criterio):
 - Push por HTTPS con el credential helper de `gh` configurado solo en este repo (la clave SSH de esta PC no está en GitHub).
 - Nueva versión: subir `version` en `Cargo.toml` y los nombres de archivo en los dos README, `scripts/package.sh`, commit + push, esperar CI, `git tag -a vX.Y.Z`, push del tag, `gh release create vX.Y.Z dist/*`.
 
-## Temas compartidos (2026-11-18)
-- Los colores salen del crate `tui-themes` (repo hermano; plan y avance en su `THEMES_PROGRESS.md`). `src/ui/theme.rs` solo agrega los alias de nombres viejos, `[custom_theme]` y la elección inicial.
-- `T` abre el selector (antes rotaba). El tema elegido se guarda en `theme = "…"` de la configuración sin tocar comentarios.
+## Temas (2026-11-18)
+- Sistema de temas propio en `src/themes/` (modelo por roles, catálogo, profundidad de color, selector y guardado), con 31 temas en `themes/<familia>/<id>.toml` y la guía en `docs/THEMES.md` y `docs/THEMES.es.md`. Sin crate ni repo aparte. apptop tiene su propia copia, independiente: un arreglo acá no llega solo allá.
+- Regla: ningún color se escribe fuera de `src/themes/` y de los TOML. `src/ui/theme.rs` solo agrega los alias de los nombres de la 0.1, `[custom_theme]` y la elección inicial.
+- `T` abre el selector con vista previa en vivo (antes rotaba). El tema elegido se guarda en `theme = "…"` de la configuración sin tocar comentarios (`toml_edit`).
+- Temas del usuario en `~/.config/ramas/themes/*.toml`.
 - Profundidad de color detectada: 24 bits, 256, 16 o sin color.
 - Un tema configurado que ya no existe, o un TOML de usuario roto, solo muestran un aviso. `--theme` con un nombre inexistente sigue siendo error.
+- Familias: Default (2), Popular (16), Light & pastel (4), Retro & neon (5), Accessible (4). Para agregar un tema: archivo en `themes/<familia>/`, entrada en `BUILTIN` de `src/themes/catalog.rs` y fila en las dos guías (los tests avisan si falta).
+- Tests de los temas: roles completos, contraste (texto 4.5:1, 7:1 en alto contraste, roles de color 3:1), degradación a 256 y 16 colores, simulación de daltonismo en los Okabe-Ito, y `every_theme_renders_every_screen`.
+- Historia: se armó primero como crate compartido con apptop (`tui-themes`). Harley prefirió que cada app sea independiente y el código se copió dentro de cada una.
 
 LOOP_COMPLETE

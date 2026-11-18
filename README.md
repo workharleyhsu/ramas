@@ -29,7 +29,7 @@ fuzzy search, filters, per-type analysis, themes and JSON export/diff.
 - **Type analysis** (`t`): video, images, audio, documents, archives, code,
   cache/temp and others, configurable; open a category to list and mark its
   largest files.
-- **Themes and icons**: 32 themes (Catppuccin, Gruvbox, Nord, Dracula, light,
+- **Themes and icons**: 31 themes (Catppuccin, Gruvbox, Nord, Dracula, light,
   retro, high-contrast, color-blind safe…) picked with `T` and a live preview,
   plus your own; Nerd Font, Unicode or pure ASCII icons; honors `NO_COLOR`.
 - **English and Spanish UI** (`--lang es`).
@@ -224,17 +224,16 @@ whole screen, typing filters the list, `Enter` keeps the theme and saves it
 in the config file, and `Esc` goes back to the one you had. `--theme ID`
 picks one for a single run.
 
-There are 32 themes in five families: the defaults (`ramas`, `ramas-light`),
+There are 31 themes in five families: the defaults (`ramas`, `ramas-light`),
 popular ones (Catppuccin, Dracula, Everforest, Gruvbox, Kanagawa, Monokai,
 Nord, One Dark, Rosé Pine, Solarized, Tokyo Night), light and pastel, retro
 and neon (green phosphor, amber, gray, cyberpunk, synthwave) and accessible
 (high contrast, and Okabe-Ito palettes for color blindness). The names used
 by ramas 0.1 (`dark`, `light`, `high-contrast`, `gruvbox`) still work.
 
-Themes are shared with [apptop](https://github.com/workharleyhsu/apptop)
-through the [tui-themes](https://github.com/workharleyhsu/tui-themes) crate.
-To make your own, drop a TOML file in `~/.config/tui-themes/themes/`: see
-[the theme guide](https://github.com/workharleyhsu/tui-themes/blob/main/docs/THEMES.md). A broken theme file only shows a notice.
+To make your own, drop a TOML file in `~/.config/ramas/themes/`: start from
+[`docs/example-theme.toml`](docs/example-theme.toml) and see
+[the theme guide](docs/THEMES.md). A broken theme file only shows a notice.
 
 Colors adapt to the terminal: 24-bit, 256 colors, 16 colors, or none with
 `NO_COLOR`.

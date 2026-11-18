@@ -1,0 +1,34 @@
+# Tokyo Night (enkia): the lights of downtown Tokyo on a dark indigo night.
+name = "Tokyo Night"
+family = "Popular"
+appearance = "dark"
+icon_mode = "app"
+
+[colors]
+bg = "#1a1b26"
+fg = "#c0caf5"
+dim = "#5e6791"
+accent = "#7aa2f7"
+border = "#414868"
+selection_fg = "#c0caf5"
+selection_bg = "#292e42"
+ok = "#9ece6a"
+warn = "#ff9e64"
+danger = "#f7768e"
+header = "#c0caf5"
+connector = "#414868"
+dir = "#7aa2f7"
+marked = "#bb9af7"
+matched = "#e0af68"
+status_fg = "#c0caf5"
+status_bg = "#292e42"
+grew = "#f7768e"
+shrank = "#9ece6a"
+new = "#7dcfff"
+ram = "#bb9af7"
+value = "#e0af68"
+icon = "#7aa2f7"
+
+[gradients]
+graph = ["#9ece6a", "#e0af68", "#f7768e"]
+size = ["#9ece6a", "#e0af68", "#f7768e"]

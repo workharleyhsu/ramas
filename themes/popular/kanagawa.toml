@@ -1,0 +1,34 @@
+# Kanagawa Wave (rebelot): ink and muted colors after Hokusai's Great Wave.
+name = "Kanagawa"
+family = "Popular"
+appearance = "dark"
+icon_mode = "app"
+
+[colors]
+bg = "#1f1f28"
+fg = "#dcd7ba"
+dim = "#727169"
+accent = "#7e9cd8"
+border = "#54546d"
+selection_fg = "#dcd7ba"
+selection_bg = "#2d4f67"
+ok = "#98bb6c"
+warn = "#ffa066"
+danger = "#e46876"
+header = "#dcd7ba"
+connector = "#363646"
+dir = "#7fb4ca"
+marked = "#957fb8"
+matched = "#e6c384"
+status_fg = "#dcd7ba"
+status_bg = "#2a2a37"
+grew = "#e46876"
+shrank = "#98bb6c"
+new = "#7aa89f"
+ram = "#957fb8"
+value = "#e6c384"
+icon = "#7e9cd8"
+
+[gradients]
+graph = ["#98bb6c", "#e6c384", "#e46876"]
+size = ["#98bb6c", "#e6c384", "#e46876"]

@@ -1,0 +1,34 @@
+# Catppuccin Frappé: the lightest of the dark Catppuccin flavors, muted and calm.
+name = "Catppuccin Frappé"
+family = "Popular"
+appearance = "dark"
+icon_mode = "app"
+
+[colors]
+bg = "#303446"
+fg = "#c6d0f5"
+dim = "#838ba7"
+accent = "#ca9ee6"
+border = "#626880"
+selection_fg = "#c6d0f5"
+selection_bg = "#51576d"
+ok = "#a6d189"
+warn = "#ef9f76"
+danger = "#e78284"
+header = "#c6d0f5"
+connector = "#51576d"
+dir = "#8caaee"
+marked = "#ca9ee6"
+matched = "#e5c890"
+status_fg = "#c6d0f5"
+status_bg = "#414559"
+grew = "#e78284"
+shrank = "#a6d189"
+new = "#81c8be"
+ram = "#ca9ee6"
+value = "#e5c890"
+icon = "#ca9ee6"
+
+[gradients]
+graph = ["#a6d189", "#e5c890", "#e78284"]
+size = ["#a6d189", "#e5c890", "#e78284"]

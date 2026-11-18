@@ -58,7 +58,7 @@ pub fn draw(f: &mut Frame, app: &mut App) {
     }
     // The picker sits on the right so the tree shows the previewed theme.
     let theme = app.theme.clone();
-    let labels = tui_themes::Labels {
+    let labels = crate::themes::Labels {
         title: app.s.theme,
         filter: app.s.theme_filter,
         placeholder: app.s.theme_placeholder,
@@ -69,7 +69,7 @@ pub fn draw(f: &mut Frame, app: &mut App) {
     };
     if let Overlay::ThemePicker { picker, .. } = &mut app.overlay {
         picker.render(
-            tui_themes::Picker::area(main),
+            crate::themes::Picker::area(main),
             f.buffer_mut(),
             &theme,
             &labels,
@@ -276,7 +276,7 @@ mod theme_tests {
         let mut term = Terminal::new(TestBackend::new(100, 24)).unwrap();
         term.draw(|f| super::draw(f, &mut app)).unwrap();
         let buf = term.backend().buffer();
-        let panel = tui_themes::Picker::area(ratatui::layout::Rect::new(0, 0, 100, 22));
+        let panel = crate::themes::Picker::area(ratatui::layout::Rect::new(0, 0, 100, 22));
         let mut text = String::new();
         for y in panel.top()..panel.bottom() {
             for x in panel.left()..panel.right() {

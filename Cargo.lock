@@ -1308,8 +1308,8 @@ dependencies = [
  "tempfile",
  "thiserror 2.0.21",
  "toml",
+ "toml_edit",
  "trash",
- "tui-themes",
  "unicode-width",
 ]
 
@@ -1971,16 +1971,6 @@ dependencies = [
  "urlencoding",
  "windows",
  "windows-core",
-]
-
-[[package]]
-name = "tui-themes"
-version = "0.1.0"
-dependencies = [
- "ratatui",
- "serde",
- "toml",
- "toml_edit",
 ]
 
 [[package]]

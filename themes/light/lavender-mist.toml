@@ -1,0 +1,34 @@
+# Lavender Mist: violet and periwinkle pastels on a faint lavender white.
+name = "Lavender Mist"
+family = "Light & pastel"
+appearance = "light"
+icon_mode = "app"
+
+[colors]
+bg = "#f5f2fb"
+fg = "#352f4a"
+dim = "#8b84a3"
+accent = "#7c52c8"
+border = "#d3cbe8"
+selection_fg = "#352f4a"
+selection_bg = "#e3dbf5"
+ok = "#3f9368"
+warn = "#c9683f"
+danger = "#c94468"
+header = "#352f4a"
+connector = "#ddd6ee"
+dir = "#4b6fd0"
+marked = "#7c52c8"
+matched = "#a97f24"
+status_fg = "#352f4a"
+status_bg = "#dcd3f0"
+grew = "#c94468"
+shrank = "#3f9368"
+new = "#2f8fae"
+ram = "#7c52c8"
+value = "#a97f24"
+icon = "#7c52c8"
+
+[gradients]
+graph = ["#3f9368", "#a97f24", "#c94468"]
+size = ["#3f9368", "#a97f24", "#c94468"]

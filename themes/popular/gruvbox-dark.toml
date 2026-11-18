@@ -1,0 +1,34 @@
+# Gruvbox dark (Pavel Pertsev): warm retro colors on a dark brown-gray.
+name = "Gruvbox Dark"
+family = "Popular"
+appearance = "dark"
+icon_mode = "app"
+
+[colors]
+bg = "#282828"
+fg = "#ebdbb2"
+dim = "#928374"
+accent = "#fabd2f"
+border = "#504945"
+selection_fg = "#fbf1c7"
+selection_bg = "#504945"
+ok = "#b8bb26"
+warn = "#fe8019"
+danger = "#fb4934"
+header = "#ebdbb2"
+connector = "#665c54"
+dir = "#83a598"
+marked = "#d3869b"
+matched = "#fabd2f"
+status_fg = "#282828"
+status_bg = "#a89984"
+grew = "#fb4934"
+shrank = "#b8bb26"
+new = "#83a598"
+ram = "#d3869b"
+value = "#fe8019"
+icon = "#fabd2f"
+
+[gradients]
+graph = ["#b8bb26", "#fabd2f", "#fb4934"]
+size = ["#b8bb26", "#fabd2f", "#fb4934"]

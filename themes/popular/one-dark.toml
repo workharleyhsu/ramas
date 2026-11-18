@@ -1,0 +1,34 @@
+# One Dark (Atom): balanced, slightly desaturated colors on slate gray.
+name = "One Dark"
+family = "Popular"
+appearance = "dark"
+icon_mode = "app"
+
+[colors]
+bg = "#282c34"
+fg = "#abb2bf"
+dim = "#6e7582"
+accent = "#61afef"
+border = "#4b5263"
+selection_fg = "#abb2bf"
+selection_bg = "#3e4451"
+ok = "#98c379"
+warn = "#d19a66"
+danger = "#e06c75"
+header = "#abb2bf"
+connector = "#4b5263"
+dir = "#61afef"
+marked = "#c678dd"
+matched = "#e5c07b"
+status_fg = "#abb2bf"
+status_bg = "#3e4451"
+grew = "#e06c75"
+shrank = "#98c379"
+new = "#56b6c2"
+ram = "#c678dd"
+value = "#e5c07b"
+icon = "#61afef"
+
+[gradients]
+graph = ["#98c379", "#e5c07b", "#e06c75"]
+size = ["#98c379", "#e5c07b", "#e06c75"]

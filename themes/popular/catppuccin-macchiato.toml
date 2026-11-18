@@ -1,0 +1,34 @@
+# Catppuccin Macchiato: medium-dark Catppuccin flavor with gentle contrast.
+name = "Catppuccin Macchiato"
+family = "Popular"
+appearance = "dark"
+icon_mode = "app"
+
+[colors]
+bg = "#24273a"
+fg = "#cad3f5"
+dim = "#8087a2"
+accent = "#c6a0f6"
+border = "#5b6078"
+selection_fg = "#cad3f5"
+selection_bg = "#494d64"
+ok = "#a6da95"
+warn = "#f5a97f"
+danger = "#ed8796"
+header = "#cad3f5"
+connector = "#494d64"
+dir = "#8aadf4"
+marked = "#c6a0f6"
+matched = "#eed49f"
+status_fg = "#cad3f5"
+status_bg = "#363a4f"
+grew = "#ed8796"
+shrank = "#a6da95"
+new = "#8bd5ca"
+ram = "#c6a0f6"
+value = "#eed49f"
+icon = "#c6a0f6"
+
+[gradients]
+graph = ["#a6da95", "#eed49f", "#ed8796"]
+size = ["#a6da95", "#eed49f", "#ed8796"]

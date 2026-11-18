@@ -13,5 +13,6 @@ pub mod filter;
 pub mod i18n;
 pub mod scan;
 pub mod search;
+pub mod themes;
 pub mod tree;
 pub mod ui;

@@ -1,0 +1,35 @@
+# Maximum contrast on white: black text and dark, saturated colors.
+name = "High Contrast Light"
+family = "Accessible"
+appearance = "light"
+high_contrast = true
+icon_mode = "tint"
+
+[colors]
+bg = "#ffffff"
+fg = "#000000"
+dim = "#404040"
+accent = "#0000c8"
+border = "#000000"
+selection_fg = "#ffffff"
+selection_bg = "#000000"
+ok = "#006400"
+warn = "#8a3b00"
+danger = "#b00000"
+header = "#000000"
+connector = "#404040"
+dir = "#0000c8"
+marked = "#6a00a8"
+matched = "#7a4f00"
+status_fg = "#ffffff"
+status_bg = "#000000"
+grew = "#b00000"
+shrank = "#006400"
+new = "#005f6b"
+ram = "#6a00a8"
+value = "#7a4f00"
+icon = "#000000"
+
+[gradients]
+graph = ["#006400", "#7a4f00", "#b00000"]
+size = ["#006400", "#7a4f00", "#b00000"]

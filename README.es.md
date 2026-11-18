@@ -31,7 +31,7 @@ exportación/diff en JSON.
 - **Análisis por tipo** (`t`): video, imágenes, audio, documentos, comprimidos,
   código, caché/temporales y otros, configurable; abrí una categoría para
   listar y marcar sus archivos más pesados.
-- **Temas e iconos**: 32 temas (Catppuccin, Gruvbox, Nord, Dracula, claros,
+- **Temas e iconos**: 31 temas (Catppuccin, Gruvbox, Nord, Dracula, claros,
   retro, alto contraste, seguros para daltonismo…) que se eligen con `T` con
   vista previa en vivo, más los tuyos; iconos Nerd Font, Unicode o ASCII puro;
   respeta `NO_COLOR`.
@@ -227,17 +227,16 @@ pantalla, escribir filtra la lista, `Enter` deja el tema y lo guarda en la
 configuración, y `Esc` vuelve al que tenías. `--theme ID` elige uno para una
 sola ejecución.
 
-Hay 32 temas en cinco familias: los de fábrica (`ramas`, `ramas-light`),
+Hay 31 temas en cinco familias: los de fábrica (`ramas`, `ramas-light`),
 populares (Catppuccin, Dracula, Everforest, Gruvbox, Kanagawa, Monokai, Nord,
 One Dark, Rosé Pine, Solarized, Tokyo Night), claros y pastel, retro y neón
 (fósforo verde, ámbar, gris, cyberpunk, synthwave) y accesibles (alto
 contraste, y paletas Okabe-Ito para daltonismo). Los nombres de ramas 0.1
 (`dark`, `light`, `high-contrast`, `gruvbox`) siguen funcionando.
 
-Los temas se comparten con [apptop](https://github.com/workharleyhsu/apptop)
-mediante el crate [tui-themes](https://github.com/workharleyhsu/tui-themes).
-Para crear el tuyo, dejá un archivo TOML en `~/.config/tui-themes/themes/`:
-mirá [la guía de temas](https://github.com/workharleyhsu/tui-themes/blob/main/docs/THEMES.es.md). Un archivo de tema roto solo muestra
+Para crear el tuyo, dejá un archivo TOML en `~/.config/ramas/themes/`: partí
+de [`docs/example-theme.toml`](docs/example-theme.toml) y mirá
+[la guía de temas](docs/THEMES.es.md). Un archivo de tema roto solo muestra
 un aviso.
 
 Los colores se adaptan a la terminal: 24 bits, 256 colores, 16 colores, o

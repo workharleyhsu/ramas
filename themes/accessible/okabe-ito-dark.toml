@@ -1,0 +1,34 @@
+# Color-blind safe (Okabe-Ito palette) on a dark background: states differ in hue and in brightness.
+name = "Okabe-Ito Dark"
+family = "Accessible"
+appearance = "dark"
+icon_mode = "tint"
+
+[colors]
+bg = "#101418"
+fg = "#f2f2f2"
+dim = "#9aa0a6"
+accent = "#56b4e9"
+border = "#4a5058"
+selection_fg = "#f2f2f2"
+selection_bg = "#2b3a4a"
+ok = "#009e73"
+warn = "#e69f00"
+danger = "#d55e00"
+header = "#f2f2f2"
+connector = "#4a5058"
+dir = "#0072b2"
+marked = "#cc79a7"
+matched = "#f0e442"
+status_fg = "#f2f2f2"
+status_bg = "#222a33"
+grew = "#d55e00"
+shrank = "#009e73"
+new = "#56b4e9"
+ram = "#cc79a7"
+value = "#f0e442"
+icon = "#56b4e9"
+
+[gradients]
+graph = ["#56b4e9", "#f0e442", "#d55e00"]
+size = ["#56b4e9", "#f0e442", "#d55e00"]

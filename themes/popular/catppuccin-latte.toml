@@ -1,0 +1,34 @@
+# Catppuccin Latte: the light Catppuccin flavor. Bright colors are darkened a little to stay readable.
+name = "Catppuccin Latte"
+family = "Popular"
+appearance = "light"
+icon_mode = "app"
+
+[colors]
+bg = "#eff1f5"
+fg = "#4c4f69"
+dim = "#878a9d"
+accent = "#8839ef"
+border = "#acb0be"
+selection_fg = "#4c4f69"
+selection_bg = "#ccd0da"
+ok = "#409e2d"
+warn = "#e86117"
+danger = "#d20f39"
+header = "#4c4f69"
+connector = "#bcc0cc"
+dir = "#1e66f5"
+marked = "#8839ef"
+matched = "#ba7e30"
+status_fg = "#4c4f69"
+status_bg = "#dce0e8"
+grew = "#d20f39"
+shrank = "#409e2d"
+new = "#179299"
+ram = "#8839ef"
+value = "#ba7e30"
+icon = "#8839ef"
+
+[gradients]
+graph = ["#409e2d", "#ba7e30", "#d20f39"]
+size = ["#409e2d", "#ba7e30", "#d20f39"]

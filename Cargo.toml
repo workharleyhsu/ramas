@@ -26,8 +26,8 @@ serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.154"
 thiserror = "2.0.21"
 toml = "1.2.1"
+toml_edit = "0.25"
 trash = "5.4.0"
-tui-themes = { path = "../tui-themes" }
 unicode-width = "0.2.3"
 
 [dev-dependencies]

@@ -1,0 +1,34 @@
+# Monokai (Wimer Hazenberg): the classic high-energy editor palette.
+name = "Monokai"
+family = "Popular"
+appearance = "dark"
+icon_mode = "app"
+
+[colors]
+bg = "#272822"
+fg = "#f8f8f2"
+dim = "#75715e"
+accent = "#a6e22e"
+border = "#75715e"
+selection_fg = "#f8f8f2"
+selection_bg = "#49483e"
+ok = "#a6e22e"
+warn = "#fd971f"
+danger = "#f92672"
+header = "#f8f8f2"
+connector = "#49483e"
+dir = "#66d9ef"
+marked = "#ae81ff"
+matched = "#e6db74"
+status_fg = "#f8f8f2"
+status_bg = "#3e3d32"
+grew = "#f92672"
+shrank = "#a6e22e"
+new = "#66d9ef"
+ram = "#ae81ff"
+value = "#e6db74"
+icon = "#a6e22e"
+
+[gradients]
+graph = ["#a6e22e", "#e6db74", "#f92672"]
+size = ["#a6e22e", "#e6db74", "#f92672"]

@@ -1,0 +1,34 @@
+# Gruvbox light (Pavel Pertsev): the retro palette on warm cream paper.
+name = "Gruvbox Light"
+family = "Popular"
+appearance = "light"
+icon_mode = "app"
+
+[colors]
+bg = "#fbf1c7"
+fg = "#3c3836"
+dim = "#7c6f64"
+accent = "#b57614"
+border = "#bdae93"
+selection_fg = "#3c3836"
+selection_bg = "#d5c4a1"
+ok = "#79740e"
+warn = "#af3a03"
+danger = "#9d0006"
+header = "#3c3836"
+connector = "#bdae93"
+dir = "#076678"
+marked = "#8f3f71"
+matched = "#b57614"
+status_fg = "#fbf1c7"
+status_bg = "#504945"
+grew = "#9d0006"
+shrank = "#79740e"
+new = "#427b58"
+ram = "#8f3f71"
+value = "#b57614"
+icon = "#b57614"
+
+[gradients]
+graph = ["#79740e", "#b57614", "#9d0006"]
+size = ["#79740e", "#b57614", "#9d0006"]

@@ -1,0 +1,34 @@
+# Rosé Pine: soho vibes, muted rose and pine on a deep violet-black.
+name = "Rosé Pine"
+family = "Popular"
+appearance = "dark"
+icon_mode = "app"
+
+[colors]
+bg = "#191724"
+fg = "#e0def4"
+dim = "#6e6a86"
+accent = "#c4a7e7"
+border = "#524f67"
+selection_fg = "#e0def4"
+selection_bg = "#403d52"
+ok = "#9ccfd8"
+warn = "#f6c177"
+danger = "#eb6f92"
+header = "#e0def4"
+connector = "#403d52"
+dir = "#9ccfd8"
+marked = "#c4a7e7"
+matched = "#f6c177"
+status_fg = "#e0def4"
+status_bg = "#26233a"
+grew = "#eb6f92"
+shrank = "#9ccfd8"
+new = "#ebbcba"
+ram = "#c4a7e7"
+value = "#f6c177"
+icon = "#c4a7e7"
+
+[gradients]
+graph = ["#9ccfd8", "#f6c177", "#eb6f92"]
+size = ["#9ccfd8", "#f6c177", "#eb6f92"]

@@ -1,11 +1,13 @@
-//! Color themes: a thin layer over the shared `tui-themes` crate.
+//! Theme selection for the UI: a thin layer over [`crate::themes`].
 //!
 //! No color is defined here. Themes are sets of semantic roles loaded by
-//! `tui-themes`, which also adapts them to what the terminal can show.
+//! `crate::themes`, which also adapts them to what the terminal can show.
+//! This module adds what is specific to ramas' command line and config:
+//! the theme names of ramas 0.1, `[custom_theme]` and the startup choice.
 
 use std::collections::BTreeMap;
 
-pub use tui_themes::{Catalog, ColorDepth, Theme};
+pub use crate::themes::{Catalog, ColorDepth, Theme};
 
 /// Theme used when none is chosen: ramas' original dark look.
 pub const DEFAULT: &str = "ramas";

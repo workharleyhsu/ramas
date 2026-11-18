@@ -1,0 +1,34 @@
+# Phosphor Green: a P1 monochrome CRT. Everything is a shade of green; only danger breaks the rule.
+name = "Phosphor Green"
+family = "Retro & neon"
+appearance = "dark"
+icon_mode = "mono"
+
+[colors]
+bg = "#020a04"
+fg = "#33ff66"
+dim = "#1f9940"
+accent = "#b6ffc8"
+border = "#146b2c"
+selection_fg = "#b6ffc8"
+selection_bg = "#0f4d20"
+ok = "#2bd957"
+warn = "#d7ff3f"
+danger = "#ff6b4a"
+header = "#33ff66"
+connector = "#146b2c"
+dir = "#66ffa0"
+marked = "#7dffb0"
+matched = "#b8ff5c"
+status_fg = "#33ff66"
+status_bg = "#0c3b19"
+grew = "#ff6b4a"
+shrank = "#2bd957"
+new = "#5cffc0"
+ram = "#7dffb0"
+value = "#b8ff5c"
+icon = "#33ff66"
+
+[gradients]
+graph = ["#1f9940", "#33ff66", "#e4ff4d"]
+size = ["#1f9940", "#33ff66", "#e4ff4d"]

@@ -1,0 +1,34 @@
+# Mint Cream: fresh greens and teals on a pale mint background.
+name = "Mint Cream"
+family = "Light & pastel"
+appearance = "light"
+icon_mode = "app"
+
+[colors]
+bg = "#f1faf5"
+fg = "#263c36"
+dim = "#7d948c"
+accent = "#1f8f72"
+border = "#c2dccf"
+selection_fg = "#263c36"
+selection_bg = "#d3ecdf"
+ok = "#2f8f5b"
+warn = "#c76a3a"
+danger = "#c44a55"
+header = "#263c36"
+connector = "#d0e6da"
+dir = "#2f7fa8"
+marked = "#7b62b8"
+matched = "#a3811f"
+status_fg = "#263c36"
+status_bg = "#cfe8da"
+grew = "#c44a55"
+shrank = "#2f8f5b"
+new = "#1f8f8a"
+ram = "#7b62b8"
+value = "#a3811f"
+icon = "#1f8f72"
+
+[gradients]
+graph = ["#2f8f5b", "#a3811f", "#c44a55"]
+size = ["#2f8f5b", "#a3811f", "#c44a55"]
