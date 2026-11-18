@@ -31,8 +31,9 @@ exportación/diff en JSON.
 - **Análisis por tipo** (`t`): video, imágenes, audio, documentos, comprimidos,
   código, caché/temporales y otros, configurable; abrí una categoría para
   listar y marcar sus archivos más pesados.
-- **Temas e iconos**: oscuro, claro, alto contraste, gruvbox y uno
-  personalizado desde la configuración; iconos Nerd Font, Unicode o ASCII puro;
+- **Temas e iconos**: 32 temas (Catppuccin, Gruvbox, Nord, Dracula, claros,
+  retro, alto contraste, seguros para daltonismo…) que se eligen con `T` con
+  vista previa en vivo, más los tuyos; iconos Nerd Font, Unicode o ASCII puro;
   respeta `NO_COLOR`.
 - **Interfaz en inglés y español** (`--lang es`).
 - **Exportar / importar / diff**: guardá un escaneo en JSON, abrilo después o
@@ -123,7 +124,7 @@ ramas --diff home.json ~      # resaltar qué creció, se achicó o es nuevo
 | `s` | Ciclar orden: tamaño, nombre, fecha, ítems |
 | `a` | Alternar tamaño aparente / en disco |
 | `p` | Mostrar / ocultar el panel lateral |
-| `T` | Ciclar tema |
+| `T` | Elegir tema (vista previa en vivo) |
 | `e` | Exportar JSON al directorio actual |
 | `?` | Ayuda |
 | `q` | Salir |
@@ -203,7 +204,7 @@ opcionales. Las opciones de línea de comandos tienen prioridad.
 ```toml
 language = "es"            # en | es
 icons = "nerd"             # nerd | unicode | ascii
-theme = "gruvbox"          # dark | light | high-contrast | gruvbox | custom
+theme = "gruvbox-dark"     # el id de cualquier tema; `T` elige uno y lo guarda acá
 
 [categories]               # una clave existente reemplaza su lista, una nueva agrega categoría
 video = ["mp4", "mkv", "webm"]
@@ -218,6 +219,29 @@ selected_bg = "blue"
 Claves del tema personalizado: `fg bg dim accent border connector dir
 selected_fg selected_bg size marked error warn bar_low bar_mid bar_high
 status_fg status_bg grew shrank new matched`.
+
+## Temas
+
+`T` abre el selector de temas: las flechas muestran cada tema en toda la
+pantalla, escribir filtra la lista, `Enter` deja el tema y lo guarda en la
+configuración, y `Esc` vuelve al que tenías. `--theme ID` elige uno para una
+sola ejecución.
+
+Hay 32 temas en cinco familias: los de fábrica (`ramas`, `ramas-light`),
+populares (Catppuccin, Dracula, Everforest, Gruvbox, Kanagawa, Monokai, Nord,
+One Dark, Rosé Pine, Solarized, Tokyo Night), claros y pastel, retro y neón
+(fósforo verde, ámbar, gris, cyberpunk, synthwave) y accesibles (alto
+contraste, y paletas Okabe-Ito para daltonismo). Los nombres de ramas 0.1
+(`dark`, `light`, `high-contrast`, `gruvbox`) siguen funcionando.
+
+Los temas se comparten con [apptop](https://github.com/workharleyhsu/apptop)
+mediante el crate [tui-themes](https://github.com/workharleyhsu/tui-themes).
+Para crear el tuyo, dejá un archivo TOML en `~/.config/tui-themes/themes/`:
+mirá [la guía de temas](https://github.com/workharleyhsu/tui-themes/blob/main/docs/THEMES.es.md). Un archivo de tema roto solo muestra
+un aviso.
+
+Los colores se adaptan a la terminal: 24 bits, 256 colores, 16 colores, o
+ninguno con `NO_COLOR`.
 
 ## Formato de exportación
 

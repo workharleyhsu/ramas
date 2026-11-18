@@ -145,4 +145,10 @@ Pendientes conocidos (no bloquean ningún criterio):
 - Push por HTTPS con el credential helper de `gh` configurado solo en este repo (la clave SSH de esta PC no está en GitHub).
 - Nueva versión: subir `version` en `Cargo.toml` y los nombres de archivo en los dos README, `scripts/package.sh`, commit + push, esperar CI, `git tag -a vX.Y.Z`, push del tag, `gh release create vX.Y.Z dist/*`.
 
+## Temas compartidos (2026-11-18)
+- Los colores salen del crate `tui-themes` (repo hermano; plan y avance en su `THEMES_PROGRESS.md`). `src/ui/theme.rs` solo agrega los alias de nombres viejos, `[custom_theme]` y la elección inicial.
+- `T` abre el selector (antes rotaba). El tema elegido se guarda en `theme = "…"` de la configuración sin tocar comentarios.
+- Profundidad de color detectada: 24 bits, 256, 16 o sin color.
+- Un tema configurado que ya no existe, o un TOML de usuario roto, solo muestran un aviso. `--theme` con un nombre inexistente sigue siendo error.
+
 LOOP_COMPLETE

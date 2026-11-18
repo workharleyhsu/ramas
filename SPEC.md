@@ -101,8 +101,12 @@ del nodo seleccionado; `Enter` lista los archivos más pesados de la categoría
 (marcables).
 
 ### Temas e iconos
-Temas: `dark` (defecto), `light`, `high-contrast`, `gruvbox`, y `custom`
-desde TOML. `T` cicla. Iconos Nerd Font opcionales (`icons = "nerd"`),
+Temas: los del crate compartido `tui-themes` (32, en cinco familias), más los
+del usuario en `~/.config/tui-themes/themes/` y `custom` desde la
+configuración. Por defecto `ramas` (el `dark` original). `T` abre el selector
+con vista previa en vivo y `Enter` guarda la elección en la configuración. Los
+nombres de la 0.1 (`dark`, `light`, `high-contrast`, `gruvbox`) siguen
+valiendo. Iconos Nerd Font opcionales (`icons = "nerd"`),
 fallback Unicode por defecto; `--no-icons` = ASCII. Respeta `NO_COLOR`.
 
 ### Idioma
